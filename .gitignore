@@ -1,0 +1,65 @@
+# Local research planning documents & probes (never commit)
+docs/
+probes/
+
+# Data, corpora, and binary shards
+data/
+shards/
+raw/
+cleaned/
+*.bin
+*.dat
+*.meta
+*.npy
+*.npz
+*.parquet
+*.tar
+*.tar.zst
+*.zst
+
+# Model checkpoints and training artifacts
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+runs/
+wandb/
+logs/
+checkpoints/
+
+# Secrets, credentials, and environment files
+.env
+.env.*
+*.key
+*.pem
+*.token
+*.credentials
+credentials.json
+token.json
+
+# Python and virtual environments
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+env.bak/
+venv.bak/
+
+# Jupyter / Notebook clutter & Colab outputs
+.ipynb_checkpoints/
+*-checkpoint.ipynb
+
+# Google Drive and Cloud storage mounts
+MyDrive/
+drive/
+.colab/
+
+# OS and IDE artifacts
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
