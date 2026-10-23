@@ -26,6 +26,7 @@ class DeterministicDataLoader:
         seed: int = 42,
         pad_id: int = 0,
         ignore_index: int = -100,
+        pad_to_batch_max: bool = True,
     ) -> None:
         self.reader = reader
         self.batch_size = batch_size
@@ -33,6 +34,7 @@ class DeterministicDataLoader:
         self.seed = seed
         self.pad_id = pad_id
         self.ignore_index = ignore_index
+        self.pad_to_batch_max = pad_to_batch_max
 
         self.num_chunks = len(self.reader)
         if self.num_chunks == 0:
@@ -43,17 +45,16 @@ class DeterministicDataLoader:
 
         Returns:
             Tuple of:
-                - input_ids: LongTensor of shape (batch_size, s_max)
-                - targets: LongTensor of shape (batch_size, s_max)
-                - loss_mask: BoolTensor of shape (batch_size, s_max)
+                - input_ids: LongTensor of shape (batch_size, batch_len)
+                - targets: LongTensor of shape (batch_size, batch_len)
+                - loss_mask: BoolTensor of shape (batch_size, batch_len)
         """
         # Deterministic RNG derived solely from seed and step
         rng = random.Random(self.seed + step * 10007)
         chunk_indices = [rng.randint(0, self.num_chunks - 1) for _ in range(self.batch_size)]
 
-        batch_inputs = []
-        batch_targets = []
-        batch_masks = []
+        raw_inputs = []
+        raw_targets = []
 
         for c_idx in chunk_indices:
             chunk = self.reader.get_chunk(c_idx)
@@ -69,11 +70,22 @@ class DeterministicDataLoader:
 
             input_toks = tokens[:-1][: self.s_max]
             target_toks = tokens[1:][: self.s_max]
+            raw_inputs.append(input_toks)
+            raw_targets.append(target_toks)
 
+        # Dynamic batch padding: pad to batch max, or static s_max
+        if self.pad_to_batch_max:
+            batch_target_len = max(max(len(t) for t in raw_inputs), 1)
+        else:
+            batch_target_len = self.s_max
+
+        batch_inputs = []
+        batch_targets = []
+        batch_masks = []
+
+        for input_toks, target_toks in zip(raw_inputs, raw_targets):
             valid_len = len(input_toks)
-
-            # Right-padding to exactly s_max
-            pad_len = self.s_max - valid_len
+            pad_len = max(0, batch_target_len - valid_len)
             input_padded = input_toks + [self.pad_id] * pad_len
             target_padded = target_toks + [self.ignore_index] * pad_len
             mask_padded = [True] * valid_len + [False] * pad_len

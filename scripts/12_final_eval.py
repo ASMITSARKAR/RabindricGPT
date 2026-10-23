@@ -11,6 +11,8 @@ import argparse
 import sys
 from pathlib import Path
 
+import yaml
+
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import torch
@@ -71,28 +73,45 @@ def main() -> None:
         return
 
     run_dir = repo_root / "runs" / args.run_id
-    ckpt_path = run_dir / "checkpoints" / "final.pt"
+    ckpt_path = run_dir / "checkpoints" / "ckpt_final.pt"
     if not ckpt_path.exists():
-        # Fallback to any available checkpoint
-        ckpts = list((run_dir / "checkpoints").glob("*.pt"))
+        ckpts = sorted(list((run_dir / "checkpoints").glob("*.pt")))
         if not ckpts:
             print(f"Error: No checkpoints found in {run_dir / 'checkpoints'}", file=sys.stderr)
             sys.exit(1)
-        ckpt_path = ckpts[0]
+        ckpt_path = ckpts[-1]
+
+    # Load configuration
+    run_cfg_path = run_dir / "config.yaml"
+    if run_cfg_path.exists():
+        run_cfg = yaml.safe_load(run_cfg_path.read_text(encoding="utf-8"))
+        model_sub = run_cfg.get("model", {})
+        size_id = model_sub.get("size_id", "10m")
+        vocab_size = int(model_sub.get("vocab_size", 264))
+        tok_name = run_cfg.get("tokenizer", "bpe16")
+        cfg = ModelConfig.from_size(size_id, vocab_size=vocab_size)
+    else:
+        size_id = "10m"
+        tok_name = "bpe16"
+        cfg = ModelConfig.from_size(size_id, vocab_size=264)
 
     # Load checkpoint
-    ckpt = torch.load(ckpt_path, map_location=args.device)
-    model_cfg_dict = ckpt.get("config", {})
-    cfg = ModelConfig(**{k: v for k, v in model_cfg_dict.items() if hasattr(ModelConfig, k)})
+    ckpt = torch.load(ckpt_path, map_location=args.device, weights_only=False)
     model = GPT(cfg)
-    model.load_state_dict(ckpt["model"])
+    state = ckpt.get("model_state_dict", ckpt.get("model"))
+    model.load_state_dict(state)
     model.eval()
-
-    tok_name = ckpt.get("tokenizer", "bpe16")
-    shard_dir = repo_root / "data" / "shards" / args.split / tok_name
+    corpus = "wikisource" if ("AD-" in args.run_id or "adapt" in str(run_dir)) else "fineweb2"
+    default_split = "test" if corpus == "wikisource" else "egen"
+    target_split = args.split if (repo_root / "shards" / corpus / tok_name / args.split).exists() else default_split
+    shard_dir = repo_root / "shards" / corpus / tok_name / target_split
     if not shard_dir.exists():
-        print(f"Error: Shard directory not found: {shard_dir}", file=sys.stderr)
-        sys.exit(1)
+        candidates = list((repo_root / "shards" / corpus / tok_name).glob("*/index.json"))
+        if candidates:
+            shard_dir = candidates[0].parent
+        else:
+            print(f"Error: Shard directory not found for {corpus}/{tok_name}", file=sys.stderr)
+            sys.exit(1)
 
     reader = ShardReader(shard_dir)
     res = evaluate_bpc(model, reader, device=args.device)
@@ -111,9 +130,10 @@ def main() -> None:
     stratified = compute_stratified_breakdown(chunk_metrics)
 
     # Generation checks
-    tok_path = repo_root / "tokenizers" / tok_name / "spm.model"
-    if tok_path.exists():
-        tok = SentencePieceTokenizer(tok_path)
+    tok_dir = repo_root / "tok" / tok_name
+    spm_path = tok_dir / "spm.model"
+    if spm_path.exists():
+        tok = SentencePieceTokenizer(spm_path)
         prompts = ["আজ সকালবেলা", "মেঘের কোলে রোদ হেসেছে"]
         gens = generate_samples(model, tok, prompts, device=args.device)
         ill_formed_rate = check_ill_formed_unicode_rate(gens)

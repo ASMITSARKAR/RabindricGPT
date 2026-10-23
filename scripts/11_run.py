@@ -8,6 +8,7 @@ Status        : TESTED
 """
 
 import argparse
+import json
 import sys
 import time
 from pathlib import Path
@@ -59,9 +60,20 @@ def main() -> None:
     seed = match_row["seed"]
     lr = match_row["lr"]
 
-    # Locate shards for this tokenizer
-    shard_index = repo_root / "data" / "shards" / "train" / tok_name / "index.json"
-    val_shard_index = repo_root / "data" / "shards" / "val" / tok_name / "index.json"
+    # Locate shards for this tokenizer and stage
+    corpus = "wikisource" if ("AD-" in args.run_id or "adapt" in match_row["stage"]) else "fineweb2"
+    val_split = "val" if corpus == "wikisource" else "egen"
+    shard_index = repo_root / "shards" / corpus / tok_name / "train" / "index.json"
+    val_shard_index = repo_root / "shards" / corpus / tok_name / val_split / "index.json"
+
+    # Determine exact vocab size
+    tok_cfg_file = repo_root / "tok" / tok_name / "config.json"
+    if tok_cfg_file.exists():
+        tok_meta = json.loads(tok_cfg_file.read_text(encoding="utf-8"))
+        vocab_size = int(tok_meta.get("vocab_size", 264 if tok_name == "byte" else 16384))
+    else:
+        vocab_map = {"byte": 264, "char": 512, "aks": 8192, "bpe8": 8192, "bpe16": 16384, "uni16": 16384}
+        vocab_size = vocab_map.get(tok_name, 16384)
 
     run_config = {
         "run_id": args.run_id,
@@ -70,7 +82,7 @@ def main() -> None:
         "seed": seed,
         "model": {
             "size_id": model_size,
-            "vocab_size": 264 if tok_name == "byte" else 16384,
+            "vocab_size": vocab_size,
         },
         "train": {
             "total_steps": 100,

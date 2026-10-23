@@ -1,0 +1,22 @@
+# Audit: Whole-Work Split Composition & Clean Character Verification
+Git Commit SHA: d2e6b109e1b8c863fae7397a66c97ccae49c07c6
+
+## Input File SHAs:
+- configs\works_wikisource.yaml: f9f1b163a5e10aae95139b54687c62e48ef7042f58ff170a0647dfb27f356e87
+- data\raw\wikisource\pages.jsonl: bfad2682cde36503635c8b8eb68e1bad2a999570fedccb339690fb71352327fa
+
+## Per-Work Measured Clean Characters from pages.jsonl:
+id               | genre      | pages  | clean_chars  | split  | config_measured | match
+--------------------------------------------------------------------------------
+gora             | novel      | 594    | 829218       | train  | 829218          | True 
+galpaguchchha_1  | stories    | 317    | 456659       | train  | 456659          | True 
+chaturanga       | novella    | 116    | 111548       | train  | 111548          | True 
+sonar_tori       | poetry     | 214    | 109614       | train  | 109614          | True 
+noukadubi        | novel      | 61     | 68125        | train  | 68125           | True 
+dakghar          | drama      | 59     | 32569        | train  | 32569           | True 
+shesher_kobita   | novel      | 182    | 165374       | val    | 165374          | True 
+gitanjali        | poetry     | 188    | 76476        | test   | 76476           | True 
+jogajog          | novel      | 307    | 360939       | test   | 360939          | True 
+chitrangada      | drama      | 69     | 35811        | test   | 35811           | True 
+
+All clean_chars_measured match pages.jsonl: True

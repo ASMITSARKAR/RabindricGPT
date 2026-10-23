@@ -81,3 +81,43 @@ def test_overfit_single_batch() -> None:
 
     assert final_loss < 0.1
     assert final_loss < initial_loss / 10
+
+
+def test_initial_loss_near_entropy_all_vocabs() -> None:
+    """Item 3 / Level P2: |loss - ln(V)| < 0.10 across vocabs and model sizes on real configs."""
+    import math
+    from pathlib import Path
+
+    import yaml
+
+    vocabs = [264, 512, 8192, 16384]
+    sizes = ["10m", "25m", "50m", "100m"]
+
+    for sz in sizes:
+        cfg_file = Path("configs/models") / f"{sz}.yaml"
+        if not cfg_file.exists():
+            continue
+        base_data = yaml.safe_load(cfg_file.read_text(encoding="utf-8"))
+
+        for v in vocabs:
+            cfg_dict = dict(base_data)
+            cfg_dict["vocab_size"] = v
+            cfg_dict["size_id"] = sz
+            cfg = ModelConfig(**cfg_dict)
+
+            torch.manual_seed(42)
+            model = RabindricGPT(cfg)
+            model.eval()
+
+            # Random inputs and targets
+            x = torch.randint(0, v, (8, 64))
+            y = torch.randint(0, v, (8, 64))
+
+            with torch.no_grad():
+                logits = model(x)
+                loss = F.cross_entropy(logits.view(-1, v), y.view(-1)).item()
+
+            expected_loss = math.log(v)
+            diff = abs(loss - expected_loss)
+            assert diff < 0.10, f"Scale {sz}, Vocab {v}: init loss {loss:.4f} differs from ln(V) {expected_loss:.4f} by {diff:.4f} >= 0.10"
+

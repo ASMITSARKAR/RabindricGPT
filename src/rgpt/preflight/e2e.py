@@ -77,10 +77,85 @@ def run_mini_pipeline(fixture_dir: Union[str, Path]) -> Dict[str, Any]:
         w_char = ShardWriter(tmp_p / "char", tok_char, source="wikisource", split="val")
         idx_char = w_char.write_chunks(chunks)
 
-        # Equal-bytes check across byte and char
-        equal_chars = idx_byte["total_chars"] == idx_char["total_chars"]
-        equal_bytes = idx_byte["total_bytes"] == idx_char["total_bytes"]
+        w_aks = ShardWriter(tmp_p / "aks", tok_aks, source="wikisource", split="val")
+        idx_aks = w_aks.write_chunks(chunks)
+
+        # Equal-bytes check across byte, char, and aks
+        equal_chars = (idx_byte["total_chars"] == idx_char["total_chars"] == idx_aks["total_chars"])
+        equal_bytes = (idx_byte["total_bytes"] == idx_char["total_bytes"] == idx_aks["total_bytes"])
         stages["equal_bytes_invariant"] = (equal_chars and equal_bytes)
+
+        # Round 2 Item 1 check: Verify shard tokens match direct encode() on all chunks
+        # and verify chars/tok and bytes/tok match between shards and tokenizer.encode()
+        all_shards_matched = True
+        for tok_obj, s_dir, idx_dict in [(tok_byte, tmp_p / "byte", idx_byte), (tok_char, tmp_p / "char", idx_char), (tok_aks, tmp_p / "aks", idx_aks)]:
+            with ShardReader(s_dir) as reader:
+                s_tokens_sum = 0
+                e_tokens_sum = 0
+                for ci, c in enumerate(chunks):
+                    s_toks = reader.get_chunk(ci)["tokens"].tolist()
+                    e_toks = tok_obj.encode(c.text)
+                    if s_toks != e_toks:
+                        all_shards_matched = False
+                        break
+                    s_tokens_sum += len(s_toks)
+                    e_tokens_sum += len(e_toks)
+                if s_tokens_sum != e_tokens_sum or s_tokens_sum != idx_dict["total_tokens"]:
+                    all_shards_matched = False
+        stages["shard_tokens_match_encode"] = all_shards_matched
+
+        # Round 3 Item 1 check: Extend P3 to bpe8, bpe16, and uni16
+        # Assert real SPM with expected piece count and in-sample vs held-out ratio <= 1.08
+        import sentencepiece as spm
+
+        from src.rgpt.tokenizers.spm import SentencePieceTokenizer
+
+        spm_valid = True
+        tok_root = Path("tok")
+        for tid, exp_vocab in [("bpe8", 8192), ("bpe16", 16384), ("uni16", 16384)]:
+            spm_dir = tok_root / tid
+            if (spm_dir / "spm.model").exists():
+                spm_tok = SentencePieceTokenizer.from_files(spm_dir)
+                if not isinstance(spm_tok._sp, spm.SentencePieceProcessor):
+                    spm_valid = False
+                if spm_tok.vocab_size != exp_vocab:
+                    spm_valid = False
+
+                # Relative compression check: compare chars/token on a held-out slice of the 100M tokenizer sample
+                # (in-sample) against FineWeb-2 e-gen, and fail if |ratio - 1| > 0.08.
+                fw2_sample_f = Path("data/cleaned/fineweb2/fw2_tokenizer_sample_100m.txt")
+                egen_f = Path("data/cleaned/fineweb2/egen.txt")
+                tagore_val_f = Path("data/cleaned/tagore/val.txt")
+
+                if fw2_sample_f.exists() and egen_f.exists():
+                    in_sample_text = fw2_sample_f.read_text(encoding="utf-8")[:100_000]
+                    egen_text = egen_f.read_text(encoding="utf-8")[:100_000]
+                    in_cpt = len(in_sample_text) / max(1, len(spm_tok.encode(in_sample_text)))
+                    eg_cpt = len(egen_text) / max(1, len(spm_tok.encode(egen_text)))
+                    ratio = in_cpt / eg_cpt
+                    if abs(ratio - 1.0) > 0.08:
+                        spm_valid = False
+                else:
+                    # Shard manifest fallback
+                    fw2_tr_idx = Path(f"shards/fineweb2/{tid}/train/index.json")
+                    fw2_eg_idx = Path(f"shards/fineweb2/{tid}/egen/index.json")
+                    if fw2_tr_idx.exists() and fw2_eg_idx.exists():
+                        tr_meta = json.loads(fw2_tr_idx.read_text(encoding="utf-8"))
+                        eg_meta = json.loads(fw2_eg_idx.read_text(encoding="utf-8"))
+                        tr_cpt = tr_meta["total_chars"] / max(1, tr_meta["total_tokens"])
+                        eg_cpt = eg_meta["total_chars"] / max(1, eg_meta["total_tokens"])
+                        ratio = tr_cpt / eg_cpt
+                        if abs(ratio - 1.0) > 0.08:
+                            spm_valid = False
+
+                # Per-tokenizer minimum on held-out Tagore val: fail if bpe16 < 2.5 chars/token
+                if tagore_val_f.exists():
+                    val_text = tagore_val_f.read_text(encoding="utf-8")[:100_000]
+                    val_cpt = len(val_text) / max(1, len(spm_tok.encode(val_text)))
+                    if tid == "bpe16" and val_cpt < 2.5:
+                        spm_valid = False
+        stages["spm_shards_and_compression_valid"] = spm_valid
+
 
         # Stage 4: Model Forward Pass
         cfg = ModelConfig(

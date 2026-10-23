@@ -10,68 +10,68 @@ works:
     title_english: "Gora"
     genre: "novel"
     prefix: "পাতা:গোরা-রবীন্দ্রনাথ ঠাকুর.pdf/"
-    clean_chars_measured: 859624
+    clean_chars_measured: 829218
     split: "train"
   - id: "galpaguchchha_1"
     title_bengali: "গল্পগুচ্ছ (প্রথম খণ্ড)"
     title_english: "Galpaguchchha Vol 1"
     genre: "stories"
     prefix: "পাতা:গল্পগুচ্ছ (প্রথম খণ্ড).djvu/"
-    clean_chars_measured: 478383
+    clean_chars_measured: 456659
     split: "train"
   - id: "chaturanga"
     title_bengali: "চতুরঙ্গ"
     title_english: "Chaturanga"
     genre: "novella"
     prefix: "পাতা:চতুরঙ্গ - রবীন্দ্রনাথ ঠাকুর.pdf/"
-    clean_chars_measured: 117053
+    clean_chars_measured: 111548
     split: "train"
   - id: "sonar_tori"
     title_bengali: "সোনার তরী"
     title_english: "Sonar Tori"
     genre: "poetry"
     prefix: "পাতা:সোনার তরী-রবীন্দ্রনাথ ঠাকুর.djvu/"
-    clean_chars_measured: 125153
+    clean_chars_measured: 109614
     split: "train"
   - id: "noukadubi"
     title_bengali: "নৌকাডুবি"
     title_english: "Noukadubi"
     genre: "novel"
     prefix: "পাতা:নৌকাডুবি-রবীন্দ্রনাথ ঠাকুর.pdf/"
-    clean_chars_measured: 72394
+    clean_chars_measured: 68125
     split: "train"
   - id: "dakghar"
     title_bengali: "ডাকঘর"
     title_english: "Dakghar"
     genre: "drama"
     prefix: "পাতা:ডাকঘর - রবীন্দ্রনাথ ঠাকুর.pdf/"
-    clean_chars_measured: 41524
+    clean_chars_measured: 32569
     split: "train"
   - id: "shesher_kobita"
     title_bengali: "শেষের কবিতা"
     title_english: "Shesher Kobita"
     genre: "novel"
     prefix: "পাতা:শেষের কবিতা - রবীন্দ্রনাথ ঠাকুর.pdf/"
-    clean_chars_measured: 174541
+    clean_chars_measured: 165374
     split: "val"
   - id: "gitanjali"
     title_bengali: "গীতাঞ্জলি"
     title_english: "Gitanjali"
     genre: "poetry"
     prefix: "পাতা:গীতাঞ্জলি - রবীন্দ্রনাথ ঠাকুর.djvu/"
-    clean_chars_measured: 107735
-    split: "val"
+    clean_chars_measured: 76476
+    split: "test"
   - id: "jogajog"
     title_bengali: "যোগাযোগ"
     title_english: "Jogajog"
     genre: "novel"
     prefix: "পাতা:যোগাযোগ- রবীন্দ্রনাথ ঠাকুর.pdf/"
-    clean_chars_measured: 380366
+    clean_chars_measured: 360939
     split: "test"
   - id: "chitrangada"
     title_bengali: "চিত্রাঙ্গদা"
     title_english: "Chitrangada"
     genre: "drama"
     prefix: "পাতা:চিত্রাঙ্গদা-রবীন্দ্রনাথ ঠাকুর.djvu/"
-    clean_chars_measured: 41076
+    clean_chars_measured: 35811
     split: "test"

@@ -1,5 +1,5 @@
 {
   "id": "char",
-  "vocab_size": 299,
+  "vocab_size": 512,
   "type": "char"
 }

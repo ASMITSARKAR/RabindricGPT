@@ -35,6 +35,7 @@ class DecisionsConfig:
     score_bos: bool
     swiglu_multiple_of: int
     init_std: float
+    embedding_init_scale: float
     scale_residual_by_depth: bool
     tie_embeddings: bool
     use_bias: bool

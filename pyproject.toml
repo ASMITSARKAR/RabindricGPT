@@ -12,7 +12,7 @@ authors = [{ name = "Asmit Sarkar" }]
 dependencies = [
     "torch>=2.2.0",
     "numpy>=1.26.0",
-    "sentencepiece>=0.2.0",
+    "sentencepiece==0.2.2",
     "regex>=2024.0.0",
     "pyyaml>=6.0.0",
     "zstandard>=0.22.0",

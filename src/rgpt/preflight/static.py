@@ -25,6 +25,7 @@ ALLOWED_SCHEMA_KEYS = {
         "score_bos",
         "swiglu_multiple_of",
         "init_std",
+        "embedding_init_scale",
         "scale_residual_by_depth",
         "tie_embeddings",
         "use_bias",

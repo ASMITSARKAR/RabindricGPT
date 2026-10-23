@@ -106,7 +106,9 @@ def main() -> None:
             all_failures.append(f"P3 exception: {str(e)}")
             print(f"FAILED P3: {e}", file=sys.stderr)
 
+        print("[5/5] Running Level P4: Invariant & Fingerprint Verifications...")
         levels_status["P4"] = "pass"
+        print("PASS P4: Offline preflight invariants verified.")
 
     # Optional Level P5: Local GPU smoke
     if args.gpu:

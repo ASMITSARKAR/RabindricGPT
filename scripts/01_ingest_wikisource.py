@@ -10,6 +10,8 @@ Status        : TESTED
 import argparse
 import os
 import sys
+import time
+import urllib.request
 from pathlib import Path
 
 import yaml
@@ -24,9 +26,38 @@ from src.rgpt.data.wikisource_dump import parse_wikisource_dump
 from src.rgpt.data.wikitext_clean import clean_wikitext
 
 
+def download_dump(target_path: Path, contact: str) -> None:
+    """Download official Bengali Wikisource pages-articles XML dump."""
+    url = "https://dumps.wikimedia.org/bnwikisource/latest/bnwikisource-latest-pages-articles.xml.bz2"
+    headers = {"User-Agent": f"RabindricGPT/1.0 ({contact})"}
+    req = urllib.request.Request(url, headers=headers)
+    print(f"Downloading Bengali Wikisource dump from {url} to {target_path}...")
+    target_path.parent.mkdir(parents=True, exist_ok=True)
+    temp_target = target_path.with_suffix(target_path.suffix + ".tmp")
+    with urllib.request.urlopen(req) as resp, open(temp_target, "wb") as f_out:
+        total_bytes = int(resp.headers.get("Content-Length", 0))
+        downloaded = 0
+        chunk_size = 1024 * 1024  # 1 MB
+        last_print = time.time()
+        while True:
+            chunk = resp.read(chunk_size)
+            if not chunk:
+                break
+            f_out.write(chunk)
+            downloaded += len(chunk)
+            if time.time() - last_print >= 5.0 or downloaded == total_bytes:
+                mb = downloaded / (1024 * 1024)
+                pct = (downloaded / total_bytes * 100.0) if total_bytes else 0.0
+                print(f"  Downloaded {mb:.1f} MB ({pct:.1f}%)...", flush=True)
+                last_print = time.time()
+    temp_target.replace(target_path)
+    print(f"Download complete: {target_path} ({downloaded:,} bytes)")
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Ingest Bengali Wikisource for Tagore works")
     parser.add_argument("--dump-path", type=str, default=None, help="Path to XML bz2 dump")
+    parser.add_argument("--download-dump", action="store_true", help="Download official Wikimedia dump if needed")
     parser.add_argument("--use-api-fallback", action="store_true", help="Fallback to Action API")
     parser.add_argument(
         "--config", type=str, default="configs/works_wikisource.yaml", help="Works config"
@@ -55,9 +86,21 @@ def main() -> None:
     page_count = 0
     clean_chars_total = 0
 
-    if args.dump_path and Path(args.dump_path).exists():
-        print(f"Parsing XML dump: {args.dump_path}")
-        for page in parse_wikisource_dump(args.dump_path, prefixes=prefixes):
+    dump_path = Path(args.dump_path) if args.dump_path else None
+    if args.download_dump or (dump_path and not dump_path.exists()):
+        if not dump_path:
+            dump_path = out_dir / "bnwikisource-latest-pages-articles.xml.bz2"
+        if not dump_path.exists():
+            contact = os.environ.get("RGPT_CONTACT")
+            if not contact:
+                raise ValueError(
+                    "Downloading Wikimedia dump requires RGPT_CONTACT environment variable to be set."
+                )
+            download_dump(dump_path, contact)
+
+    if dump_path and dump_path.exists():
+        print(f"Parsing XML dump: {dump_path}")
+        for page in parse_wikisource_dump(dump_path, prefixes=prefixes):
             clean_text, stats = clean_wikitext(page["text"])
             record = {
                 "title": page["title"],

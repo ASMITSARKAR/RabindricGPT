@@ -1,0 +1,45 @@
+# Audit: FLOPs Formula Verification vs Budget Doc 08 Anchors
+Git Commit SHA: d2e6b109e1b8c863fae7397a66c97ccae49c07c6
+
+## Input File SHAs:
+- configs\models\100m.yaml: 7bc452548841fe5d9123b63aa33c640f9edea47bdf2496263bd18684b527637c
+- configs\models\10m.yaml: 13fdf8353fe57cc0057dfea8c6b6e59797757dbde9af235bae7a0931778d9955
+- configs\models\25m.yaml: fec77ce77ea808b0523b9463c1b29cbde00a4e0e4601837daec6b7d464777881
+- configs\models\50m.yaml: 74098942e60038bc464b081531d0f6a8de05756854ebeef86ecb3022700e0a39
+- configs\tokenizers\aks.yaml: f9c73d7b94dda8717c21a5bb6b38346be286ac91d5f6d39da7110a5b8b5a0d07
+- configs\tokenizers\bpe16.yaml: f3af0b3ba03e9315468b7cfdde4818af04a528ef17e39f389ba8dab536f62ada
+- configs\tokenizers\bpe8.yaml: c33ae9b12005eb187a647280594987ef1a9db979f716586548f00755b2a20ea6
+- configs\tokenizers\char.yaml: b80f6d6aafc73e6036755f16e7b039875c7ce871ad38e01fa71028f2cde8890b
+- configs\tokenizers\uni16.yaml: e676204dbd4a161c7405e2e498ab04c9618e3a06ff736a063d3f5bed89025559
+- shards\wikisource\aks\train\index.json: 69c3bc49ada7c3cb76059629658da3c4db70a250970773ec780d7bc515fbb35c
+- shards\wikisource\bpe16\train\index.json: 393feda26e59b9fe22b79e111536d28da01406e940296c27f8c976085b27b9b2
+- shards\wikisource\bpe8\train\index.json: d54e8a583cab9f754708c1af30487bc85799b79facc6e47393a75b9abc1b50f6
+- shards\wikisource\char\train\index.json: 83850e1fafb945af83254ed89f7590e46b7e15ee657c54213e20e7c58217b4ce
+- shards\wikisource\uni16\train\index.json: 1fd4842495a1def50260f26e9111e22d6344d872bbfa71e8fb4ad93090270838
+
+## Empirical FLOPs vs Budget Doc Anchors:
+Scale  | Tok    | L   | d    | V      | s_emp  | F_emp      | Budget Doc | Dev %   
+---------------------------------------------------------------------------
+10m    | char   | 6   | 384  | 512    | 1024   |   93.19M |   93.19M | 0.0000%
+10m    | aks    | 6   | 384  | 8192   | 671    |  101.13M |  100.27M | 0.8548%
+10m    | bpe8   | 6   | 384  | 8192   | 331    |   91.73M |   91.42M | 0.3327%
+10m    | bpe16  | 6   | 384  | 16384  | 295    |  109.61M |  108.53M | 0.9935%
+10m    | uni16  | 6   | 384  | 16384  | 293    |  109.55M |  108.53M | 0.9426%
+25m    | char   | 8   | 512  | 512    | 1024   |  202.90M |  202.90M | 0.0000%
+25m    | aks    | 8   | 512  | 8192   | 671    |  209.14M |  207.62M | 0.7339%
+25m    | bpe8   | 8   | 512  | 8192   | 331    |  192.43M |  191.89M | 0.2818%
+25m    | bpe16  | 8   | 512  | 16384  | 295    |  215.83M |  213.91M | 0.8961%
+25m    | uni16  | 8   | 512  | 16384  | 293    |  215.73M |  213.91M | 0.8502%
+50m    | char   | 10  | 640  | 512    | 1024   |  375.52M |  375.52M | 0.0000%
+50m    | aks    | 10  | 640  | 8192   | 671    |  377.90M |  375.52M | 0.6340%
+50m    | bpe8   | 10  | 640  | 8192   | 331    |  351.79M |  350.95M | 0.2407%
+50m    | bpe16  | 10  | 640  | 16384  | 295    |  380.48M |  377.49M | 0.7935%
+50m    | uni16  | 10  | 640  | 16384  | 293    |  380.33M |  377.49M | 0.7528%
+100m   | char   | 14  | 768  | 512    | 1024   |  729.02M |  729.02M | 0.0000%
+100m   | aks    | 14  | 768  | 8192   | 671    |  718.87M |  714.87M | 0.5595%
+100m   | bpe8   | 14  | 768  | 8192   | 331    |  675.00M |  673.58M | 0.2107%
+100m   | bpe16  | 14  | 768  | 16384  | 295    |  708.10M |  703.07M | 0.7157%
+100m   | uni16  | 14  | 768  | 16384  | 293    |  707.84M |  703.07M | 0.6790%
+
+Max deviation across all models and tokenizers: 0.9935%
+Assertion <= 1.0%: PASSED

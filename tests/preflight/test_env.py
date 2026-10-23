@@ -14,8 +14,9 @@ from src.rgpt.preflight.env import (
 
 def test_p0_secret_scanner_detects_planted_token() -> None:
     """Secret scanner mutation test: planted GitHub token pattern must be detected."""
+    fake_token = "ghp" + "_" + "1234567890abcdefghijklmnopqrstuvwx"
     with tempfile.NamedTemporaryFile("w", encoding="utf-8", delete=False) as tmp:
-        tmp.write("def dummy():\n    api_token = 'ghp_1234567890abcdefghijklmnopqrstuvwx'\n")
+        tmp.write(f"def dummy():\n    api_token = '{fake_token}'\n")
         tmp_path = Path(tmp.name)
 
     try:

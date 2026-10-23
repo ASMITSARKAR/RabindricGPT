@@ -1,0 +1,87 @@
+# Audit: Shard Manifest Reconciliation, Tokenizer Sample Provenance & Lossless Round-Trip
+Git Commit SHA: d2e6b109e1b8c863fae7397a66c97ccae49c07c6
+
+## Input File SHAs:
+- data\cleaned\fineweb2\egen.txt: 80c8d403aa200ce66600846e6430c302682d80c47100054e11b774414ccaa22a
+- data\cleaned\fineweb2\fw2_tokenizer_sample_100m.txt: ec3bf708e99bf371ce6f611517302f071a99b76adf65bf30ff5bb7815e228016
+- data\cleaned\tagore\test.txt: 959b5e246133bbd1a623a99f0ea3e5e11beb0ce69d4fbebfc6dabf281fc3c072
+- data\cleaned\tagore\val.txt: b5b49ca72c9f025c907e357c31b3d9e2ab24c5ce663b1766e732b31857ec7e2d
+- shards\wikisource\aks\test\index.json: 9425d9e7daf1db4f0b18b1297447e843c20ff7d727e49fc33c20f49095206f2d
+- shards\wikisource\aks\train\index.json: 69c3bc49ada7c3cb76059629658da3c4db70a250970773ec780d7bc515fbb35c
+- shards\wikisource\aks\val\index.json: e148400a979ffcbcba3df340558767121393929fb49d958d2febd3fe23b17e42
+- shards\wikisource\bpe16\test\index.json: 18ee17a2c11427b12b44638ff6c820c9e784b45138a20a57e87bdc71eae95a0c
+- shards\wikisource\bpe16\train\index.json: 393feda26e59b9fe22b79e111536d28da01406e940296c27f8c976085b27b9b2
+- shards\wikisource\bpe16\val\index.json: 7076046c326dfb8fb957d79781779d854b8199c55edf9740381b7ae35707bfa5
+- shards\wikisource\bpe8\test\index.json: 649f81de9924d111051f72e34bf170c987eccdd7a6ee466a2517d4b1f2855772
+- shards\wikisource\bpe8\train\index.json: d54e8a583cab9f754708c1af30487bc85799b79facc6e47393a75b9abc1b50f6
+- shards\wikisource\bpe8\val\index.json: 50e7913f7dd70947e30eaf4371e559dc6394fc9851e347eb5cdb9800897f14df
+- shards\wikisource\byte\test\index.json: a341f73c85c397f2bc9b4ae56635b1737fbc7383487b9c506c0b24dbf433164f
+- shards\wikisource\byte\train\index.json: c805a3d8f778066d35870edc20e5efed6ba179f32a82e82034e61fe9629c303c
+- shards\wikisource\byte\val\index.json: f549df900af063f8a7447b9eb77ea8eca062d61836172e3e8ffcfbad787e1ce6
+- shards\wikisource\char\test\index.json: f394e2055118d9211f412ae811d53c8f88ec7d9c892f74bc469c9b8d0e1f433d
+- shards\wikisource\char\train\index.json: 83850e1fafb945af83254ed89f7590e46b7e15ee657c54213e20e7c58217b4ce
+- shards\wikisource\char\val\index.json: 8c1b9270af960716b6ff7d8111b4ff854c7d1744bd74a5f7e24d2761a47af6ed
+- shards\wikisource\uni16\test\index.json: 4ea799d3a031746d3825042a4704e19b862527cd1eb328c50051f6f61f87dbab
+- shards\wikisource\uni16\train\index.json: 1fd4842495a1def50260f26e9111e22d6344d872bbfa71e8fb4ad93090270838
+- shards\wikisource\uni16\val\index.json: abc27f6a276996881b8ca1e64db36b7271fd0aa7bb30a674b7e14f8adcce2916
+
+## 1. Shard Index vs encode() Reconciliation (Single Source of Truth):
+Tok    | Split  | Index Chars  | Index Toks  | Index CPT  | Encode Toks | Diff %   | <=0.5%
+-------------------------------------------------------------------------------------
+byte   | train  | 1610413      | 4237448     | 0.3800     | 4237448     | 0.0000%  | True  
+byte   | val    | 165728       | 431582      | 0.3840     | 431582      | 0.0000%  | True  
+byte   | test   | 474322       | 1215442     | 0.3902     | 1215442     | 0.0000%  | True  
+char   | train  | 1610413      | 1611465     | 0.9993     | 1611465     | 0.0000%  | True  
+char   | val    | 165728       | 166010      | 0.9983     | 166010      | 0.0000%  | True  
+char   | test   | 474322       | 474542      | 0.9995     | 474542      | 0.0000%  | True  
+aks    | train  | 1610413      | 1056979     | 1.5236     | 1056979     | 0.0000%  | True  
+aks    | val    | 165728       | 111096      | 1.4918     | 111096      | 0.0000%  | True  
+aks    | test   | 474322       | 321580      | 1.4750     | 321580      | 0.0000%  | True  
+bpe8   | train  | 1610413      | 522054      | 3.0848     | 522054      | 0.0000%  | True  
+bpe8   | val    | 165728       | 53852       | 3.0775     | 53852       | 0.0000%  | True  
+bpe8   | test   | 474322       | 170538      | 2.7813     | 170538      | 0.0000%  | True  
+bpe16  | train  | 1610413      | 465144      | 3.4622     | 465144      | 0.0000%  | True  
+bpe16  | val    | 165728       | 48131       | 3.4433     | 48131       | 0.0000%  | True  
+bpe16  | test   | 474322       | 150061      | 3.1609     | 150061      | 0.0000%  | True  
+uni16  | train  | 1610413      | 461707      | 3.4880     | 461707      | 0.0000%  | True  
+uni16  | val    | 165728       | 48451       | 3.4205     | 48451       | 0.0000%  | True  
+uni16  | test   | 474322       | 156730      | 3.0264     | 156730      | 0.0000%  | True  
+
+## 2. Tokenizer Sample Metrics (fw2_tokenizer_sample_100m.txt):
+- path: data\cleaned\fineweb2\fw2_tokenizer_sample_100m.txt
+- byte_size: 265991449
+- sha256: ec3bf708e99bf371ce6f611517302f071a99b76adf65bf30ff5bb7815e228016
+- line_count: 493782
+- crlf_count: 0
+- char_count: 100085058
+
+## 3. SentencePiece Production Arguments:
+- model_type: bpe (for bpe8, bpe16) / unigram (for uni16)
+- normalization_rule_name: identity
+- character_coverage: 1.0
+- byte_fallback: True
+- hard_vocab_limit: True
+- input_sentence_size: 10000000
+- num_threads: 1
+
+## 4. UNK Rate and Lossless Round-Trip decode(encode(x)) == x:
+Tok    | Corpus       | Tokens   | UNK Count  | UNK Rate   | Lossless Round-Trip 
+---------------------------------------------------------------------------
+byte   | tagore_val   | 131292   | 0          | 0.000000%  | True                
+byte   | tagore_test  | 117056   | 0          | 0.000000%  | True                
+byte   | egen         | 132915   | 0          | 0.000000%  | True                
+char   | tagore_val   | 50108    | 0          | 0.000000%  | True                
+char   | tagore_test  | 50066    | 0          | 0.000000%  | True                
+char   | egen         | 50003    | 0          | 0.000000%  | True                
+aks    | tagore_val   | 33096    | 0          | 0.000000%  | True                
+aks    | tagore_test  | 36422    | 0          | 0.000000%  | True                
+aks    | egen         | 32155    | 0          | 0.000000%  | True                
+bpe8   | tagore_val   | 15904    | 0          | 0.000000%  | True                
+bpe8   | tagore_test  | 24579    | 0          | 0.000000%  | True                
+bpe8   | egen         | 13306    | 0          | 0.000000%  | True                
+bpe16  | tagore_val   | 14184    | 0          | 0.000000%  | True                
+bpe16  | tagore_test  | 19721    | 0          | 0.000000%  | True                
+bpe16  | egen         | 11753    | 0          | 0.000000%  | True                
+uni16  | tagore_val   | 14188    | 0          | 0.000000%  | True                
+uni16  | tagore_test  | 23141    | 0          | 0.000000%  | True                
+uni16  | egen         | 11505    | 0          | 0.000000%  | True                

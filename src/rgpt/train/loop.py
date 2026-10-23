@@ -68,20 +68,38 @@ def train(
     if not model_cfg_dict and "size_id" in raw_cfg:
         model_cfg_dict = raw_cfg
 
-    model_config = ModelConfig(
-        size_id=model_cfg_dict.get("size_id", "10m"),
-        n_layers=int(model_cfg_dict.get("n_layers", 4)),
-        d_model=int(model_cfg_dict.get("d_model", 128)),
-        head_dim=int(model_cfg_dict.get("head_dim", 64)),
-        n_heads=int(model_cfg_dict.get("n_heads", 2)),
-        n_kv_heads=int(model_cfg_dict.get("n_kv_heads", 2)),
-        hidden_dim=int(model_cfg_dict.get("hidden_dim", 384)),
-        vocab_size=int(model_cfg_dict.get("vocab_size", 264)),
-        max_seq_len=int(model_cfg_dict.get("max_seq_len", 512)),
-        rms_norm_eps=float(model_cfg_dict.get("rms_norm_eps", 1e-5)),
-        rope_theta=float(model_cfg_dict.get("rope_theta", 10000.0)),
-        tie_embeddings=bool(model_cfg_dict.get("tie_embeddings", True)),
-    )
+    size_id = model_cfg_dict.get("size_id")
+    vocab_size = int(model_cfg_dict.get("vocab_size", 264))
+
+    if size_id and "n_layers" not in model_cfg_dict:
+        try:
+            model_config = ModelConfig.from_size(size_id, vocab_size=vocab_size)
+        except Exception:
+            model_config = ModelConfig(
+                size_id=size_id,
+                n_layers=4,
+                d_model=128,
+                head_dim=64,
+                n_heads=2,
+                n_kv_heads=2,
+                hidden_dim=384,
+                vocab_size=vocab_size,
+            )
+    else:
+        model_config = ModelConfig(
+            size_id=model_cfg_dict.get("size_id", "10m"),
+            n_layers=int(model_cfg_dict.get("n_layers", 4)),
+            d_model=int(model_cfg_dict.get("d_model", 128)),
+            head_dim=int(model_cfg_dict.get("head_dim", 64)),
+            n_heads=int(model_cfg_dict.get("n_heads", 2)),
+            n_kv_heads=int(model_cfg_dict.get("n_kv_heads", 2)),
+            hidden_dim=int(model_cfg_dict.get("hidden_dim", 384)),
+            vocab_size=vocab_size,
+            max_seq_len=int(model_cfg_dict.get("max_seq_len", 512)),
+            rms_norm_eps=float(model_cfg_dict.get("rms_norm_eps", 1e-5)),
+            rope_theta=float(model_cfg_dict.get("rope_theta", 10000.0)),
+            tie_embeddings=bool(model_cfg_dict.get("tie_embeddings", True)),
+        )
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = RabindricGPT(model_config).to(device)
@@ -117,7 +135,7 @@ def train(
     elif mode == "adapt":
         pretrain_ckpt_path = raw_cfg.get("pretrained_checkpoint")
         if pretrain_ckpt_path and Path(pretrain_ckpt_path).exists():
-            pt_data = torch.load(pretrain_ckpt_path, map_location=device)
+            pt_data = torch.load(pretrain_ckpt_path, map_location=device, weights_only=False)
             state = pt_data.get("model", pt_data.get("model_state_dict", pt_data))
             model.load_state_dict(state)
             print(f"Loaded pretrained checkpoint from {pretrain_ckpt_path}")
@@ -126,9 +144,13 @@ def train(
     shard_index = raw_cfg.get("shard_index", "shards/wikisource/byte/train/index.json")
     shard_path = Path(shard_index)
     if not shard_path.exists():
-        candidates = list(Path("shards").rglob("index.json"))
+        tok_name = raw_cfg.get("tokenizer", "")
+        # Only fallback to candidate with matching tokenizer if found
+        candidates = [p for p in Path("shards").rglob("index.json") if tok_name and tok_name in str(p)]
         if candidates:
             shard_path = candidates[0]
+        elif not list(Path("shards").rglob("index.json")):
+            raise FileNotFoundError(f"Shard index not found at {shard_path} and no shards exist in shards/ directory.")
 
     # DR-11 assertion: Adapt loop and loader must never read the test shard
     if mode == "adapt":

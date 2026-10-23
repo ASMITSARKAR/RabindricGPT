@@ -45,8 +45,32 @@ class RabindricGPT(nn.Module):
         self.final_norm = RMSNorm(config.d_model, eps=config.rms_norm_eps)
         self.lm_head = nn.Linear(config.d_model, config.vocab_size, bias=False)
 
+        # DR-4 parameter initialization
+        # 1. Hidden linear layers initialized to DR-4 standard: Normal(0, 0.02)
+        # 2. Embedding std scaled per dimension d to enforce |loss - ln(V)| < 0.10: sigma_E = scale / sqrt(d)
+        self.embedding_std = config.embedding_init_scale / (config.d_model**0.5)
+        self.hidden_std = 0.02  # DR-4 canonical standard
+
+        self.apply(self._init_weights)
+
+        # 3. Residual projections scaled by 1 / sqrt(2 * n_layers) per DR-4
+        res_scale = 1.0 / (2.0 * config.n_layers) ** 0.5
+        for block in self.blocks:
+            torch.nn.init.normal_(block.attn.out_proj.weight, mean=0.0, std=self.hidden_std * res_scale)
+            torch.nn.init.normal_(block.mlp.w_down.weight, mean=0.0, std=self.hidden_std * res_scale)
+
         if config.tie_embeddings:
             self.lm_head.weight = self.w_token.weight
+
+    def _init_weights(self, module: nn.Module) -> None:
+        """Initialize weights with Normal(0, 0.02) for hidden layers and Normal(0, 0.35/sqrt(d)) for embeddings."""
+        if isinstance(module, nn.Linear):
+            torch.nn.init.normal_(module.weight, mean=0.0, std=self.hidden_std)
+            if module.bias is not None:
+                torch.nn.init.zeros_(module.bias)
+        elif isinstance(module, nn.Embedding):
+            torch.nn.init.normal_(module.weight, mean=0.0, std=self.embedding_std)
+
 
     def forward(
         self,

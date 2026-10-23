@@ -30,6 +30,7 @@ class ModelConfig:
     rms_norm_eps: float = 1e-5
     rope_theta: float = 10000.0
     tie_embeddings: bool = True
+    embedding_init_scale: float = 0.35
 
     def __post_init__(self) -> None:
         if self.d_model % self.head_dim != 0:
@@ -67,6 +68,7 @@ class ModelConfig:
             rms_norm_eps=float(data.get("rms_norm_eps", 1e-5)),
             rope_theta=float(data.get("rope_theta", 10000.0)),
             tie_embeddings=bool(data.get("tie_embeddings", True)),
+            embedding_init_scale=float(data.get("embedding_init_scale", 0.35)),
         )
 
     @classmethod

@@ -41,3 +41,71 @@ def test_compute_units_hand_anchors() -> None:
     c_bpe16 = calculate_run_flops(f_tok=f_bpe16, d_bytes=d_bytes, t_bytes_per_tok=11.2)
     units_bpe16 = calculate_units(c_bpe16, flops_per_unit=2.2e16)
     assert pytest.approx(units_bpe16, abs=0.02) == 0.47
+
+
+def test_flops_rebuilt_tagore_shards_all_scales_strict_one_percent() -> None:
+    """Read L, d from configs/models/*.yaml, V from configs/tokenizers/*.yaml,
+
+    and s from Tagore train shard index per tokenizer; verify max deviation vs budget doc < 1%.
+    """
+    import json
+    from pathlib import Path
+
+    import yaml
+
+    anchors = {
+        "10m": {
+            "char": calculate_f_tok(10616832, 512, 384, 6, 1024),
+            "aks": calculate_f_tok(10616832, 8192, 384, 6, 640),
+            "bpe16": calculate_f_tok(10616832, 16384, 384, 6, 256),
+            "uni16": calculate_f_tok(10616832, 16384, 384, 6, 256),
+            "bpe8": calculate_f_tok(10616832, 8192, 384, 6, 320),
+        },
+        "25m": {
+            "char": calculate_f_tok(25165824, 512, 512, 8, 1024),
+            "aks": calculate_f_tok(25165824, 8192, 512, 8, 640),
+            "bpe16": calculate_f_tok(25165824, 16384, 512, 8, 256),
+            "uni16": calculate_f_tok(25165824, 16384, 512, 8, 256),
+            "bpe8": calculate_f_tok(25165824, 8192, 512, 8, 320),
+        },
+        "50m": {
+            "char": calculate_f_tok(49152000, 512, 640, 10, 1024),
+            "aks": calculate_f_tok(49152000, 8192, 640, 10, 640),
+            "bpe16": calculate_f_tok(49152000, 16384, 640, 10, 256),
+            "uni16": calculate_f_tok(49152000, 16384, 640, 10, 256),
+            "bpe8": calculate_f_tok(49152000, 8192, 640, 10, 320),
+        },
+        "100m": {
+            "char": calculate_f_tok(99090432, 512, 768, 14, 1024),
+            "aks": calculate_f_tok(99090432, 8192, 768, 14, 640),
+            "bpe16": calculate_f_tok(99090432, 16384, 768, 14, 256),
+            "uni16": calculate_f_tok(99090432, 16384, 768, 14, 256),
+            "bpe8": calculate_f_tok(99090432, 8192, 768, 14, 320),
+        },
+    }
+
+    max_dev = 0.0
+    for scale in ["10m", "25m", "50m", "100m"]:
+        m_cfg = yaml.safe_load(Path(f"configs/models/{scale}.yaml").read_text(encoding="utf-8"))
+        L = m_cfg["n_layers"]
+        d = m_cfg["d_model"]
+        n_ne = 12 * L * (d**2)
+        for tid in ["char", "aks", "bpe8", "bpe16", "uni16"]:
+            idx_p = Path(f"shards/wikisource/{tid}/train/index.json")
+            if not idx_p.exists():
+                continue
+            meta = json.loads(idx_p.read_text(encoding="utf-8"))
+            s_emp = int(meta["total_tokens"] // meta["total_chunks"])
+            tok_cfg = yaml.safe_load(Path(f"configs/tokenizers/{tid}.yaml").read_text(encoding="utf-8"))
+            V = tok_cfg["vocab_size"]
+
+            f_emp = calculate_f_tok(n_ne=n_ne, vocab_size=V, d_model=d, n_layers=L, s_tokens=s_emp)
+            target = anchors[scale][tid]
+            rel_err = abs(f_emp - target) / target
+            if rel_err > max_dev:
+                max_dev = rel_err
+            assert rel_err < 0.01, f"{scale} {tid} empirical FLOPs error {rel_err:.4%} exceeds 1%!"
+
+    assert max_dev < 0.01, f"Max empirical FLOPs deviation {max_dev:.4%} exceeds 1%!"
+
+
