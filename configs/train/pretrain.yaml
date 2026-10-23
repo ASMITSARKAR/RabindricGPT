@@ -1,0 +1,24 @@
+# configs/train/pretrain.yaml
+# Pretraining hyperparameters, scheduler, optimizer, and checkpointing.
+# Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-5, Phase I; 06_TRAINING_PROTOCOL.md
+
+mode: "pretrain"
+budget_mode: "bytes"              # "bytes" (equal-bytes core) or "flops" (equal-compute arm)
+batch_size_chunks: 64             # Total chunks per optimizer step (grad accumulation used as needed)
+micro_batch_size: 8               # Microbatch size for GPU memory management (calibrated at pilot)
+learning_rate: 0.0012             # Default peak LR (overridden by sweep at 10M, DR-5)
+min_learning_rate_ratio: 0.10     # Cosine decay down to 10% of peak LR (DR-5)
+warmup_ratio: 0.02                # Warmup for 2% of total steps (DR-5)
+adamw_beta1: 0.9                  # Ref: DR-5
+adamw_beta2: 0.95                 # Ref: DR-5
+adamw_weight_decay: 0.1           # Ref: DR-5
+grad_clip: 1.0                    # Ref: DR-5
+precision: "bf16"                 # Ref: 15_BUILD_DIRECTIVE.md §2 ("bf16" for L4/A100; "fp16" for T4)
+use_compile: true                 # torch.compile (enabled on Linux/Colab; fallback gracefully on Windows)
+
+# Checkpointing & Logging
+eval_interval_steps: 250          # Periodic validation BPC eval interval
+checkpoint_interval_steps: 500    # Periodic local checkpoint interval
+drive_sync_interval_mins: 30      # Sync interval to Google Drive
+keep_last_checkpoints: 2          # Keep last K=2 plus final (Ref: Phase I)
+save_final_checkpoint: true

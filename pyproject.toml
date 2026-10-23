@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rabindric-gpt"
+version = "0.1.0"
+description = "Do tokenizer rankings hold with scale? Bengali LM with Tagore adaptation."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{ name = "Asmit Sarkar" }]
+dependencies = [
+    "torch>=2.2.0",
+    "numpy>=1.26.0",
+    "sentencepiece>=0.2.0",
+    "regex>=2024.0.0",
+    "pyyaml>=6.0.0",
+    "zstandard>=0.22.0",
+    "scipy>=1.13.0",
+    "matplotlib>=3.8.0",
+    "pandas>=2.2.0",
+    "datasets>=2.19.0",
+    "huggingface-hub>=0.23.0",
+    "datasketch>=1.6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "ruff>=0.4.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+addopts = "--import-mode=importlib"
+markers = [
+    "gpu: marks tests that require a GPU (skipped by default on CPU)",
+    "slow: marks slow tests",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]

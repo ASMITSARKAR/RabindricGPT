@@ -1,0 +1,61 @@
+# configs/decisions.yaml
+# Single source of truth for Directive Resolutions (DR-*) and resolved owner decisions.
+# Ref: 15_BUILD_DIRECTIVE.md §3.1, §3.4; 14_DECISIONS_LOG.md
+
+# DR-1: Context chunking policy
+chunk_size_chars: 1024            # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-1; 04_TOKENIZER_PLAN.md §5
+chunk_fallback_chars: 512         # Ref: 15_BUILD_DIRECTIVE.md §2; Q8 fallback decided at G3
+eval_prefix_bos: true             # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-1
+eval_append_eos: false            # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-2
+
+# DR-2: Scoring policy
+score_bos: false                  # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-2 (BOS is never scored)
+
+# DR-3: Model FFN dimension rounding
+swiglu_multiple_of: 64            # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-3 (round 8d/3 up to multiple of 64)
+
+# DR-4: Parameter initialization
+init_std: 0.02                    # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-4 (Normal(0, 0.02))
+scale_residual_by_depth: true     # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-4 (1/sqrt(2L))
+tie_embeddings: true              # Ref: 15_BUILD_DIRECTIVE.md §2, §3.1 DR-4
+use_bias: false                   # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-4
+
+# DR-5: Training optimization defaults (provisional estimates, calibrated at pilot)
+batch_size_chunks: 64             # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-5
+adamw_beta1: 0.9                  # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-5
+adamw_beta2: 0.95                 # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-5
+adamw_weight_decay: 0.1           # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-5
+grad_clip: 1.0                    # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-5
+warmup_ratio: 0.02                # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-5 (2% of steps)
+min_lr_ratio: 0.10                # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-5 (cosine to 10% peak)
+lr_sweep_10m: [0.0006, 0.0012, 0.0024]  # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-5
+
+# DR-6: Padding and masking
+pad_loss_masked: true             # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-6
+
+# DR-7: Generation evaluation defaults
+gen_temperature: 0.8              # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-7
+gen_top_p: 0.95                   # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-7
+gen_max_new_chars: 512            # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-7
+gen_fixed_seeds: [42, 137, 2026]  # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-7
+
+# DR-8: Target BPC rule for H5
+target_bpc_rule: "median_val_bpc" # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-8
+
+# DR-9: PUA range guard
+pua_start: 0xE000                 # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-9
+pua_end: 0xF8FF                   # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-9
+
+# DR-11 & DR-12: Adaptation protocol
+adapt_epochs: 4                   # Ref: 15_BUILD_DIRECTIVE.md Phase K
+adapt_split: "Option_A"           # Ref: 15_BUILD_DIRECTIVE.md §3.4
+
+# DR-13: Pretraining shard margin
+shard_volume_margin: 0.10         # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-13
+
+# DR-14 & D19: Runner and Preflight Automation
+runner_max_attempts: 5            # Ref: 15_BUILD_DIRECTIVE.md Phase N
+require_preflight_pass: true      # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-14
+fineweb2_target_bytes: 5.0e+9     # Ref: 15_BUILD_DIRECTIVE.md §3.4 (5.0 GB cleaned)
+dedup_max_ram_gb: 8.0             # Ref: 15_BUILD_DIRECTIVE.md §3.4
+colab_reserve_units: 55           # Ref: 15_BUILD_DIRECTIVE.md §3.3

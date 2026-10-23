@@ -1,0 +1,36 @@
+# configs/gpu.yaml
+# Peak FLOPs, burn rate regimes, MFU targets, and Colab environment settings.
+# Ref: 15_BUILD_DIRECTIVE.md §2, §3.4; 08_COMPUTE_BUDGET.md §3; U12
+
+colab_python: "3.12"              # Ref: 15_BUILD_DIRECTIVE.md U12 (Colab standard runtime Python minor)
+
+default_training_gpu: "L4"        # Ref: 15_BUILD_DIRECTIVE.md §2
+debug_gpu: "T4"                   # Debugging only, fp16 + GradScaler (Ref: 08_COMPUTE_BUDGET.md §3)
+high_end_gpu: "A100-40GB"         # Optional for 100M stage (Ref: 08_COMPUTE_BUDGET.md §3)
+
+gpus:
+  T4:
+    peak_flops: 65.0e+12          # ~65 TFLOPs fp16
+    burn_regime_a: 1.8            # units/hr (Regime A: conservative planning)
+    burn_regime_b: 1.19           # units/hr (Regime B: McCormick benchmark)
+    default_precision: "fp16"
+  L4:
+    peak_flops: 121.0e+12         # ~121 TFLOPs bf16/fp16
+    burn_regime_a: 5.0            # units/hr (Regime A)
+    burn_regime_b: 1.71           # units/hr (Regime B)
+    default_precision: "bf16"
+  A100-40GB:
+    peak_flops: 312.0e+12         # ~312 TFLOPs bf16/fp16
+    burn_regime_a: 12.0           # units/hr (Regime A)
+    burn_regime_b: 5.40           # units/hr (Regime B)
+    default_precision: "bf16"
+  A100-80GB:
+    peak_flops: 312.0e+12         # ~312 TFLOPs bf16/fp16
+    burn_regime_a: 12.0           # units/hr (Regime A)
+    burn_regime_b: 7.52           # units/hr (Regime B)
+    default_precision: "bf16"
+
+# Central planning assumptions
+assumed_mfu: 0.25                 # 25% MFU central assumption (Ref: 08_COMPUTE_BUDGET.md §3)
+flops_per_unit_central: 2.2e+16   # Central planning FLOPs per unit (Ref: 08_COMPUTE_BUDGET.md §2)
+reserve_units: 55                 # Reserve untouched units (Ref: 15_BUILD_DIRECTIVE.md §3.3)

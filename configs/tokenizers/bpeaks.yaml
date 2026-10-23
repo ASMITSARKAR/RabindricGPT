@@ -1,0 +1,21 @@
+# configs/tokenizers/bpeaks.yaml
+# BPE over Aksharas tokenizer configuration (conditional; stubbed until Gate G4).
+# Ref: 15_BUILD_DIRECTIVE.md §2, Phase E; 04_TOKENIZER_PLAN.md §1, §4
+
+id: "bpeaks"
+name: "BPE over Aksharas"
+type: "bpeaks"
+vocab_size: 16384
+special_ids:
+  pad_id: 0
+  bos_id: 1
+  eos_id: 2
+  unk_id: 3
+lossless: true
+byte_fallback: true
+pua_base: 0xE000           # Ref: 04_TOKENIZER_PLAN.md §4 (U+E000–U+F8FF gives 6,400 slots)
+max_mapped_aksharas: 6000  # Ref: 04_TOKENIZER_PLAN.md §4
+max_window_tokens: 256
+bytes_per_token_plan: 11.2
+training_sample_chars: 500000000
+status: "STUB_UNTIL_G4"    # Ref: 15_BUILD_DIRECTIVE.md Phase E

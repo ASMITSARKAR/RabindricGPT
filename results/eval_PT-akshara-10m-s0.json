@@ -1,0 +1,11 @@
+{
+  "run_id": "PT-akshara-10m-s0",
+  "tokenizer": "akshara",
+  "model_size": "10m",
+  "bpc": 1.55,
+  "ci_lower": 1.53,
+  "ci_upper": 1.57,
+  "bpb": 1.12,
+  "ill_formed_unicode_rate": 0.0,
+  "in_vocab_word_rate": 0.96
+}

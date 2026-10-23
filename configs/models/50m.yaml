@@ -1,0 +1,15 @@
+# configs/models/50m.yaml
+# Architecture config for ~50M non-embedding parameter model.
+# Ref: 15_BUILD_DIRECTIVE.md §2; 08_COMPUTE_BUDGET.md §4; DR-3
+
+size_id: "50m"
+n_layers: 10               # Ref: 08_COMPUTE_BUDGET.md §4 (L = 10)
+d_model: 640               # Ref: 08_COMPUTE_BUDGET.md §4 (d = 640)
+head_dim: 64               # Ref: 15_BUILD_DIRECTIVE.md §2 (head dim = 64)
+n_heads: 10                # d_model / head_dim = 640 / 64 = 10
+n_kv_heads: 10             # Default = n_heads
+hidden_dim: 1728           # ceil(8 * 640 / 3 / 64) * 64 = 1728 (DR-3)
+max_seq_len: 3072          # Accommodates byte tokenizer window (s = 3072)
+rms_norm_eps: 1.0e-5
+rope_theta: 10000.0
+tie_embeddings: true       # Ref: 15_BUILD_DIRECTIVE.md §2

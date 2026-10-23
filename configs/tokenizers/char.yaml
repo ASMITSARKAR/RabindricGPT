@@ -1,0 +1,18 @@
+# configs/tokenizers/char.yaml
+# Unicode Character tokenizer configuration with byte fallback.
+# Ref: 15_BUILD_DIRECTIVE.md §2; 04_TOKENIZER_PLAN.md §1; T2
+
+id: "char"
+name: "Unicode Char"
+type: "char"
+vocab_size: 512            # Max vocab size <= 512: specials + 256 byte-fallback + frequent chars
+special_ids:
+  pad_id: 0
+  bos_id: 1
+  eos_id: 2
+  unk_id: 3
+lossless: true             # Byte fallback guarantees losslessness
+byte_fallback: true
+max_window_tokens: 1024    # Ref: 04_TOKENIZER_PLAN.md §5 (1024 tokens for 1024 chars)
+bytes_per_token_plan: 2.8  # Ref: 04_TOKENIZER_PLAN.md §5
+training_sample_chars: 500000000 # Ref: 15_BUILD_DIRECTIVE.md §3.2 (N = 5e8 chars ESTIMATE, capped at pilot)

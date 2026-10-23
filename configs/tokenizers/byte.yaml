@@ -1,0 +1,17 @@
+# configs/tokenizers/byte.yaml
+# Byte-level tokenizer configuration.
+# Ref: 15_BUILD_DIRECTIVE.md §2; 04_TOKENIZER_PLAN.md §1
+
+id: "byte"
+name: "Byte"
+type: "byte"
+vocab_size: 264            # 256 byte tokens + specials (PAD=0, BOS=1, EOS=2), padded to 264
+special_ids:
+  pad_id: 0
+  bos_id: 1
+  eos_id: 2
+  unk_id: null             # Byte tokenizer is lossless, no UNK needed
+lossless: true
+max_window_tokens: 3072    # Ref: 04_TOKENIZER_PLAN.md §5 (planning tokens per 1024 chars)
+bytes_per_token_plan: 1.0  # Ref: 04_TOKENIZER_PLAN.md §5
+training_sample_chars: null # Pre-defined deterministic mapping, no training sample

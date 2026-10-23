@@ -1,0 +1,7 @@
+{
+  "id": "uni16",
+  "vocab_size": 16384,
+  "type": "spm",
+  "model_type": "unigram",
+  "model_prefix": "spm"
+}

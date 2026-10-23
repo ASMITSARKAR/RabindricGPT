@@ -1,0 +1,46 @@
+# configs/data.yaml
+# Corpora, thresholds, paths, and preprocessing parameters.
+# Ref: 15_BUILD_DIRECTIVE.md §2, §3.1, §3.4; 03_DATA_PLAN.md §3, §4, §6, §8
+
+# Target corpora & volumes
+fineweb2_dataset: "HuggingFaceFW/fineweb-2"  # Ref: 03_DATA_PLAN.md §1
+fineweb2_subset: "ben_Beng"                  # Ref: 15_BUILD_DIRECTIVE.md Phase F; 03_DATA_PLAN.md §1
+fineweb2_target_bytes: 5.0e+9                # Ref: 15_BUILD_DIRECTIVE.md §3.4 Stage 1 (5 GB cleaned)
+egen_target_chars: 2.0e+6                    # Ref: 15_BUILD_DIRECTIVE.md Phase F (held-out intrinsic eval)
+
+# Bengali script filtering & normalization
+bengali_script_threshold: 0.80               # Ref: 15_BUILD_DIRECTIVE.md §2; 03_DATA_PLAN.md §3 (≥80% Bengali chars)
+strip_zwj_outside_words: true                # Ref: 15_BUILD_DIRECTIVE.md Phase C; 03_DATA_PLAN.md §3
+keep_digits: true                            # Ref: 15_BUILD_DIRECTIVE.md §2 (০–৯ kept)
+keep_danda: true                             # Ref: 15_BUILD_DIRECTIVE.md §2 (। and ॥ kept)
+keep_newlines: true                          # Ref: 15_BUILD_DIRECTIVE.md §2 (lossless poetry line breaks)
+pua_guard: true                              # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-9 (reject U+E000–U+F8FF)
+
+# Dedup & Leakage thresholds
+exact_hash_dedup: true                       # Ref: 15_BUILD_DIRECTIVE.md Phase F; 03_DATA_PLAN.md §3
+minhash_num_perm: 128                        # Ref: 03_DATA_PLAN.md §3
+minhash_char_ngram: 5                        # Ref: 15_BUILD_DIRECTIVE.md Phase F (5-gram char shingles)
+minhash_jaccard_threshold: 0.80              # Ref: 15_BUILD_DIRECTIVE.md Phase F (ESTIMATE)
+dedup_max_ram_gb: 8.0                        # Ref: 15_BUILD_DIRECTIVE.md §3.4
+
+# Context & Chunking
+window_size_chars: 1024                      # Ref: 15_BUILD_DIRECTIVE.md §2; 04_TOKENIZER_PLAN.md §5
+window_fallback_chars: 512                   # Ref: 15_BUILD_DIRECTIVE.md §2 (G3 fallback)
+
+# Storage & Sharding
+shard_dtype: "uint16"                        # Ref: 15_BUILD_DIRECTIVE.md §2; 03_DATA_PLAN.md §6
+shard_target_size_bytes: 268435456           # Ref: 15_BUILD_DIRECTIVE.md Phase G (~256 MB)
+max_folder_items: 10000                      # Ref: 15_BUILD_DIRECTIVE.md Phase B; 09_INFRA_WORKFLOW.md §4
+
+# Equal-bytes protocol
+rho_overtraining: 100                        # Ref: 15_BUILD_DIRECTIVE.md §2; 03_DATA_PLAN.md §4 (D_bytes = rho * N_ne)
+planning_bytes_per_char: 2.8                 # Ref: 15_BUILD_DIRECTIVE.md §3.2 (Planning estimate; code measures exact)
+wikisource_measured_bytes_per_char: 2.57     # Ref: 15_BUILD_DIRECTIVE.md §3.2 (Wikisource measured)
+
+# Paths (resolved relative to RGPT_ROOT or current working directory)
+paths:
+  raw_dir: "data/raw"
+  cleaned_dir: "data/cleaned"
+  shards_dir: "shards"
+  runs_dir: "runs"
+  results_dir: "results"

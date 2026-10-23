@@ -1,0 +1,18 @@
+# configs/train/adapt.yaml
+# Fine-tuning / adaptation hyperparameters for Tagore works.
+# Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-11, DR-12, Phase K; 08_COMPUTE_BUDGET.md §5.5
+
+mode: "adapt"
+epochs: 4                         # Ref: 15_BUILD_DIRECTIVE.md Phase K (4 epochs on Wikisource)
+batch_size_chunks: 32             # Smaller batch size for small corpus fine-tuning
+micro_batch_size: 8
+learning_rates: [0.0001, 0.0003, 0.0006] # 3 LRs tested per tokenizer (DR-12)
+min_learning_rate_ratio: 0.10
+warmup_ratio: 0.05
+adamw_beta1: 0.9
+adamw_beta2: 0.95
+adamw_weight_decay: 0.1
+grad_clip: 1.0
+precision: "bf16"
+eval_split: "val"                 # Evaluates on adapt-val only; adapt-test is held strictly for final eval (DR-11)
+include_from_scratch_baseline: true # Ref: DR-12

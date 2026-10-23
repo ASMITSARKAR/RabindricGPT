@@ -1,0 +1,7 @@
+{
+  "id": "bpe8",
+  "vocab_size": 8192,
+  "type": "spm",
+  "model_type": "bpe",
+  "model_prefix": "spm"
+}

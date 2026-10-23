@@ -1,0 +1,90 @@
+{
+  "gate": "G2",
+  "tokenizers": {
+    "byte": {
+      "vocab_size": 264,
+      "round_trip_passed": true,
+      "determinism_passed": true,
+      "edge_case_errors": [],
+      "metrics": {
+        "bytes_per_token": 1.0,
+        "chars_per_token": 0.3787591849102341,
+        "fertility": 18.81824661439772,
+        "fallback_rate": 0.0,
+        "vocab_utilization": 0.1856060606060606,
+        "unk_rate": 0.0
+      }
+    },
+    "char": {
+      "vocab_size": 299,
+      "round_trip_passed": true,
+      "determinism_passed": true,
+      "edge_case_errors": [],
+      "metrics": {
+        "bytes_per_token": 2.109122863077169,
+        "chars_per_token": 0.7988496564946477,
+        "fertility": 8.922309337134712,
+        "fallback_rate": 0.31035309154817065,
+        "vocab_utilization": 0.19732441471571907,
+        "unk_rate": 0.0
+      }
+    },
+    "aks": {
+      "vocab_size": 8192,
+      "round_trip_passed": true,
+      "determinism_passed": true,
+      "edge_case_errors": [],
+      "metrics": {
+        "bytes_per_token": 2.4146698372050484,
+        "chars_per_token": 0.9145783793671117,
+        "fertility": 7.793300071275837,
+        "fallback_rate": 0.3553137003841229,
+        "vocab_utilization": 0.0103759765625,
+        "unk_rate": 0.0
+      }
+    },
+    "bpe16": {
+      "vocab_size": 16384,
+      "round_trip_passed": true,
+      "determinism_passed": true,
+      "edge_case_errors": [],
+      "metrics": {
+        "bytes_per_token": 2.109122863077169,
+        "chars_per_token": 0.7988496564946477,
+        "fertility": 8.922309337134712,
+        "fallback_rate": 0.0,
+        "vocab_utilization": 0.00360107421875,
+        "unk_rate": 0.0
+      }
+    },
+    "bpe8": {
+      "vocab_size": 8192,
+      "round_trip_passed": true,
+      "determinism_passed": true,
+      "edge_case_errors": [],
+      "metrics": {
+        "bytes_per_token": 2.109122863077169,
+        "chars_per_token": 0.7988496564946477,
+        "fertility": 8.922309337134712,
+        "fallback_rate": 0.0,
+        "vocab_utilization": 0.0072021484375,
+        "unk_rate": 0.0
+      }
+    },
+    "uni16": {
+      "vocab_size": 16384,
+      "round_trip_passed": true,
+      "determinism_passed": true,
+      "edge_case_errors": [],
+      "metrics": {
+        "bytes_per_token": 2.109122863077169,
+        "chars_per_token": 0.7988496564946477,
+        "fertility": 8.922309337134712,
+        "fallback_rate": 0.0,
+        "vocab_utilization": 0.00360107421875,
+        "unk_rate": 0.0
+      }
+    }
+  },
+  "all_passed": true
+}

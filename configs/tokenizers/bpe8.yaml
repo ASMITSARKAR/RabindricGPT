@@ -1,0 +1,22 @@
+# configs/tokenizers/bpe8.yaml
+# SentencePiece BPE 8k tokenizer configuration (sensitivity run at 25M only).
+# Ref: 15_BUILD_DIRECTIVE.md §2; 04_TOKENIZER_PLAN.md §1; Q4
+
+id: "bpe8"
+name: "SentencePiece BPE 8k"
+type: "spm_bpe"
+model_type: "bpe"
+vocab_size: 8192
+special_ids:
+  pad_id: 0
+  bos_id: 1
+  eos_id: 2
+  unk_id: 3
+lossless: true
+byte_fallback: true
+character_coverage: 1.0
+normalization_rule_name: "identity"
+split_by_whitespace: true
+max_window_tokens: 320     # Ref: 04_TOKENIZER_PLAN.md §5 (~320 tokens per 1024 chars)
+bytes_per_token_plan: 9.8  # Ref: 04_TOKENIZER_PLAN.md §5
+training_sample_chars: 500000000 # Ref: 15_BUILD_DIRECTIVE.md §3.2 (N = 5e8 chars ESTIMATE, capped at pilot)

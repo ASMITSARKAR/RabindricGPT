@@ -1,0 +1,12 @@
+# configs/train/pilot.yaml
+# Configuration for the Phase L throughput and GPU burn-rate pilot (09_pilot.py).
+# Ref: 15_BUILD_DIRECTIVE.md Phase L; 08_COMPUTE_BUDGET.md §10
+
+mode: "pilot"
+sizes: ["10m", "25m"]
+tokenizers: ["bpe16", "byte"]
+warmup_steps: 20                  # Excluded from throughput and MFU calculations
+measure_steps: 100                # Benchmarking window
+precisions: ["bf16", "fp16"]
+measure_mfu: true
+output_path: "results/pilot.json"

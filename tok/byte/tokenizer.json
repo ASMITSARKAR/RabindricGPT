@@ -1,0 +1,10 @@
+{
+  "id": "byte",
+  "vocab_size": 264,
+  "byte_offset": 3,
+  "specials": {
+    "pad": 0,
+    "bos": 1,
+    "eos": 2
+  }
+}

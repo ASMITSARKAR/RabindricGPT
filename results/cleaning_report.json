@@ -1,0 +1,11 @@
+{
+  "split_option": "Option_A",
+  "tagore_docs": {
+    "train": 6,
+    "val": 2,
+    "test": 2
+  },
+  "fineweb2_clean_docs": 4,
+  "purged_leakage_docs": 0,
+  "whole_work_invariant_verified": true
+}

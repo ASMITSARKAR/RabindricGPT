@@ -1,0 +1,19 @@
+# configs/tokenizers/aks.yaml
+# Akshara (orthographic syllable) tokenizer configuration.
+# Ref: 15_BUILD_DIRECTIVE.md §2; 04_TOKENIZER_PLAN.md §1, §2
+
+id: "aks"
+name: "Akshara"
+type: "akshara"
+vocab_size: 8192           # Exactly 8192: specials + 256 byte-fallback + T-char chars + top aksharas
+special_ids:
+  pad_id: 0
+  bos_id: 1
+  eos_id: 2
+  unk_id: 3
+lossless: true             # Decomposition to chars then byte fallback
+byte_fallback: true
+max_window_tokens: 640     # Ref: 04_TOKENIZER_PLAN.md §5 (~640 tokens per 1024 chars)
+bytes_per_token_plan: 4.8  # Ref: 04_TOKENIZER_PLAN.md §5
+training_sample_chars: 500000000 # Ref: 15_BUILD_DIRECTIVE.md §3.2 (ESTIMATE, capped by CPU time)
+target_eval_coverage: 0.99 # Ref: 04_TOKENIZER_PLAN.md §2.4 (>=99% akshara coverage target)
