@@ -1,5 +1,5 @@
 # Audit: 24-Cell Matrix FLOPs & Compute Accounting (Doc 08 Anchors vs Measured)
-Git Commit SHA: ab963e13ab2bc1853b9f024a5bfffb91e140b3ca
+Git Commit SHA: a4b7a7977a0c97532e3270d0f6aa000dfea14dbc
 
 ## Input File SHAs:
 - configs\models\100m.yaml: 7bc452548841fe5d9123b63aa33c640f9edea47bdf2496263bd18684b527637c

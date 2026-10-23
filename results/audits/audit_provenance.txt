@@ -1,5 +1,5 @@
 # Audit: Tagore-Exclusion Filter & Tokenizer Sample Provenance
-Git Commit SHA: ab963e13ab2bc1853b9f024a5bfffb91e140b3ca
+Git Commit SHA: a4b7a7977a0c97532e3270d0f6aa000dfea14dbc
 
 ## Input File SHAs:
 - data\cleaned\fineweb2\fw2_tokenizer_sample_100m.txt: ec3bf708e99bf371ce6f611517302f071a99b76adf65bf30ff5bb7815e228016
