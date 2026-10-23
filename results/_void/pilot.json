@@ -1,0 +1,21 @@
+{
+  "device": "cpu",
+  "gpu_type": "CPU",
+  "units_per_hour": null,
+  "results": {
+    "10m": {
+      "size_id": "10m",
+      "n_params": 10723200,
+      "tokens_per_sec": 1372.33,
+      "mfu": 0.0007,
+      "elapsed_seconds": 0.4664
+    },
+    "25m": {
+      "size_id": "25m",
+      "n_params": 25833984,
+      "tokens_per_sec": 639.61,
+      "mfu": 0.0008,
+      "elapsed_seconds": 1.0006
+    }
+  }
+}
