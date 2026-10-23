@@ -108,10 +108,11 @@ def evaluate_hypotheses(results: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
         differs = equal_bytes_rank != equal_compute_rank
         verdicts["H4"] = {
             "verdict": "CONFIRMED" if differs else "REFUTED",
+            "mechanism": "DR-1 fixed 1024-character window: fewer FLOPs per window, not longer context",
             "equal_bytes_ranking": equal_bytes_rank,
             "equal_compute_ranking": equal_compute_rank,
             "reason": (
-                "Ranking changed between equal-bytes and equal-compute"
+                "Under DR-1 (fixed 1024-char evaluation window), shorter-sequence tokenizers process identical character context with fewer tokens and fewer FLOPs per window (12*L*d*s), shifting rankings under equal compute vs equal bytes (fewer FLOPs per window, not longer context)"
                 if differs else
                 "Ranking remained identical under equal-bytes and equal-compute"
             ),

@@ -6,7 +6,7 @@ mode: "pretrain"
 budget_mode: "bytes"              # "bytes" (equal-bytes core) or "flops" (equal-compute arm)
 batch_size_chunks: 64             # Total chunks per optimizer step (grad accumulation used as needed)
 micro_batch_size: 8               # Microbatch size for GPU memory management (calibrated at pilot)
-learning_rate: 0.0012             # Default peak LR (overridden by sweep at 10M, DR-5)
+learning_rate: 0.0010             # Single default peak LR for 10M models (ref: decisions.yaml default_lr_10m)
 min_learning_rate_ratio: 0.10     # Cosine decay down to 10% of peak LR (DR-5)
 warmup_ratio: 0.02                # Warmup for 2% of total steps (DR-5)
 adamw_beta1: 0.9                  # Ref: DR-5

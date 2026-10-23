@@ -2,6 +2,17 @@
 
 All notable changes to the RabindricGPT project are documented in this file.
 
+## [v0.2.1-audit-corrections] - 2026-10-24
+
+### Retracted
+- **Formal Retraction of Round 7 FLOPs Table**: The FLOPs table presented in Round 7 is hereby formally retracted. It erroneously mapped `10m` as $L=8, d=512$ (the 25M configuration), `25m` as $L=10, d=640$ (the 50M configuration), and `50m` as $L=12, d=768$ (not in ladder), and used outdated vocabulary sizes ($V=256$ for byte instead of 264; $V=2048$ for aks instead of 8192). All 24 cells have been restored to exact instantiated model ladder architectures (`10m`: $L=6, d=384, N_{\text{ne}}=10,621,824$; `25m`: $L=8, d=512, N_{\text{ne}}=25,698,816$; `50m`: $L=10, d=640, N_{\text{ne}}=49,575,040$; `100m`: $L=14, d=768, N_{\text{ne}}=99,112,704$) with exact hand-computed constants for all 24 cells in `tests/compute/test_flops.py` and `results/audits/audit_flops.txt`.
+
+### Fixed
+- **Equal-Bytes Compute Unit Accounting**: Replaced invented token scaling $D_{\text{tok}} = D_{\text{plan}} \cdot s_{\text{meas}}/s_{\text{plan}}$ with exact equal-bytes formula $D_{\text{tok}} = D_{\text{bytes}} / T_{\text{meas}}$, where $T_{\text{meas}} = \text{measured bytes per window} / s_{\text{meas}}$. Pretraining cells are evaluated on FineWeb-2 shards (2,701.33 B/win) and adaptation cells on Tagore shards (2,693.86 B/win). Byte cell units correctly reflect $D_{\text{tok}} = D_{\text{bytes}}$ independent of sequence length $s$.
+- **Sequence Length Drift Gate (5%)**: Explicitly codified the 5% sequence length drift gate in `tests/compute/test_flops.py` and `scripts/audits/audit_flops.py`. On Tagore shards, char (+0.04%), aks (+4.99%), and bpe8 (+3.71%) pass $\le 5\%$, while byte (-12.31%), bpe16 (+15.51%), and uni16 (+14.66%) are detected and flagged.
+- **Narrow Filter Compound Keyword**: Removed bare `"ডাকঘর"` (common noun) and retained compound `"নাটক ডাকঘর"`. Enforced NFC-normalization and stripped ZWNJ/ZWJ before keyword matching.
+- **DR-4a Mathematical Rationale**: Replaced false self-token collapse claims with exact second-order Taylor expansion $\mathbb{E}[\mathcal{L}] \approx \ln V + \operatorname{Var}(z)/2 - \mathbb{E}[z_{\text{target}}]$. Under RMSNorm, $\|h_L\|^2 = d$, yielding $\operatorname{Var}(z) = d \cdot \sigma_E^2 = 0.35^2 = 0.1225$, so $\operatorname{Var}(z)/2 = 0.06125$. For next-token prediction at init, $\mathbb{E}[z_{\text{target}}] \approx 0$, explaining why initial loss sits $+0.059$ above $\ln V$.
+
 ## [v0.2.0-cleanup] - 2026-10-24
 
 ### Added

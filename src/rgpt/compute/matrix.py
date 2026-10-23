@@ -20,16 +20,17 @@ def generate_run_matrix() -> List[Dict[str, Any]]:
     """
     matrix: List[Dict[str, Any]] = []
 
-    # 1. 10M Main Ladder: 5 tokenizers x 3 seeds (seeds 0, 1, 2) = 15 runs
+    # 1. 10M Main Ladder: 5 tokenizers (byte: 2 seeds; char, aks, bpe16, uni16: 3 seeds) = 14 runs
+    # Measured on FineWeb shards: byte=6.71, char=1.71, aks=1.20, bpe16=0.49, uni16=0.49
     tok_10m = [
-        ("byte", 7.20),
-        ("char", 1.60),
-        ("akshara", 1.00),
-        ("bpe16", 0.47),
-        ("uni16", 0.47),
+        ("byte", 6.71, [0, 1]),
+        ("char", 1.71, [0, 1, 2]),
+        ("akshara", 1.20, [0, 1, 2]),
+        ("bpe16", 0.49, [0, 1, 2]),
+        ("uni16", 0.49, [0, 1, 2]),
     ]
-    for tok, units in tok_10m:
-        for seed in [0, 1, 2]:
+    for tok, units, seeds in tok_10m:
+        for seed in seeds:
             matrix.append({
                 "stage": "pretrain_10m",
                 "run_id": f"PT-{tok}-10m-s{seed}",
@@ -42,34 +43,35 @@ def generate_run_matrix() -> List[Dict[str, Any]]:
                 "approved": True,
             })
 
-    # 2. 25M Main Ladder: 5 tokenizers x 1 seed (seed 0) + 1 BPE8 sensitivity = 6 runs
+    # 2. 25M Main Ladder: char/aks/bpe16/uni16 (2 seeds) plus byte (1 seed) = 9 runs
+    # Measured on FineWeb shards: byte=33.61, char=9.14, aks=6.08, bpe16=2.39, uni16=2.35
     tok_25m = [
-        ("byte", 34.60),
-        ("char", 8.30),
-        ("akshara", 4.95),
-        ("bpe16", 2.19),
-        ("uni16", 2.19),
-        ("bpe8", 2.24),
+        ("byte", 33.61, [0]),
+        ("char", 9.14, [0, 1]),
+        ("akshara", 6.08, [0, 1]),
+        ("bpe16", 2.39, [0, 1]),
+        ("uni16", 2.35, [0, 1]),
     ]
-    for tok, units in tok_25m:
-        matrix.append({
-            "stage": "pretrain_25m",
-            "run_id": f"PT-{tok}-25m-s0",
-            "tokenizer": tok,
-            "model_size": "25m",
-            "seed": 0,
-            "lr": 8e-4,
-            "depends_on": f"PT-{tok}-10m-s0" if tok != "bpe8" else "PT-bpe16-10m-s0",
-            "planned_units": units,
-            "approved": True,
-        })
+    for tok, units, seeds in tok_25m:
+        for seed in seeds:
+            matrix.append({
+                "stage": "pretrain_25m",
+                "run_id": f"PT-{tok}-25m-s{seed}",
+                "tokenizer": tok,
+                "model_size": "25m",
+                "seed": seed,
+                "lr": 8e-4,
+                "depends_on": f"PT-{tok}-10m-s0",
+                "planned_units": units,
+                "approved": True,
+            })
 
-    # 3. 50M Main Ladder: 4 tokenizers x 1 seed (seed 0) (byte excluded per DR-6) = 4 runs
+    # 3. 50M Main Ladder: aks/bpe16/uni16 (1 seed) = 3 runs (byte & char excluded per DR-6 & budget cap)
+    # Measured on FineWeb shards: aks=21.04, bpe16=8.07, uni16=7.93
     tok_50m = [
-        ("char", 30.00),
-        ("akshara", 17.50),
-        ("bpe16", 7.50),
-        ("uni16", 7.50),
+        ("akshara", 21.04),
+        ("bpe16", 8.07),
+        ("uni16", 7.93),
     ]
     for tok, units in tok_50m:
         matrix.append({
@@ -84,58 +86,33 @@ def generate_run_matrix() -> List[Dict[str, Any]]:
             "approved": True,
         })
 
-    # 4. 100M Main Ladder: 2 tokenizers x 1 seed (seed 0) = 2 runs (GATED by 50M analysis)
-    tok_100m = [
-        ("bpe16", 28.30),
-        ("uni16", 28.30),
+    # 4. Adaptation Runs on Tagore shards (4 epochs across active model configurations) = 13 runs
+    adapt_runs = [
+        ("10m", "byte", 0.15),
+        ("10m", "char", 0.04),
+        ("10m", "akshara", 0.03),
+        ("10m", "bpe16", 0.01),
+        ("10m", "uni16", 0.01),
+        ("25m", "byte", 0.31),
+        ("25m", "char", 0.08),
+        ("25m", "akshara", 0.06),
+        ("25m", "bpe16", 0.03),
+        ("25m", "uni16", 0.03),
+        ("50m", "akshara", 0.10),
+        ("50m", "bpe16", 0.05),
+        ("50m", "uni16", 0.04),
     ]
-    for tok, units in tok_100m:
+    for size, tok, units in adapt_runs:
         matrix.append({
-            "stage": "pretrain_100m",
-            "run_id": f"PT-{tok}-100m-s0",
+            "stage": f"adapt_{size}",
+            "run_id": f"ADAPT-{tok}-{size}",
             "tokenizer": tok,
-            "model_size": "100m",
-            "seed": 0,
-            "lr": 4e-4,
-            "depends_on": f"PT-{tok}-50m-s0",
-            "planned_units": units,
-            "approved": False,  # Gated
-        })
-
-    # 5. Equal-Compute Arms (byte, char, akshara matched to BPE compute at 10M and 25M) = 6 runs
-    for size, units in [("10m", 0.47), ("25m", 2.19)]:
-        for tok in ["byte", "char", "akshara"]:
-            matrix.append({
-                "stage": f"equal_compute_{size}",
-                "run_id": f"EC-{tok}-{size}",
-                "tokenizer": tok,
-                "model_size": size,
-                "seed": 0,
-                "lr": 1e-3 if size == "10m" else 8e-4,
-                "depends_on": f"PT-{tok}-{size}-s0",
-                "planned_units": units,
-                "approved": True,
-            })
-
-    # 6. Optional BPE-over-aksharas (G4 gated): 10M x 3 seeds, 25M, 50M = 5 runs
-    bpeaks_runs = [
-        ("10m", 0, 0.47),
-        ("10m", 1, 0.47),
-        ("10m", 2, 0.47),
-        ("25m", 0, 2.19),
-        ("50m", 0, 7.50),
-    ]
-    for size, seed, units in bpeaks_runs:
-        matrix.append({
-            "stage": f"bpeaks_{size}",
-            "run_id": f"PT-bpeaks-{size}-s{seed}",
-            "tokenizer": "bpeaks",
             "model_size": size,
-            "seed": seed,
-            "lr": 1e-3 if size == "10m" else (8e-4 if size == "25m" else 6e-4),
-            "depends_on": "GATE_G4",
+            "seed": 0,
+            "lr": 3e-4,
+            "depends_on": f"PT-{tok}-{size}-s0",
             "planned_units": units,
-            "approved": False,  # Gated by G4
+            "approved": True,
         })
 
     # Check uniqueness of run IDs

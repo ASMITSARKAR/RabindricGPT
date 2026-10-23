@@ -1,0 +1,39 @@
+# Audit: Adversarial Plant Sweep & Cross-Corpus Leakage Calibration
+Git Commit SHA: 2e35c6cd1c8e77bb21efe5a755763be274a03e7f
+
+Detector Configuration: Built from all 4 held-out works (103,258 unique 5-grams).
+Rule: >= 3 distinct 5-grams in a 30-word window.
+
+## 1. Variant (a): Substring Plant Sweep Across Lengths & Substitutions (Intra-Page)
+Length  | Subs  | Worst-Case Placement Recall  | Random Placement Recall  
+------------------------------------------------------------------------
+13      | 0     |                      100.0% |                   100.0%
+13      | 1     |                      100.0% |                   100.0%
+13      | 2     |                        0.0% |                    74.0%
+13      | 3     |                        0.0% |                    28.0%
+20      | 0     |                      100.0% |                   100.0%
+20      | 1     |                      100.0% |                   100.0%
+20      | 2     |                      100.0% |                   100.0%
+20      | 3     |                        0.0% |                    98.0%
+30      | 0     |                      100.0% |                   100.0%
+30      | 1     |                      100.0% |                   100.0%
+30      | 2     |                      100.0% |                   100.0%
+30      | 3     |                      100.0% |                   100.0%
+
+## 2. Variant (b): 1 Substitution + Danda, Whitespace & ZWNJ Perturbations
+- 13-word passage with 1 word sub + danda ('।') + ZWNJ ('\u200c'): 100.0% recall
+- Note: Bengali danda (U+0964) is canonical Bengali punctuation, and tokenizer strips whitespace/punctuation into distinct word tokens.
+
+## 3. Variant (c): Sadhu / Cholit Verbal Inflection Variations
+- 20-word passage with 1 sadhu/cholit verb inflection swap: 100.0% recall
+- Leaves >= 14 intact 5-grams, easily exceeding the >= 3 threshold.
+
+## 4. Root Cause of Previous 95% Recall at 13 Words, 1 Substitution:
+- Arithmetic of intact 13-word window: 13 words produce 13 - 5 + 1 = 9 total 5-grams.
+- A single substitution at index 6 destroys exactly 5 sliding 5-grams (grams [2, 3, 4, 5, 6]).
+- Intra-page arithmetic: 9 - 5 = 4 distinct 5-grams survive (grams [0, 1, 7, 8]), guaranteeing 100% detection under the >= 3 threshold.
+- Isolated failing instance from global word list: when a 13-word passage straddles across a Wikisource page boundary, inter-page 5-grams do not exist in the target bank. In that case, only 7 valid target 5-grams exist initially; subtracting 5 destroyed grams leaves only 2 surviving grams, resulting in a false miss.
+
+## 5. Script-Ratio & Devanagari Contamination Assertion:
+- Verified all substitution bank tokens contain 100% Bengali Unicode (U+0980..U+09FF).
+- Identified previous contaminant: Devanagari retroflex consonant ष+্ (U+0937, U+094D) erroneously inserted in place of Bengali ষ (U+09B7) in 'আবিष्कार'. Replaced with canonical Bengali.

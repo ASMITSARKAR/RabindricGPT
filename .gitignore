@@ -3,7 +3,8 @@ docs/
 probes/
 
 # Data, corpora, and binary shards
-data/
+/data/
+!tests/data/
 shards/
 raw/
 cleaned/
@@ -63,3 +64,4 @@ drive/
 Thumbs.db
 .vscode/
 .idea/
+scratch/

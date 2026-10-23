@@ -102,7 +102,10 @@ def test_hand_labelled_gold_akshara_list() -> None:
     for line in lines[1:]:  # skip header
         if not line.strip():
             continue
-        word, gold_units_str = line.split("\t")
+        parts = line.split("\t")
+        if len(parts) < 2 or not parts[1].strip():
+            continue  # unlabelled row awaiting owner hand-labeling
+        word, gold_units_str = parts[0], parts[1]
         expected = gold_units_str.split(" ")
         actual = segment(word)
         if actual == expected:
@@ -112,3 +115,6 @@ def test_hand_labelled_gold_akshara_list() -> None:
     if total > 0:
         accuracy = correct / total
         assert accuracy >= 0.99, f"Gold akshara accuracy {accuracy:.2%} < 99%"
+    else:
+        warnings.warn("tests/data/akshara_gold.tsv is present but unlabelled; skipping evaluation (Owner Action T1).")
+        pytest.skip("Owner Action T1: tests/data/akshara_gold.tsv unlabelled pending owner hand-labeling")

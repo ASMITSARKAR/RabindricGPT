@@ -1,6 +1,7 @@
 """
 scripts/audits/audit_flops.py : Audit analytical FLOPs per token and compute units across all 24 cells
-(4 scales x 6 tokenizers) comparing planning doc 08 anchors with shard-measured sequence lengths.
+(4 scales x 6 tokenizers) under the equal-bytes rule D_tok = D_bytes / T_meas for both FineWeb (Pretrain)
+and Tagore (Adaptation) measured shards.
 """
 
 import json
@@ -17,6 +18,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 from src.rgpt.common.hashing import hash_file
 from src.rgpt.model.config import ModelConfig
 from src.rgpt.model.gpt import GPT
+from src.rgpt.compute.flops import calculate_f_tok, calculate_run_flops, calculate_units
 
 
 def get_git_sha() -> str:
@@ -71,19 +73,29 @@ def run_flops_audit() -> Dict[str, Any]:
         input_shas[str(t_p)] = hash_file(t_p)
         t_cfg = yaml.safe_load(t_p.read_text(encoding="utf-8"))
 
-        idx_p = Path(f"shards/wikisource/{t}/train/index.json")
-        input_shas[str(idx_p)] = hash_file(idx_p)
-        meta = json.loads(idx_p.read_text(encoding="utf-8"))
-        s_meas = meta["total_tokens"] / meta["total_chunks"]
+        idx_tagore = Path(f"shards/wikisource/{t}/train/index.json")
+        input_shas[str(idx_tagore)] = hash_file(idx_tagore)
+        meta_tagore = json.loads(idx_tagore.read_text(encoding="utf-8"))
+        s_tagore = meta_tagore["total_tokens"] / meta_tagore["total_chunks"]
+
+        idx_fw = Path(f"shards/fineweb2/{t}/train/index.json")
+        input_shas[str(idx_fw)] = hash_file(idx_fw)
+        meta_fw = json.loads(idx_fw.read_text(encoding="utf-8"))
+        s_fw = meta_fw["total_tokens"] / meta_fw["total_chunks"]
 
         tok_info[t] = {
             "V": t_cfg["vocab_size"],
             "s_plan": t_cfg["max_window_tokens"],
-            "s_meas": s_meas,
-            "T_plan": t_cfg.get("bytes_per_token_plan", 1.0),
+            "s_tagore": s_tagore,
+            "s_fw": s_fw,
         }
 
-    rows = []
+    tagore_bytes_per_win = 4237448 / 1573  # 2693.86
+    fw_bytes_per_win = 2023293 / 749      # 2701.33
+
+    pretrain_rows = []
+    adapt_rows = []
+
     for s in scales:
         minfo = models_info[s]
         L = minfo["L"]
@@ -95,43 +107,40 @@ def run_flops_audit() -> Dict[str, Any]:
             tinfo = tok_info[t]
             V = tinfo["V"]
             sp = tinfo["s_plan"]
-            sm = tinfo["s_meas"]
-            Tp = tinfo["T_plan"]
 
-            # Analytical formula: 6*(N_ne + V*d) + 12*L*d*s
-            f_plan = 6 * (n_ne + V * d) + 12 * L * d * sp
-            f_meas = 6 * (n_ne + V * d) + 12 * L * d * sm
+            # FineWeb (Pretraining)
+            sfw = tinfo["s_fw"]
+            T_fw = fw_bytes_per_win / sfw
+            d_tok_fw = d_bytes / T_fw
+            f_tok_fw = 6 * (n_ne + V * d) + 12 * L * d * sfw
+            c_fw = f_tok_fw * d_tok_fw
+            u_fw = c_fw / 2.2e16
+            s_dev_fw = (sfw - sp) / sp
+            pretrain_rows.append({
+                "scale": s, "tokenizer": t, "L": L, "d": d, "V": V, "N_ne": n_ne,
+                "s_plan": sp, "s_meas": sfw, "s_dev": s_dev_fw, "T_meas": T_fw,
+                "d_tok": d_tok_fw, "f_meas": f_tok_fw, "u_meas": u_fw,
+            })
 
-            # Compute units: D_tok planned vs measured
-            dp = d_bytes / Tp
-            dm = dp * (sm / sp)
-
-            up = (f_plan * dp) / 2.2e16
-            um = (f_meas * dm) / 2.2e16
-            s_dev = (sm - sp) / sp
-
-            rows.append(
-                {
-                    "scale": s,
-                    "tokenizer": t,
-                    "L": L,
-                    "d": d,
-                    "V": V,
-                    "N_ne": n_ne,
-                    "s_plan": sp,
-                    "s_meas": sm,
-                    "s_dev": s_dev,
-                    "f_plan": f_plan,
-                    "f_meas": f_meas,
-                    "u_plan": up,
-                    "u_meas": um,
-                }
-            )
+            # Tagore (Adaptation)
+            stag = tinfo["s_tagore"]
+            T_tag = tagore_bytes_per_win / stag
+            d_tok_tag = d_bytes / T_tag
+            f_tok_tag = 6 * (n_ne + V * d) + 12 * L * d * stag
+            c_tag = f_tok_tag * d_tok_tag
+            u_tag = c_tag / 2.2e16
+            s_dev_tag = (stag - sp) / sp
+            adapt_rows.append({
+                "scale": s, "tokenizer": t, "L": L, "d": d, "V": V, "N_ne": n_ne,
+                "s_plan": sp, "s_meas": stag, "s_dev": s_dev_tag, "T_meas": T_tag,
+                "d_tok": d_tok_tag, "f_meas": f_tok_tag, "u_meas": u_tag,
+            })
 
     return {
         "git_sha": get_git_sha(),
         "input_shas": input_shas,
-        "rows": rows,
+        "pretrain_rows": pretrain_rows,
+        "adapt_rows": adapt_rows,
     }
 
 
@@ -142,28 +151,44 @@ def main() -> None:
     out_txt = out_dir / "audit_flops.txt"
 
     lines = []
-    lines.append(
-        "# Audit: 24-Cell Matrix FLOPs & Compute Accounting (Doc 08 Anchors vs Measured)"
-    )
+    lines.append("# Audit: 24-Cell Matrix FLOPs & Compute Accounting (Equal-Bytes Rule: D_tok = D_bytes / T_meas)")
     lines.append(f"Git Commit SHA: {res['git_sha']}\n")
     lines.append("## Input File SHAs:")
     for path, sha in sorted(res["input_shas"].items()):
         lines.append(f"- {path}: {sha}")
 
-    lines.append("\n## All 24 Cells: Architecture, FLOPs and Compute Units:")
-    hdr = f"{'Scale':<5} | {'Tok':<6} | {'L':<2} | {'d':<4} | {'V':<6} | {'N_ne':<9} | {'s_plan':<6} | {'s_meas':<7} | {'s_dev%':<8} | {'F_plan (M)':<10} | {'F_meas (M)':<10} | {'U_plan':<7} | {'U_meas':<7}"
+    lines.append("\n## Note on Compute Unit Calibration Constant:")
+    lines.append("- Constant: 2.2e16 FLOPs/unit is an unmeasured central planning prior (assumed ~50% MFU on A100/L4). Actual Colab GPU throughput run will calibrate empirical FLOPs/unit.")
+
+    lines.append("\n## 1. Pretraining Cells (FineWeb Shards: 2,701.33 B/window):")
+    hdr = f"{'Scale':<5} | {'Tok':<6} | {'L':<2} | {'d':<4} | {'V':<6} | {'N_ne':<9} | {'s_plan':<6} | {'s_meas':<7} | {'s_dev%':<8} | {'T (B/tok)':<9} | {'D_tok (M)':<10} | {'F_meas (M)':<10} | {'Units (u)':<9}"
     lines.append(hdr)
     lines.append("-" * len(hdr))
-
-    for r in res["rows"]:
+    fw_total_1seed = 0.0
+    for r in res["pretrain_rows"]:
+        fw_total_1seed += r["u_meas"]
         lines.append(
             f"{r['scale']:<5} | {r['tokenizer']:<6} | {r['L']:<2} | {r['d']:<4} | {r['V']:<6} | "
             f"{r['N_ne']:<9} | {r['s_plan']:<6} | {r['s_meas']:<7.1f} | {r['s_dev']:+7.2%} | "
-            f"{r['f_plan'] / 1e6:<10.2f} | {r['f_meas'] / 1e6:<10.2f} | {r['u_plan']:<7.3f} | {r['u_meas']:<7.3f}"
+            f"{r['T_meas']:<9.3f} | {r['d_tok'] / 1e6:<10.2f} | {r['f_meas'] / 1e6:<10.2f} | {r['u_meas']:<9.3f}"
         )
+    lines.append(f"\nTotal Pretraining Units (1 seed across 24 cells): {fw_total_1seed:.2f} u")
 
-    lines.append("\n## Sequence Length Drift Analysis (5% Gate):")
-    for r in res["rows"][:6]:
+    lines.append("\n## 2. Adaptation Cells (Tagore Shards: 2,693.86 B/window):")
+    lines.append(hdr)
+    lines.append("-" * len(hdr))
+    tag_total_1seed = 0.0
+    for r in res["adapt_rows"]:
+        tag_total_1seed += r["u_meas"]
+        lines.append(
+            f"{r['scale']:<5} | {r['tokenizer']:<6} | {r['L']:<2} | {r['d']:<4} | {r['V']:<6} | "
+            f"{r['N_ne']:<9} | {r['s_plan']:<6} | {r['s_meas']:<7.1f} | {r['s_dev']:+7.2%} | "
+            f"{r['T_meas']:<9.3f} | {r['d_tok'] / 1e6:<10.2f} | {r['f_meas'] / 1e6:<10.2f} | {r['u_meas']:<9.3f}"
+        )
+    lines.append(f"\nTotal Adaptation Units (1 seed across 24 cells): {tag_total_1seed:.2f} u")
+
+    lines.append("\n## Sequence Length Drift Analysis (5% Gate on Tagore Shards):")
+    for r in res["adapt_rows"][:6]:
         status = "PASS (<= 5%)" if abs(r["s_dev"]) <= 0.05 else "DRIFT (> 5%)"
         lines.append(
             f"- {r['tokenizer']:<6}: planned s = {r['s_plan']:<4}, measured s = {r['s_meas']:<6.1f} (dev: {r['s_dev']:+6.2%}) -> {status}"

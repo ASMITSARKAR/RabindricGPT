@@ -63,6 +63,8 @@ class DecisionsConfig:
     fineweb2_target_bytes: float
     dedup_max_ram_gb: float
     colab_reserve_units: int
+    default_lr_10m: float = 0.0010
+    dr_10_amendment: Optional[Dict[str, Any]] = None
 
 
 def load_yaml(path: Union[str, Path]) -> Dict[str, Any]:

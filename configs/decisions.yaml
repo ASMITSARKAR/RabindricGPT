@@ -16,18 +16,23 @@ swiglu_multiple_of: 64            # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-3 (round
 
 # DR-4 / DR-4a: Parameter initialization
 init_std: 0.02                    # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-4 (Normal(0, 0.02) for hidden linear projections)
-embedding_init_scale: 0.35        # Ref: DR-4a Amendment (Senior Model Dev Audit R4/R5). Calibrates initial cross-entropy to |L - ln(V)| < 0.10 across all d in {384, 512, 576, 640, 768}. Calibrated so that residual stream RMS ~ 1 and tied logit variance remains bounded, preventing diagonal self-token collapse at step 0.
+embedding_init_scale: 0.35        # Ref: DR-4a Amendment. Sets sigma_E = 0.35 / sqrt(d). Under RMSNorm, ||h_L||^2 = d, so tied logit variance is Var(z) = d * sigma_E^2 = 0.35^2 = 0.1225. Second-order Taylor expansion yields E[L] ~ ln(V) + Var(z)/2 - E[z_target]. For next-token prediction at init, E[z_target] ~ 0, so initial loss is shifted above ln(V) by Var(z)/2 = 0.06125 (delta ~ +0.059 on 16k real-text tokens across seeds).
 scale_residual_by_depth: true     # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-4 (init_std / sqrt(2L) on attn.out_proj and mlp.w_down)
 tie_embeddings: true              # Ref: 15_BUILD_DIRECTIVE.md §2, §3.1 DR-4
 use_bias: false                   # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-4
 
 # DR-10 Amendment (2026-10-23): Gitanjali moved from 'val' to 'test' in Option_A
-# Reason: fine-grained whole-work genre representation — ensures the held-out test split
-# contains lyrical poetry (Gitanjali) alongside drama (Chitrangada) and novel (Jogajog),
-# while Shesher Kobita serves as held-out validation novel.
+dr_10_amendment:
+  date: "2026-10-23"
+  action: "move Gitanjali from val to test in Option_A"
+  split_option: "Option_A"
+  val_works: ["shesher_kobita"]
+  test_works: ["gitanjali", "jogajog", "chitrangada"]
+  reason: "Genre balance across evaluation splits: Option_A assigns the lyrical poetry work (Gitanjali, 76.5k chars) to held-out test alongside drama (Chitrangada, 41.1k) and novel (Jogajog, 380.4k), while Shesher Kobita (174.5k novel) provides a single dedicated novel benchmark for validation."
 
 # DR-5: Training optimization defaults (provisional estimates, calibrated at pilot)
 batch_size_chunks: 64             # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-5
+default_lr_10m: 0.0010            # Ref: Production default learning rate for 10M models (1.0e-3)
 adamw_beta1: 0.9                  # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-5
 adamw_beta2: 0.95                 # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-5
 adamw_weight_decay: 0.1           # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-5
