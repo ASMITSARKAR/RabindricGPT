@@ -1,5 +1,5 @@
 # Audit: Whole-Work Split Composition & Clean Character Verification
-Git Commit SHA: d2e6b109e1b8c863fae7397a66c97ccae49c07c6
+Git Commit SHA: 24b809cba21accfeaeacdab470387a6a43c87d28
 
 ## Input File SHAs:
 - configs\works_wikisource.yaml: f9f1b163a5e10aae95139b54687c62e48ef7042f58ff170a0647dfb27f356e87

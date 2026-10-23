@@ -1,5 +1,5 @@
 # Audit: Shard Manifest Reconciliation, Tokenizer Sample Provenance & Lossless Round-Trip
-Git Commit SHA: d2e6b109e1b8c863fae7397a66c97ccae49c07c6
+Git Commit SHA: 24b809cba21accfeaeacdab470387a6a43c87d28
 
 ## Input File SHAs:
 - data\cleaned\fineweb2\egen.txt: 80c8d403aa200ce66600846e6430c302682d80c47100054e11b774414ccaa22a

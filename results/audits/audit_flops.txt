@@ -1,5 +1,5 @@
 # Audit: FLOPs Formula Verification vs Budget Doc 08 Anchors
-Git Commit SHA: d2e6b109e1b8c863fae7397a66c97ccae49c07c6
+Git Commit SHA: 24b809cba21accfeaeacdab470387a6a43c87d28
 
 ## Input File SHAs:
 - configs\models\100m.yaml: 7bc452548841fe5d9123b63aa33c640f9edea47bdf2496263bd18684b527637c
