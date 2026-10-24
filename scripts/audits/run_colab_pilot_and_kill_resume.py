@@ -113,11 +113,14 @@ def estimate_memory_breakdown(
     # Static: bf16 weights (2B) + grad (2B) + AdamW fp32 states & master (12B) = 16B/param
     static_gb = (n_params * 16) / (1024 ** 3)
 
+    # Base CUDA runtime context + PyTorch caching allocator pool overhead on L4
+    cuda_overhead_gb = 3.65
+
     # Active micro-batch
     mb_tokens = micro_batch_size * seq_len
 
-    # Activations with FlashAttention / SDPA: ~32 bytes per token per layer
-    activations_gb = (mb_tokens * d * 32 * L) / (1024 ** 3)
+    # Activations & attention workspace: calibrated to L4 empirical benchmark (~35 bytes/tok/layer)
+    activations_gb = (mb_tokens * d * 35 * L) / (1024 ** 3)
 
     # Forward logits (BF16): [mb, seq, V] * 2 bytes
     logits_gb = (mb_tokens * vocab_size * 2) / (1024 ** 3)
@@ -125,11 +128,11 @@ def estimate_memory_breakdown(
     # Cross-entropy autograd buffer (FP32 logits + grad in autograd): [mb, seq, V] * 4 bytes
     ce_autograd_gb = (mb_tokens * vocab_size * 4) / (1024 ** 3)
 
-    # Total peak VRAM estimate
-    total_est_gb = static_gb + activations_gb + logits_gb + ce_autograd_gb
+    # Total peak VRAM estimate (calibrated: byte ~17.06 GB, others 6.6-7.6 GB at batch 64)
+    total_est_gb = static_gb + cuda_overhead_gb + activations_gb + logits_gb + ce_autograd_gb
 
     return {
-        "static_gb": round(static_gb, 3),
+        "static_gb": round(static_gb + cuda_overhead_gb, 3),
         "activations_gb": round(activations_gb, 3),
         "logits_gb": round(logits_gb, 3),
         "ce_autograd_gb": round(ce_autograd_gb, 3),

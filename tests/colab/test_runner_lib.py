@@ -83,3 +83,58 @@ def test_runner_refuses_on_missing_preflight() -> None:
         # With non-existent report in temporary directory
         with pytest.raises(RunnerError):
             verify_preflight_and_fingerprint("PT-bpe16-10m-s0", is_smoke=False, root_dir=Path(tmp))
+
+
+def test_runner_skips_done_runs() -> None:
+    """Runner must skip runs that already have done.json."""
+    with tempfile.TemporaryDirectory() as tmp:
+        runs_base = Path(tmp) / "runs"
+        done_run_dir = runs_base / "DONE_RUN"
+        done_run_dir.mkdir(parents=True, exist_ok=True)
+        (done_run_dir / "done.json").write_text('{"status": "COMPLETED"}', encoding="utf-8")
+
+        called = []
+        def mock_runner(rid: str) -> None:
+            called.append(rid)
+
+        # Direct execute_run must return True and not invoke runner_fn
+        res = execute_run("DONE_RUN", max_attempts=3, runner_fn=mock_runner, runs_base=runs_base)
+        assert res is True
+        assert len(called) == 0
+
+
+def test_runner_status_json_persistence() -> None:
+    """Runner must write status.json tracking current run and completion status."""
+    import json
+    with tempfile.TemporaryDirectory() as tmp:
+        runs_base = Path(tmp) / "runs"
+        runs_base.mkdir(parents=True, exist_ok=True)
+
+        q_path = Path(tmp) / "queue.yaml"
+        queue_content = {
+            "queue": [
+                {"run_id": "TEST_RUN_1", "approved": True, "smoke": True},
+            ]
+        }
+        with open(q_path, "w", encoding="utf-8") as f:
+            yaml.dump(queue_content, f)
+
+        def mock_runner(rid: str) -> None:
+            rdir = runs_base / rid
+            rdir.mkdir(parents=True, exist_ok=True)
+            (rdir / "done.json").write_text('{"status": "COMPLETED"}', encoding="utf-8")
+
+        completed = run_supervised_queue(
+            queue_path=str(q_path),
+            disconnect_hook=lambda: None,
+            runner_fn=mock_runner,
+            runs_base=runs_base,
+        )
+
+        assert "TEST_RUN_1" in completed
+        status_file = runs_base / "status.json"
+        assert status_file.exists()
+        status_data = json.loads(status_file.read_text(encoding="utf-8"))
+        assert status_data["status"] == "COMPLETED"
+        assert "TEST_RUN_1" in status_data["completed_runs"]
+

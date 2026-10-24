@@ -262,7 +262,8 @@ def main() -> None:
             if session_docs % 50 == 0 or train_bytes_total >= args.target_bytes or session_bytes >= chunk_limit:
                 print(
                     f"Progress: +{session_docs:,} docs (+{session_bytes / (1024**2):.2f} MB) | "
-                    f"Total: {len(existing_ids):,} docs ({train_bytes_total / (1024**2):.2f} MB / {args.target_bytes / (1024**2):.1f} MB)"
+                    f"Total: {len(existing_ids):,} docs ({train_bytes_total / (1024**2):.2f} MB / {args.target_bytes / (1024**2):.1f} MB)",
+                    flush=True,
                 )
 
             if train_bytes_total >= args.target_bytes or session_bytes >= chunk_limit:

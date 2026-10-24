@@ -1,0 +1,258 @@
+{
+  "shards/fineweb2/aks/egen/index.json": {
+    "sha256": "7bb9e8361bb6b427264349d1555f6a146f4925766538cc1831e40dd1c4997b77",
+    "bytes": 35288
+  },
+  "shards/fineweb2/aks/egen/shard_00000.bin": {
+    "sha256": "a15483a9f9251dc212de3a7b1a0658f6265af3402a9f2ab3585d18cc6478923e",
+    "bytes": 265800
+  },
+  "shards/fineweb2/aks/train/index.json": {
+    "sha256": "bb1e825ec7652cef62f60b719a4edae9104dc7a75f0e5d29647bbe562e29db1e",
+    "bytes": 451924
+  },
+  "shards/fineweb2/aks/train/shard_00000.bin": {
+    "sha256": "bc7998f7b83d1407e0ec2dad677ecdfa80fd937e928d1b0714a24ef2ffde2887",
+    "bytes": 3419708
+  },
+  "shards/fineweb2/bpe16/egen/index.json": {
+    "sha256": "d9033740a41cbdd24047fce56e4da4c952da44b683a8a38786af1e19752c10ad",
+    "bytes": 35208
+  },
+  "shards/fineweb2/bpe16/egen/shard_00000.bin": {
+    "sha256": "dc9133d2411208b6fe91552d27d2ee9312e645c4008714dbca261e8f9e56f658",
+    "bytes": 96042
+  },
+  "shards/fineweb2/bpe16/train/index.json": {
+    "sha256": "11808a1bd2582398746bb93ab885f5911d768317042ed8515236f80ab3e51703",
+    "bytes": 450563
+  },
+  "shards/fineweb2/bpe16/train/shard_00000.bin": {
+    "sha256": "5a5cedeab59a944043dfa0c12dc041eb538df3d33665efedeac6f9075885ecde",
+    "bytes": 1275876
+  },
+  "shards/fineweb2/byte/egen/index.json": {
+    "sha256": "e75c2cd46b2f102a9ab93d6d835d18a8b33e63d1a7ff236057a0c6b908207891",
+    "bytes": 35619
+  },
+  "shards/fineweb2/byte/egen/shard_00000.bin": {
+    "sha256": "ec26f75d8b70f57f9bef55ba1f0d0e69c5f06193508b726c8b963117c6c15f94",
+    "bytes": 1102860
+  },
+  "shards/fineweb2/byte/train/index.json": {
+    "sha256": "a6545292b29e2c279b2d246f9ef612e66778a8a183e089d898e817a9bc9931a1",
+    "bytes": 455772
+  },
+  "shards/fineweb2/byte/train/shard_00000.bin": {
+    "sha256": "0d9f2297aea3a7234f0cad998649c7972d1fe0a64bd52a12557fa4b692a46ace",
+    "bytes": 14051756
+  },
+  "shards/fineweb2/char/egen/index.json": {
+    "sha256": "92e8b849dc9ce1312154b89641d269cbe28952d33d359f59887869657623ec78",
+    "bytes": 35552
+  },
+  "shards/fineweb2/char/egen/shard_00000.bin": {
+    "sha256": "dacc5dd369e351850f51c245776a5e369ba3c93a275271fc24a56734b09d217c",
+    "bytes": 413974
+  },
+  "shards/fineweb2/char/train/index.json": {
+    "sha256": "ce486c3e00c7a958b782cbbc0c27b6e4f10c25c8e92175e14017e9cffe6eca9e",
+    "bytes": 455099
+  },
+  "shards/fineweb2/char/train/shard_00000.bin": {
+    "sha256": "24073dd25f8ee371254429e543b02b81f9389973de854ec1f4d6c4c2e6a988e8",
+    "bytes": 5306008
+  },
+  "shards/fineweb2/uni16/egen/index.json": {
+    "sha256": "a7813383cfde5fc3fc88f37adefb2aa142426247a68f8c22d45e16468d15c248",
+    "bytes": 35207
+  },
+  "shards/fineweb2/uni16/egen/shard_00000.bin": {
+    "sha256": "37255d9f5b6bda31425c0456f4ac2d287c072e501fd71c74e395dbcbb512528b",
+    "bytes": 94154
+  },
+  "shards/fineweb2/uni16/train/index.json": {
+    "sha256": "11fa8f215e3a9e236f8257ef9c707ba33a8b0c1a6b331c9df72fa52cc20b60cf",
+    "bytes": 450558
+  },
+  "shards/fineweb2/uni16/train/shard_00000.bin": {
+    "sha256": "edfa3dfd9ed5d2c30bba4ce6b475f44ba4569170c7d5deb50500d6882befd8e2",
+    "bytes": 1253464
+  },
+  "shards/wikisource/aks/test/index.json": {
+    "sha256": "51282f5703a1d6cae7a48c02609b6b21944c7d8819ef23bd0b1381d2b4e3300b",
+    "bytes": 79556
+  },
+  "shards/wikisource/aks/test/shard_00000.bin": {
+    "sha256": "f55052f35dc2270f3f9c996ee96c97709470e6886651108dbec28a4f80f0e107",
+    "bytes": 616894
+  },
+  "shards/wikisource/aks/train/index.json": {
+    "sha256": "da046df32b943b409a08e6324fbaacc448349d9b17c70a7bacf67070b3cc8068",
+    "bytes": 277970
+  },
+  "shards/wikisource/aks/train/shard_00000.bin": {
+    "sha256": "93a798b2e76bfaa310e78bd591378329487ed620bf9655ca77bc395a7a06f47f",
+    "bytes": 2103490
+  },
+  "shards/wikisource/aks/val/index.json": {
+    "sha256": "df027af12b028f769bb55c75f65ce003f2ac5a3423383854c0ad532649d923eb",
+    "bytes": 28354
+  },
+  "shards/wikisource/aks/val/shard_00000.bin": {
+    "sha256": "2ec457a2bcbd1f5b7b10f7c86c1efc9b3a02ee34c78639a0b8db6c9a1b7ba424",
+    "bytes": 219634
+  },
+  "shards/wikisource/bpe16/test/index.json": {
+    "sha256": "26564977fd8f44ca168c30cbaf5d0f7c5232ec8c7aab5abd71b7233c28696ed9",
+    "bytes": 79387
+  },
+  "shards/wikisource/bpe16/test/shard_00000.bin": {
+    "sha256": "e70687607c7cf29c59edadf442cf4ef78f284b0eac4030c63c1ede251ada2430",
+    "bytes": 285996
+  },
+  "shards/wikisource/bpe16/train/index.json": {
+    "sha256": "8f45df4ed3c21731f5a2fe007c1a6e81e04f8191d1ff6b8664b68285cb54738c",
+    "bytes": 277724
+  },
+  "shards/wikisource/bpe16/train/shard_00000.bin": {
+    "sha256": "b887cf117ffd76b522616aaa68911d8f5c37c2d40600e16dd365009ebb5d1f59",
+    "bytes": 924566
+  },
+  "shards/wikisource/bpe16/val/index.json": {
+    "sha256": "f35bf431e9bd3500694f9ff0492b8da6b81be9589796b84707e8592c58406844",
+    "bytes": 28318
+  },
+  "shards/wikisource/bpe16/val/shard_00000.bin": {
+    "sha256": "2e5502d2bcd9dc560afc0a17bfce1adc0897f5080323c2bb27950b1b3d546caf",
+    "bytes": 94754
+  },
+  "shards/wikisource/byte/test/index.json": {
+    "sha256": "552d6fd00f01af5fcc32e91740c80e6b94d015241f934c301d64de17b01f9aa3",
+    "bytes": 80204
+  },
+  "shards/wikisource/byte/test/shard_00000.bin": {
+    "sha256": "aead5b48da1a7e1dd430aff5a95468b902fd1f85d56b7702098cb0d2d3d1d455",
+    "bytes": 2404748
+  },
+  "shards/wikisource/byte/train/index.json": {
+    "sha256": "84308213c50593da6c489ab018ab1bf5923c9073f809d20bfbc193fc0cfdf87b",
+    "bytes": 280785
+  },
+  "shards/wikisource/byte/train/shard_00000.bin": {
+    "sha256": "6dfc2fe9faef83e2d35d9d1e35d0f3282356d024f77965c2ce6801ea21581430",
+    "bytes": 8464792
+  },
+  "shards/wikisource/byte/val/index.json": {
+    "sha256": "2711c87a7b70746181561bc5fa70c59a170e9049d00aa0fec0e7a5906306a781",
+    "bytes": 28635
+  },
+  "shards/wikisource/byte/val/shard_00000.bin": {
+    "sha256": "11ce4313fa538a595e53a2f6dec9b8ed95406515ebaaec676da866d753c84f15",
+    "bytes": 860640
+  },
+  "shards/wikisource/char/test/index.json": {
+    "sha256": "cc5194ef1d9f9b5ae273759703e3dac8c2e3a87f7636167674e36e1b94af58ad",
+    "bytes": 80061
+  },
+  "shards/wikisource/char/test/shard_00000.bin": {
+    "sha256": "df11efc359c5cd87c9ed4c6fc3f668298861d4996d532bc5208c922088a7ee6c",
+    "bytes": 922948
+  },
+  "shards/wikisource/char/train/index.json": {
+    "sha256": "881baf65098dcec7362142d7679aee3dc075c289af8aa38f1d9bf9a7140ff383",
+    "bytes": 280112
+  },
+  "shards/wikisource/char/train/shard_00000.bin": {
+    "sha256": "bfc66c78534d4cbdd810b2c707c1bbce11ce6185ffcae3cc19b41cdf87c94b5b",
+    "bytes": 3212826
+  },
+  "shards/wikisource/char/val/index.json": {
+    "sha256": "bcf035367775805ff54960025c19f7c3db06aaf242e918df849b2a8b942f5a29",
+    "bytes": 28568
+  },
+  "shards/wikisource/char/val/shard_00000.bin": {
+    "sha256": "6ec144bf5443517e01a779c9b3c30c82058d2a2e5ff40895136740aab2b4dc7d",
+    "bytes": 329496
+  },
+  "shards/wikisource/uni16/test/index.json": {
+    "sha256": "e561f97423029dd65e8c25f3fc72eae7fc0bcd12d04c30009e95ed81021d4f51",
+    "bytes": 79390
+  },
+  "shards/wikisource/uni16/test/shard_00000.bin": {
+    "sha256": "83bc6bc64059d2e773369dabe04ae5a7058ac0e443bc39d1a1a7d760045583df",
+    "bytes": 287544
+  },
+  "shards/wikisource/uni16/train/index.json": {
+    "sha256": "4ec403fd1d9be09005b8fad075d80c0518dce15dfbfe7f438107bf75c42ff93c",
+    "bytes": 277721
+  },
+  "shards/wikisource/uni16/train/shard_00000.bin": {
+    "sha256": "3a1b3ac81b7bdc07a95e3bf679300d7c0ee37a418e42f5b7e0f7c5dfe2681115",
+    "bytes": 914682
+  },
+  "shards/wikisource/uni16/val/index.json": {
+    "sha256": "ed9739db1fa8ad52f40b7668fc242625741a9f408602ce87c8fed3e216ac7762",
+    "bytes": 28318
+  },
+  "shards/wikisource/uni16/val/shard_00000.bin": {
+    "sha256": "5578ebaa2c89aedacdd695f5fcb8146a84b0a6ded80c535cb901a179173667e7",
+    "bytes": 94708
+  },
+  "shards.zip": {
+    "sha256": "c2b41c66181670879a454c09c6bff3a9d6dd0a1b1afb1d337f9d6aad5c51f5e0",
+    "bytes": 12088330
+  },
+  "tok/aks/config.json": {
+    "sha256": "c36b3881206a242b52e7b172c7a0c1f5d1d8db47c3ea0316fa8f4a8db6470cb4",
+    "bytes": 267
+  },
+  "tok/aks/vocab.json": {
+    "sha256": "0843e3d10b46538a4efd6e07e7c80422c27d9b5d28922b91d0b3eb2d5bdc7892",
+    "bytes": 188933
+  },
+  "tok/bpe16/config.json": {
+    "sha256": "9d59fb20e24c6f22cd9fb596060808dd81598d3db8f0843b6435b153edce5441",
+    "bytes": 314
+  },
+  "tok/bpe16/spm.model": {
+    "sha256": "d004b588fc7bec83450ed9325ead9a1b9ef7d6640589c101ae166c7929502090",
+    "bytes": 407060
+  },
+  "tok/bpe16/spm.vocab": {
+    "sha256": "31f83574794010adfcc8bee154f5286a366f51779cd80ec176c20e8ed073fdd8",
+    "bytes": 394015
+  },
+  "tok/byte/config.json": {
+    "sha256": "6edb8978604a97fd5df88c05aa2cda8ce225725982a7cf6484dd1078a07f64c3",
+    "bytes": 367
+  },
+  "tok/byte/tokenizer.json": {
+    "sha256": "00aeb52b6ee4c4d2f8fb3b023d9d8e46daff5f54c7bf183afda50d2632b9b251",
+    "bytes": 121
+  },
+  "tok/char/config.json": {
+    "sha256": "3f9ac1a0902c96e8b3884e08a64734816cf7775f3a6b17141db78d73a432eeb0",
+    "bytes": 264
+  },
+  "tok/char/vocab.json": {
+    "sha256": "19b1b786110f035270297d79b5352c042bd29133dbd1645a53d596ca9de90d3b",
+    "bytes": 3850
+  },
+  "tok/uni16/config.json": {
+    "sha256": "c848b579df3a0ce4f0a2f1c3021239d083dbf7f3c867bfa3276ce23c6361cfd7",
+    "bytes": 318
+  },
+  "tok/uni16/spm.model": {
+    "sha256": "b886f48a97bbee4a4a2d8d6e4a7d1c16897d30b62f63a8e773d5dd91c24dd0e8",
+    "bytes": 435659
+  },
+  "tok/uni16/spm.vocab": {
+    "sha256": "e3f13134c73477b7cee3bde13582657e4e1a80b562f538a591684da9b9877d40",
+    "bytes": 464294
+  },
+  "tok.zip": {
+    "sha256": "51f6f932a094897fc7beaeb365e218748b96da667ac2b26ed63ac4c3d2c7bbbd",
+    "bytes": 555555
+  }
+}

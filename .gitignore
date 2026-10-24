@@ -18,6 +18,7 @@ cleaned/
 *.tar.zst
 *.zst
 *.zip
+prepared/
 
 # Model checkpoints and training artifacts
 *.pt

@@ -13,7 +13,7 @@ import subprocess
 import sys
 import time
 from pathlib import Path
-from typing import Callable, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 import yaml
 
@@ -106,29 +106,78 @@ def verify_preflight_and_fingerprint(
             pass
 
 
+def get_runs_base(root: Optional[Path] = None) -> Path:
+    """Resolve runs directory, favoring persistent Google Drive when mounted."""
+    if root is None:
+        root = get_project_root()
+    drive_runs = Path("/content/drive/MyDrive/RabindricGPT/runs")
+    if drive_runs.parent.exists():
+        drive_runs.mkdir(parents=True, exist_ok=True)
+        return drive_runs
+    runs_dir = root / "runs"
+    runs_dir.mkdir(parents=True, exist_ok=True)
+    return runs_dir
+
+
+def update_runner_status(
+    runs_base: Path,
+    status: str,
+    active_run: Optional[str] = None,
+    completed_runs: Optional[List[str]] = None,
+    failed_runs: Optional[List[str]] = None,
+    error: Optional[str] = None,
+) -> None:
+    """Atomically record queue runner progress to status.json on persistent storage."""
+    status_file = runs_base / "status.json"
+    now_iso = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    data = {
+        "status": status,
+        "active_run": active_run,
+        "completed_runs": completed_runs or [],
+        "failed_runs": failed_runs or [],
+        "timestamp": now_iso,
+    }
+    if error:
+        data["last_error"] = error
+    atomic_write_text(status_file, json.dumps(data, indent=2))
+
+
+def persist_unit_ledger(runs_base: Path) -> Dict[str, Any]:
+    """Aggregate all completed run ledger rows and persist ledger.md and unit_ledger.json."""
+    from src.rgpt.compute.ledger import update_ledger_report
+    ledger_md = runs_base / "ledger.md"
+    rep = update_ledger_report(runs_base, ledger_md)
+    ledger_json = runs_base / "unit_ledger.json"
+    atomic_write_text(ledger_json, json.dumps(rep, indent=2))
+    return rep
+
+
 def execute_run(
     run_id: str,
     max_attempts: int = 5,
     runner_fn: Optional[Callable[[str], None]] = None,
+    runs_base: Optional[Path] = None,
 ) -> bool:
     """Execute run with supervisor loop, crash logging, and automatic retry on preemption."""
     root = get_project_root()
-    drive_runs = Path("/content/drive/MyDrive/RabindricGPT/runs")
-    if drive_runs.parent.exists():
-        drive_runs.mkdir(parents=True, exist_ok=True)
-        runs_base = drive_runs
-    else:
-        runs_base = root / "runs"
+    if runs_base is None:
+        runs_base = get_runs_base(root)
 
     run_dir = runs_base / run_id
     run_dir.mkdir(parents=True, exist_ok=True)
     done_file = run_dir / "done.json"
+
+    # Invariant: skip runs that are already marked done
+    if done_file.exists():
+        print(f"Run {run_id} is already marked DONE (found {done_file}). Skipping.")
+        return True
 
     for attempt in range(1, max_attempts + 1):
         if done_file.exists():
             return True
 
         try:
+            update_runner_status(runs_base, "RUNNING", active_run=run_id)
             if runner_fn is not None:
                 runner_fn(run_id)
                 return True
@@ -141,24 +190,30 @@ def execute_run(
                     raise RuntimeError(f"scripts/11_run.py exited with code {res.returncode}:\n{res.stderr}")
 
             if done_file.exists():
+                persist_unit_ledger(runs_base)
                 return True
 
         except ConfigHashMismatchError as e:
             # Hard stop on config hash mismatch
             crash_log = run_dir / f"crash_attempt_{attempt}.txt"
             atomic_write_text(crash_log, f"HARD STOP: {str(e)}\n")
+            update_runner_status(runs_base, "FAILED", active_run=run_id, error=str(e))
             raise
 
         except Exception as e:
             crash_log = run_dir / f"crash_attempt_{attempt}.txt"
             atomic_write_text(crash_log, f"Attempt {attempt} failed:\n{str(e)}\n")
             if attempt >= max_attempts:
+                update_runner_status(runs_base, "FAILED", active_run=run_id, error=str(e))
                 raise RunnerError(f"Run {run_id} failed after {max_attempts} attempts.") from e
 
             # Backoff
             time.sleep(min(2 ** attempt, 10))
 
-    return done_file.exists()
+    success = done_file.exists()
+    if success:
+        persist_unit_ledger(runs_base)
+    return success
 
 
 def disconnect_runtime() -> None:
@@ -175,9 +230,13 @@ def run_supervised_queue(
     queue_path: str = "configs/runs/queue.yaml",
     disconnect_hook: Optional[Callable[[], None]] = None,
     runner_fn: Optional[Callable[[str], None]] = None,
+    runs_base: Optional[Path] = None,
 ) -> List[str]:
     """Execute all approved entries in queue.yaml under session budget cap."""
     root = get_project_root()
+    if runs_base is None:
+        runs_base = get_runs_base(root)
+
     q_file = Path(queue_path)
     if not q_file.is_absolute():
         q_file = root / q_file
@@ -188,7 +247,11 @@ def run_supervised_queue(
     queue_data = yaml.safe_load(q_file.read_text(encoding="utf-8")) or {}
     entries = queue_data.get("runs", queue_data.get("queue", []))
 
-    completed_runs = []
+    completed_runs: List[str] = []
+    failed_runs: List[str] = []
+
+    update_runner_status(runs_base, "STARTING", completed_runs=completed_runs, failed_runs=failed_runs)
+
     try:
         for entry in entries:
             rid = entry.get("run_id")
@@ -199,13 +262,48 @@ def run_supervised_queue(
             if not approved:
                 continue
 
+            # Invariant: skip already completed runs
+            if (runs_base / rid / "done.json").exists():
+                print(f"Run {rid} already completed (found done.json). Skipping.")
+                if rid not in completed_runs:
+                    completed_runs.append(rid)
+                continue
+
             # Verify preflight before starting
-            verify_preflight_and_fingerprint(rid, is_smoke=is_smoke)
+            verify_preflight_and_fingerprint(rid, is_smoke=is_smoke, root_dir=root)
 
             # Execute run
-            success = execute_run(rid, max_attempts=entry.get("max_attempts", 5), runner_fn=runner_fn)
-            if success:
-                completed_runs.append(rid)
+            try:
+                success = execute_run(
+                    rid,
+                    max_attempts=entry.get("max_attempts", 5),
+                    runner_fn=runner_fn,
+                    runs_base=runs_base,
+                )
+                if success:
+                    completed_runs.append(rid)
+                else:
+                    failed_runs.append(rid)
+            except Exception as e:
+                failed_runs.append(rid)
+                update_runner_status(
+                    runs_base,
+                    "FAILED",
+                    active_run=rid,
+                    completed_runs=completed_runs,
+                    failed_runs=failed_runs,
+                    error=str(e),
+                )
+                raise
+
+        status = "COMPLETED" if not failed_runs else "PARTIALLY_COMPLETED"
+        update_runner_status(
+            runs_base,
+            status,
+            completed_runs=completed_runs,
+            failed_runs=failed_runs,
+        )
+        persist_unit_ledger(runs_base)
 
     finally:
         if disconnect_hook is not None:

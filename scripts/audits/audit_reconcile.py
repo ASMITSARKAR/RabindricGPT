@@ -108,7 +108,6 @@ def audit_shards_reconciliation() -> Dict[str, Any]:
             })
 
     # 2. File stats for fw2_tokenizer_sample_100m.txt
-    sample_stats = {}
     if sample_p.exists():
         raw_bytes = sample_p.read_bytes()
         sample_stats = {
@@ -118,6 +117,16 @@ def audit_shards_reconciliation() -> Dict[str, Any]:
             "line_count": raw_bytes.count(b"\n"),
             "crlf_count": raw_bytes.count(b"\r\n"),
             "char_count": len(raw_bytes.decode("utf-8")),
+        }
+    else:
+        sample_stats = {
+            "path": str(sample_p),
+            "byte_size": 0,
+            "sha256": "",
+            "line_count": 0,
+            "crlf_count": 0,
+            "char_count": 0,
+            "absent": True,
         }
 
     # 3. SPM args
