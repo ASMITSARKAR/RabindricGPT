@@ -3,10 +3,18 @@ tests/tokenizers/test_reconcile_audit.py : Automated unit tests verifying shard 
 reconciliation, lossless round-trip, and zero UNK rate.
 """
 
+from pathlib import Path
+
+import pytest
+
 from scripts.audits.audit_reconcile import audit_shards_reconciliation
+
+SAMPLE_FILE = Path("data/cleaned/fineweb2/fw2_tokenizer_sample_100m.txt")
 
 
 def test_audit_reconciliation_zero_discrepancy() -> None:
+    if not SAMPLE_FILE.exists():
+        pytest.skip(f"Tokenizer sample file absent: {SAMPLE_FILE}")
     res = audit_shards_reconciliation()
     # 1. Shard agreement
     for r in res["shard_rows"]:

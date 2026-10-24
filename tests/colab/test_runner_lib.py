@@ -79,7 +79,7 @@ def test_runner_config_hash_mismatch_hard_stop() -> None:
 
 def test_runner_refuses_on_missing_preflight() -> None:
     """verify_preflight_and_fingerprint must refuse non-smoke runs if preflight report is missing."""
-    with tempfile.TemporaryDirectory():
-        # With non-existent report
+    with tempfile.TemporaryDirectory() as tmp:
+        # With non-existent report in temporary directory
         with pytest.raises(RunnerError):
-            verify_preflight_and_fingerprint("PT-bpe16-10m-s0", is_smoke=False)
+            verify_preflight_and_fingerprint("PT-bpe16-10m-s0", is_smoke=False, root_dir=Path(tmp))

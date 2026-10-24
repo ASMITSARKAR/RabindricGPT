@@ -24,6 +24,19 @@ from src.rgpt.preflight.report import write_preflight_report
 from src.rgpt.preflight.static import run_p1_checks
 
 
+def is_colab() -> bool:
+    """Detect if running in Google Colab environment."""
+    if "google.colab" in sys.modules:
+        return True
+    try:
+        import google.colab  # type: ignore # noqa: F401
+        return True
+    except ImportError:
+        pass
+    import os
+    return os.environ.get("COLAB_GPU") is not None or Path("/content").exists()
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="RabindricGPT Local Preflight Verification CLI")
     parser.add_argument("--quick", action="store_true", help="Run levels P0–P2 (< 3 min)")
@@ -42,7 +55,13 @@ def main() -> None:
     runs_status = {}
     all_failures = []
 
-    run_full = args.full
+    is_colab_env = is_colab()
+    run_full = args.full and not is_colab_env and not args.quick
+
+    if is_colab_env:
+        print("Detected Google Colab environment: running quick checks only (P0–P2).")
+        args.gpu = False
+        args.with_real_ingest = False
 
     print("=" * 60)
     print("RabindricGPT Preflight Harness Starting")

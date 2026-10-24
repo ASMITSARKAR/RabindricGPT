@@ -66,7 +66,11 @@ def sync_repository_from_git() -> str:
     return res.stdout.strip()
 
 
-def verify_preflight_and_fingerprint(run_id: str, is_smoke: bool = False) -> None:
+def verify_preflight_and_fingerprint(
+    run_id: str,
+    is_smoke: bool = False,
+    root_dir: Optional[Path] = None,
+) -> None:
     """Verify that VM code matches results/preflight_report.json code fingerprint and P6 passed."""
     # Fault injection guard: refuse real runs if RGPT_FAULT is set without ALLOW
     if "RGPT_FAULT" in os.environ and os.environ.get("RGPT_ALLOW_FAULT") != "1":
@@ -75,7 +79,7 @@ def verify_preflight_and_fingerprint(run_id: str, is_smoke: bool = False) -> Non
     if is_smoke:
         return
 
-    root = get_project_root()
+    root = Path(root_dir) if root_dir is not None else get_project_root()
     report_file = root / "results" / "preflight_report.json"
     if not report_file.exists():
         raise RunnerError(f"Preflight report missing at {report_file}. Run 00_preflight.py first!")
