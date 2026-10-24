@@ -64,14 +64,38 @@ def test_khanda_ta_canonicalization() -> None:
 
 
 def test_ryab_and_reph_normalization() -> None:
-    """ZWJ stripping changes 'র‌্যাব' (র+virama+ZWJ+ya) into 'র্য' rendering ('র্যাব')."""
-    # 'র‌্যাব' with ZWJ: \u09b0 + \u09cd + \u200d + \u09af + \u09be + \u09ac
+    """Ya-phala with ZWJ and reph are distinct forms and must normalize to different strings."""
+    # 'র্যাব' with ZWJ: \u09b0 + \u09cd + \u200d + \u09af + \u09be + \u09ac
     ryab_with_zwj = "\u09b0\u09cd\u200d\u09af\u09be\u09ac"
-    expected = "\u09b0\u09cd\u09af\u09be\u09ac"
-    norm, stats = normalize_text(ryab_with_zwj)
-    assert "\u200d" not in norm
-    assert norm == expected  # reph-ya spelling after joiner removal
-    assert stats["zwj_stripped"] == 1
+    # 'র্যাব' without ZWJ (reph-ya): \u09b0 + \u09cd + \u09af + \u09be + \u09ac
+    reph_ya = "\u09b0\u09cd\u09af\u09be\u09ac"
+
+    norm_zwj, stats_zwj = normalize_text(ryab_with_zwj)
+    norm_plain, stats_plain = normalize_text(reph_ya)
+
+    # Must normalize to different strings
+    assert norm_zwj != norm_plain
+    assert norm_zwj == ryab_with_zwj
+    assert norm_plain == reph_ya
+    assert stats_zwj["zwj_kept"] == 1
+    assert stats_zwj["zwj_stripped"] == 0
+
+    # Other C+্+ZWJ+য forms also keep ZWJ
+    ka_ya = "ক\u09cd\u200dযাব"
+    norm_ka, stats_ka = normalize_text(ka_ya)
+    assert norm_ka == ka_ya
+    assert stats_ka["zwj_kept"] == 1
+
+    # Alternative Avro order: C + ZWJ + virama + ya canonicalizes to C + virama + ZWJ + ya
+    alt_ryab = "র\u200d\u09cd\u09afাব"
+    norm_alt, _ = normalize_text(alt_ryab)
+    assert norm_alt == ryab_with_zwj
+
+    # Non-ya ZWJ is stripped
+    dekhte = "দেখ\u200d্তে"
+    norm_dekhte, stats_dekhte = normalize_text(dekhte)
+    assert norm_dekhte == "দেখ্তে"
+    assert stats_dekhte["zwj_stripped"] == 1
 
 
 

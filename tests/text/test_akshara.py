@@ -214,3 +214,21 @@ def test_hand_labelled_gold_akshara_list() -> None:
     else:
         warnings.warn("tests/data/akshara_gold.tsv is present but unlabelled; skipping evaluation (Owner Action T1).")
         pytest.skip("Owner Action T1: tests/data/akshara_gold.tsv unlabelled pending owner hand-labeling")
+
+
+def test_c_virama_zwj_ya_inside_single_unit() -> None:
+    """The segmenter keeps C+্+ZWJ+য inside one unit, and ''.join(units) == text."""
+    # র্যাব with ZWJ
+    s_zwj = "র\u09cd\u200dযাব"
+    units_zwj = segment(s_zwj)
+    assert units_zwj == ["র\u09cd\u200dযা", "ব"]
+    assert "".join(units_zwj) == s_zwj
+
+    # Bengali consonants with virama + ZWJ + ya
+    consonants = ["ক", "খ", "গ", "ঘ", "চ", "জ", "ত", "দ", "ধ", "ন", "প", "ব", "ভ", "ম", "ল", "শ", "ষ", "স", "হ", "র"]
+    for c in consonants:
+        word = f"{c}\u09cd\u200dযাব"
+        units = segment(word)
+        assert "".join(units) == word, f"Lossless concatenation failed on {word}"
+        assert units[0] == f"{c}\u09cd\u200dযা", f"C+virama+ZWJ+ya fragmented in {word}: {units}"
+

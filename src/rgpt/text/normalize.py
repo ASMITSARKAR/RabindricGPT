@@ -55,23 +55,40 @@ def normalize_text(text: str) -> Tuple[str, Dict[str, int]]:
 
     # Step 3: Khanda-Ta canonicalization before joiner removal
     # Legacy representation: ত (U+09A4) + virama (U+09CD) + ZWJ (\u200d) -> ৎ (U+09CE).
+    # त + virama + ZWJ before ya (\u09af) is a valid ya-phala cluster, so exempt (?!\u09af).
     # ত + virama + ZWNJ (\u200c) represents an explicit visible hasanta (ত্), NOT Khanda-Ta.
-    khanda_ta_pattern = re.compile(r"\u09a4\u09cd\u200d")
+    khanda_ta_pattern = re.compile(r"\u09a4\u09cd\u200d(?!\u09af)")
     khanda_matches = len(khanda_ta_pattern.findall(text))
     if khanda_matches > 0:
         stats["khanda_ta_canonicalized"] = khanda_matches
         text = khanda_ta_pattern.sub("\u09ce", text)
 
     # Step 4: ZWJ / ZWNJ Policy
-    # Strip all remaining ZWJ (\u200d) and ZWNJ (\u200c) uniformly. In Bengali, joiners
-    # are purely rendering hints to break or force ligatures; stripping them preserves
-    # semantic identity and prevents token/grapheme fragmentation and lone-virama artifacts.
-    zwj_count = text.count(ZWJ)
+    # Keep ZWJ in C+্+ZWJ+য (including র্য ra-ya-phala vs reph).
+    # Strip ZWJ and ZWNJ everywhere else.
     zwnj_count = text.count(ZWNJ)
-    stats["zwj_stripped"] += zwj_count
-    stats["zwnj_stripped"] += zwnj_count
-    if zwj_count > 0 or zwnj_count > 0:
-        text = text.replace(ZWJ, "").replace(ZWNJ, "")
+    if zwnj_count > 0:
+        stats["zwnj_stripped"] += zwnj_count
+        text = text.replace(ZWNJ, "")
+
+    # Canonicalize any C + ZWJ + virama + ya to standard C + virama + ZWJ + ya
+    text = re.sub(
+        r"([\u0995-\u09b9\u09dc-\u09df])\u200d\u09cd(\u09af)",
+        lambda m: m.group(1) + "\u09cd\u200d" + m.group(2),
+        text,
+    )
+
+    # Preserve ZWJ in C + virama + ZWJ + ya; strip all other ZWJ
+    c_ya_pattern = re.compile(r"([\u0995-\u09b9\u09dc-\u09df]\u09cd)\u200d(\u09af)|\u200d")
+
+    def _zwj_replace(match: re.Match) -> str:
+        if match.group(1):
+            stats["zwj_kept"] += 1
+            return match.group(1) + "\u200d" + match.group(2)
+        stats["zwj_stripped"] += 1
+        return ""
+
+    text = c_ya_pattern.sub(_zwj_replace, text)
 
     # Step 5: Control character removal (keep \n and \t)
     # Strip all Unicode general category C (control, format, surrogate, private use) except \n and \t
