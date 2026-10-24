@@ -115,6 +115,28 @@ def generate_run_matrix() -> List[Dict[str, Any]]:
             "approved": True,
         })
 
+    # 5. 10M LR Sweep: bpe16 and akshara, lr in {5e-4, 1e-3, 2e-3}, 1 seed
+    # Kill rule: abort at step 500 if loss > 7.5 (lr=1e-3 is in main ladder PT-{tok}-10m-s0)
+    lr_sweep_runs = [
+        ("bpe16", 5e-4, 0.49),
+        ("bpe16", 2e-3, 0.49),
+        ("akshara", 5e-4, 1.20),
+        ("akshara", 2e-3, 1.20),
+    ]
+    for tok, lr_val, units in lr_sweep_runs:
+        lr_tag = "5e-4" if lr_val == 5e-4 else "2e-3"
+        matrix.append({
+            "stage": "lr_sweep_10m",
+            "run_id": f"SWEEP-{tok}-10m-lr{lr_tag}",
+            "tokenizer": tok,
+            "model_size": "10m",
+            "seed": 0,
+            "lr": lr_val,
+            "depends_on": "",
+            "planned_units": units,
+            "approved": False,
+        })
+
     # Check uniqueness of run IDs
     seen_ids = set()
     for row in matrix:

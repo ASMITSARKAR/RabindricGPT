@@ -11,23 +11,19 @@ high_end_gpu: "A100-40GB"         # Optional for 100M stage (Ref: 08_COMPUTE_BUD
 gpus:
   T4:
     peak_flops: 65.0e+12          # ~65 TFLOPs fp16
-    burn_regime_a: 1.8            # units/hr (Regime A: conservative planning)
-    burn_regime_b: 1.19           # units/hr (Regime B: McCormick benchmark)
+    burn_rate: 1.2                # units/hr (owner-reported: ~1.2 u/hr)
     default_precision: "fp16"
   L4:
     peak_flops: 121.0e+12         # ~121 TFLOPs bf16/fp16
-    burn_regime_a: 5.0            # units/hr (Regime A)
-    burn_regime_b: 1.71           # units/hr (Regime B)
+    burn_rate: 1.8                # units/hr (owner-reported: ~1.8 u/hr)
     default_precision: "bf16"
   A100-40GB:
     peak_flops: 312.0e+12         # ~312 TFLOPs bf16/fp16
-    burn_regime_a: 12.0           # units/hr (Regime A)
-    burn_regime_b: 5.40           # units/hr (Regime B)
+    burn_rate: 5.0                # units/hr (owner-reported: ~5.0 u/hr)
     default_precision: "bf16"
   A100-80GB:
     peak_flops: 312.0e+12         # ~312 TFLOPs bf16/fp16
-    burn_regime_a: 12.0           # units/hr (Regime A)
-    burn_regime_b: 7.52           # units/hr (Regime B)
+    burn_rate: 5.0                # units/hr (owner-reported: ~5.0 u/hr)
     default_precision: "bf16"
 
 # Central planning assumptions

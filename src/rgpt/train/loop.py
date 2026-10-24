@@ -210,6 +210,12 @@ def train(
                 f"Loss diverged to NaN/Inf at step {step}: aborting immediately to preserve checkpoints!"
             )
 
+        # Early abort kill rule: if loss at step 500 is above 7.5, stop the run to save compute units
+        if step == 500 and loss.item() > 7.5:
+            raise RuntimeError(
+                f"Kill rule triggered at step 500: loss {loss.item():.4f} > 7.5 threshold. Aborting run to preserve compute budget."
+            )
+
         loss.backward()
         grad_norm = torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=grad_clip).item()
         optimizer.step()

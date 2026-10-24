@@ -38,3 +38,7 @@ adapt_25m,ADAPT-uni16-25m,uni16,25m,0,0.0003,PT-uni16-25m-s0,0.03,True
 adapt_50m,ADAPT-akshara-50m,akshara,50m,0,0.0003,PT-akshara-50m-s0,0.1,True
 adapt_50m,ADAPT-bpe16-50m,bpe16,50m,0,0.0003,PT-bpe16-50m-s0,0.05,True
 adapt_50m,ADAPT-uni16-50m,uni16,50m,0,0.0003,PT-uni16-50m-s0,0.04,True
+lr_sweep_10m,SWEEP-bpe16-10m-lr5e-4,bpe16,10m,0,0.0005,,0.49,False
+lr_sweep_10m,SWEEP-bpe16-10m-lr2e-3,bpe16,10m,0,0.002,,0.49,False
+lr_sweep_10m,SWEEP-akshara-10m-lr5e-4,akshara,10m,0,0.0005,,1.2,False
+lr_sweep_10m,SWEEP-akshara-10m-lr2e-3,akshara,10m,0,0.002,,1.2,False

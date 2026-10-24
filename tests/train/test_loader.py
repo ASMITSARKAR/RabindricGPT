@@ -91,7 +91,7 @@ def test_loss_equality_dynamic_vs_static_padding() -> None:
 
     shard_path = Path("shards/wikisource/bpe16/train")
     if not shard_path.exists():
-        return
+        pytest.skip(f"Shard directory missing at {shard_path}; mount Drive shards first.")
 
     with ShardReader(shard_path) as reader:
         cfg = ModelConfig(

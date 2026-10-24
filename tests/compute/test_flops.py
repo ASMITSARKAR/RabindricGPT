@@ -10,33 +10,33 @@ import yaml
 
 from src.rgpt.compute.flops import calculate_f_tok, calculate_run_flops, calculate_units
 
-# Hand-computed analytical FLOPs per token across all 24 cells from yaml L, d, V and measured FineWeb s:
+# Hand-computed analytical FLOPs per token across all 24 cells from yaml L, d, V and measured held-out FineWeb-2 (egen) s:
 # F_tok = 6*(N_ne + V*d) + 12*L*d*s
 HAND_CONSTANTS_ALL_24 = {
-    ("10m", "byte"): 139025454.825100,
-    ("10m", "char"): 93250493.351135,
-    ("10m", "aks"): 100956053.703605,
-    ("10m", "bpe8"): 90639436.902537,
-    ("10m", "bpe16"): 108516963.460614,
-    ("10m", "uni16"): 108404599.626168,
-    ("25m", "byte"): 287779468.133511,
-    ("25m", "char"): 206147806.846462,
-    ("25m", "aks"): 211982260.806409,
-    ("25m", "bpe8"): 193641608.715621,
-    ("25m", "bpe16"): 217035270.152203,
-    ("25m", "uni16"): 216835512.224299,
-    ("50m", "byte"): 505925818.958611,
-    ("50m", "char"): 378138268.197597,
-    ("50m", "aks"): 379881802.510013,
-    ("50m", "bpe8"): 351224533.618158,
-    ("50m", "bpe16"): 379912809.612817,
-    ("50m", "uni16"): 379600687.850467,
-    ("100m", "byte"): 944428591.850467,
-    ("100m", "char"): 729288392.971963,
-    ("100m", "aks"): 718061754.616822,
-    ("100m", "bpe8"): 669917542.878505,
-    ("100m", "bpe16"): 703014352.149533,
-    ("100m", "uni16"): 702489987.588785,
+    ("10m", "byte"): 139442336.157635,
+    ("10m", "char"): 93101609.615764,
+    ("10m", "aks"): 100743898.167488,
+    ("10m", "bpe8"): 90055562.719212,
+    ("10m", "bpe16"): 108019998.266010,
+    ("10m", "uni16"): 107891428.256158,
+    ("25m", "byte"): 288520590.502463,
+    ("25m", "char"): 205883124.650246,
+    ("25m", "aks"): 211605095.408867,
+    ("25m", "bpe8"): 192603610.167488,
+    ("25m", "bpe16"): 216151776.472906,
+    ("25m", "uni16"): 215923207.566502,
+    ("50m", "byte"): 507083822.660099,
+    ("50m", "char"): 377724702.266010,
+    ("50m", "aks"): 379292481.576355,
+    ("50m", "bpe8"): 349602660.886699,
+    ("50m", "bpe16"): 378532350.738916,
+    ("50m", "uni16"): 378175211.822660,
+    ("100m", "byte"): 946374038.068966,
+    ("100m", "char"): 728593602.206897,
+    ("100m", "aks"): 717071695.448276,
+    ("100m", "bpe8"): 667192796.689655,
+    ("100m", "bpe16"): 700695181.241379,
+    ("100m", "uni16"): 700095187.862069,
 }
 
 MODELS_SPEC = {
@@ -57,11 +57,11 @@ TOKENIZERS_SPEC = {
 
 
 def test_flops_per_token_hand_constants_all_24_cells() -> None:
-    """Every single one of the 24 pretraining cells must match its exact hand-computed constant from yaml L, d, V and measured FineWeb s."""
+    """Every single one of the 24 pretraining cells must match its exact hand-computed constant from yaml L, d, V and measured held-out FineWeb s."""
     for (scale, tok), expected_f_tok in HAND_CONSTANTS_ALL_24.items():
         m_cfg = yaml.safe_load(Path(f"configs/models/{scale}.yaml").read_text(encoding="utf-8"))
         t_cfg = yaml.safe_load(Path(f"configs/tokenizers/{tok}.yaml").read_text(encoding="utf-8"))
-        idx_p = Path(f"shards/fineweb2/{tok}/train/index.json")
+        idx_p = Path(f"shards/fineweb2/{tok}/egen/index.json")
         if not idx_p.exists():
             pytest.skip(f"Shard index missing for {tok} at {idx_p}; mount Drive shards or run scripts/07_build_shards.py first.")
         meta = json.loads(idx_p.read_text(encoding="utf-8"))
