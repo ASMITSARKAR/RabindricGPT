@@ -26,12 +26,23 @@ dr_10_amendment:
   date: "2026-10-23"
   action: "move Gitanjali from val to test in Option_A"
   split_option: "Option_A"
-  val_works: ["shesher_kobita"]
-  test_works: ["gitanjali", "jogajog", "chitrangada"]
-  reason: "Genre balance across evaluation splits: Option_A assigns the lyrical poetry work (Gitanjali, 76.5k chars) to held-out test alongside drama (Chitrangada, 41.1k) and novel (Jogajog, 380.4k), while Shesher Kobita (174.5k novel) provides a single dedicated novel benchmark for validation."
+  val_works:
+    - id: "shesher_kobita"
+      clean_chars: 165374
+  test_works:
+    - id: "gitanjali"
+      clean_chars: 76476
+    - id: "jogajog"
+      clean_chars: 360939
+    - id: "chitrangada"
+      clean_chars: 35811
+  total_val_chars: 165374
+  total_test_chars: 473226
+  reason: "Genre balance across evaluation splits: Option_A assigns the lyrical poetry work (Gitanjali, 76,476 clean chars) to held-out test alongside drama (Chitrangada, 35,811 clean chars) and novel (Jogajog, 360,939 clean chars), while Shesher Kobita (165,374 clean chars novel) provides a single dedicated novel benchmark for validation."
 
 # DR-5: Training optimization defaults (provisional estimates, calibrated at pilot)
 batch_size_chunks: 64             # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-5
+default_lr: 0.0010                # Ref: Stated single default learning rate for training (1.0e-3)
 default_lr_10m: 0.0010            # Ref: Production default learning rate for 10M models (1.0e-3)
 adamw_beta1: 0.9                  # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-5
 adamw_beta2: 0.95                 # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-5

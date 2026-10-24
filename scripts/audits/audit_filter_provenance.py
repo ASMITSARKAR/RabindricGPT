@@ -140,12 +140,6 @@ def main() -> None:
 
     assert sum(sample_hits.values()) == 0, f"Sample contains narrow hits: {sample_hits}"
 
-    # 4. Rescan All Shards
-    shard_hits = Counter()
-    shard_files_scanned = 0
-    for shard_path in Path("shards").glob("**/*.bin"):
-        shard_files_scanned += 1
-
     out_dir = Path("results/audits")
     out_dir.mkdir(parents=True, exist_ok=True)
     out_txt = out_dir / "audit_provenance.txt"
@@ -181,10 +175,6 @@ def main() -> None:
     lines.append(f"- Non-Empty Lines Evaluated: {sample_non_empty_lines:,}")
     lines.append(f"- Narrow List Hits: {sum(sample_hits.values())} (0.00%)")
     lines.append("- Narrow List Assertion: PASSED (Zero Hits)")
-
-    lines.append("\n## 3. Shard Integrity & Leakage Scan:")
-    lines.append(f"- Binary Shard Files Audited: {shard_files_scanned}")
-    lines.append("- Shard Leakage Assertion: PASSED (Zero Narrow Contamination)")
 
     report_str = "\n".join(lines) + "\n"
     print(report_str)

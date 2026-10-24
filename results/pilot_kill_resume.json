@@ -1,0 +1,70 @@
+{
+  "results": [
+    {
+      "scale": "10m",
+      "tokenizer": "byte",
+      "total_steps": 4,
+      "kill_step": 2,
+      "resumed_step": 2,
+      "delta_loss": 0.0,
+      "tokens_per_sec": 495.11,
+      "mfu": 0.0327,
+      "peak_gb": 0.0,
+      "elapsed_sec": 1.03,
+      "units_burned": 0.0
+    },
+    {
+      "scale": "10m",
+      "tokenizer": "char",
+      "total_steps": 4,
+      "kill_step": 2,
+      "resumed_step": 2,
+      "delta_loss": 0.0,
+      "tokens_per_sec": 369.45,
+      "mfu": 0.0246,
+      "peak_gb": 0.0,
+      "elapsed_sec": 1.39,
+      "units_burned": 0.0
+    },
+    {
+      "scale": "10m",
+      "tokenizer": "aks",
+      "total_steps": 4,
+      "kill_step": 2,
+      "resumed_step": 2,
+      "delta_loss": 0.0,
+      "tokens_per_sec": 252.53,
+      "mfu": 0.0213,
+      "peak_gb": 0.0,
+      "elapsed_sec": 2.03,
+      "units_burned": 0.0
+    },
+    {
+      "scale": "10m",
+      "tokenizer": "bpe16",
+      "total_steps": 4,
+      "kill_step": 2,
+      "resumed_step": 2,
+      "delta_loss": 0.0,
+      "tokens_per_sec": 254.72,
+      "mfu": 0.0263,
+      "peak_gb": 0.0,
+      "elapsed_sec": 2.01,
+      "units_burned": 0.0
+    },
+    {
+      "scale": "10m",
+      "tokenizer": "uni16",
+      "total_steps": 4,
+      "kill_step": 2,
+      "resumed_step": 2,
+      "delta_loss": 0.0,
+      "tokens_per_sec": 315.68,
+      "mfu": 0.0326,
+      "peak_gb": 0.0,
+      "elapsed_sec": 1.62,
+      "units_burned": 0.0
+    }
+  ],
+  "cumulative_units": 0.0
+}

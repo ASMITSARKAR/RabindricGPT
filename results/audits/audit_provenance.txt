@@ -1,5 +1,5 @@
 # Audit: Tagore-Exclusion Filter & Tokenizer Sample Provenance
-Git Commit SHA: 2e35c6cd1c8e77bb21efe5a755763be274a03e7f
+Git Commit SHA: 4b97a7cb2939137949cb1c0765e7cc034400d0a8
 
 ## Input File SHAs:
 - data\cleaned\fineweb2\fw2_tokenizer_sample_100m.txt: ec3bf708e99bf371ce6f611517302f071a99b76adf65bf30ff5bb7815e228016
@@ -43,7 +43,3 @@ Git Commit SHA: 2e35c6cd1c8e77bb21efe5a755763be274a03e7f
 - Non-Empty Lines Evaluated: 452,417
 - Narrow List Hits: 0 (0.00%)
 - Narrow List Assertion: PASSED (Zero Hits)
-
-## 3. Shard Integrity & Leakage Scan:
-- Binary Shard Files Audited: 30
-- Shard Leakage Assertion: PASSED (Zero Narrow Contamination)

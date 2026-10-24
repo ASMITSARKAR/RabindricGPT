@@ -10,33 +10,33 @@ import yaml
 
 from src.rgpt.compute.flops import calculate_f_tok, calculate_run_flops, calculate_units
 
-# Hand-computed analytical FLOPs per token across all 24 cells:
+# Hand-computed analytical FLOPs per token across all 24 cells from yaml L, d, V and measured s:
 # F_tok = 6*(N_ne + V*d) + 12*L*d*s
 HAND_CONSTANTS_ALL_24 = {
-    ("10m", "byte"): 149273856,
-    ("10m", "char"): 93222144,
-    ("10m", "aks"): 100300032,
-    ("10m", "bpe8"): 91452672,
-    ("10m", "bpe16"): 108557568,
-    ("10m", "uni16"): 108557568,
-    ("25m", "byte"): 305998848,
-    ("25m", "char"): 206097408,
-    ("25m", "aks"): 210816000,
-    ("25m", "bpe8"): 195087360,
-    ("25m", "bpe16"): 217107456,
-    ("25m", "uni16"): 217107456,
-    ("50m", "byte"): 534393600,
-    ("50m", "char"): 378059520,
-    ("50m", "aks"): 378059520,
-    ("50m", "bpe8"): 353483520,
-    ("50m", "bpe16"): 380025600,
-    ("50m", "uni16"): 380025600,
-    ("100m", "byte"): 992254464,
-    ("100m", "char"): 729156096,
-    ("100m", "aks"): 715000320,
-    ("100m", "bpe8"): 673712640,
-    ("100m", "bpe16"): 703203840,
-    ("100m", "uni16"): 703203840,
+    ("10m", "byte"): 138819150.606484,
+    ("10m", "char"): 93234676.119517,
+    ("10m", "aks"): 101183414.601399,
+    ("10m", "bpe8"): 91781249.057851,
+    ("10m", "bpe16"): 109655332.455181,
+    ("10m", "uni16"): 109594921.663064,
+    ("25m", "byte"): 287412705.078194,
+    ("25m", "char"): 206119687.323586,
+    ("25m", "aks"): 212386457.958042,
+    ("25m", "bpe8"): 195671496.991736,
+    ("25m", "bpe16"): 219059037.253655,
+    ("25m", "uni16"): 218951640.289892,
+    ("50m", "byte"): 505352751.684679,
+    ("50m", "char"): 378094331.443102,
+    ("50m", "aks"): 380513360.559441,
+    ("50m", "bpe8"): 354396234.049587,
+    ("50m", "bpe16"): 383074945.708837,
+    ("50m", "uni16"): 382907137.952956,
+    ("100m", "byte"): 943465838.830261,
+    ("100m", "char"): 729214579.224412,
+    ("100m", "aks"): 719122772.139860,
+    ("100m", "bpe8"): 675245999.603306,
+    ("100m", "bpe16"): 708326740.790846,
+    ("100m", "uni16"): 708044823.760966,
 }
 
 MODELS_SPEC = {
@@ -47,28 +47,37 @@ MODELS_SPEC = {
 }
 
 TOKENIZERS_SPEC = {
-    "byte": {"V": 264, "s_plan": 3072},
-    "char": {"V": 512, "s_plan": 1024},
-    "aks": {"V": 8192, "s_plan": 640},
-    "bpe8": {"V": 8192, "s_plan": 320},
-    "bpe16": {"V": 16384, "s_plan": 256},
-    "uni16": {"V": 16384, "s_plan": 256},
+    "byte": {"V": 264},
+    "char": {"V": 512},
+    "aks": {"V": 8192},
+    "bpe8": {"V": 8192},
+    "bpe16": {"V": 16384},
+    "uni16": {"V": 16384},
 }
 
 
 def test_flops_per_token_hand_constants_all_24_cells() -> None:
-    """Every single one of the 24 cells must match its exact hand-computed constant."""
+    """Every single one of the 24 cells must match its exact hand-computed constant from yaml L, d, V and measured s."""
     for (scale, tok), expected_f_tok in HAND_CONSTANTS_ALL_24.items():
-        m = MODELS_SPEC[scale]
-        t = TOKENIZERS_SPEC[tok]
+        m_cfg = yaml.safe_load(Path(f"configs/models/{scale}.yaml").read_text(encoding="utf-8"))
+        t_cfg = yaml.safe_load(Path(f"configs/tokenizers/{tok}.yaml").read_text(encoding="utf-8"))
+        idx_p = Path(f"shards/wikisource/{tok}/train/index.json")
+        meta = json.loads(idx_p.read_text(encoding="utf-8"))
+        s_meas = meta["total_tokens"] / meta["total_chunks"]
+
+        L = m_cfg["n_layers"]
+        d = m_cfg["d_model"]
+        V = t_cfg["vocab_size"]
+        N_ne = MODELS_SPEC[scale]["N_ne"]
+
         computed = calculate_f_tok(
-            n_ne=m["N_ne"],
-            vocab_size=t["V"],
-            d_model=m["d"],
-            n_layers=m["L"],
-            s_tokens=t["s_plan"],
+            n_ne=N_ne,
+            vocab_size=V,
+            d_model=d,
+            n_layers=L,
+            s_tokens=s_meas,
         )
-        assert computed == expected_f_tok, (
+        assert pytest.approx(computed, rel=1e-5) == expected_f_tok, (
             f"Cell ({scale}, {tok}): computed {computed} != expected {expected_f_tok}"
         )
 

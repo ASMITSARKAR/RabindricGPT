@@ -53,6 +53,9 @@ ALLOWED_SCHEMA_KEYS = {
         "fineweb2_target_bytes",
         "dedup_max_ram_gb",
         "colab_reserve_units",
+        "dr_10_amendment",
+        "default_lr",
+        "default_lr_10m",
     },
     "gpu.yaml": {
         "colab_python",
