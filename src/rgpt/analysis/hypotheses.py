@@ -54,31 +54,74 @@ def evaluate_hypotheses(results: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
     else:
         verdicts["H1"] = {"verdict": "INSUFFICIENT_DATA", "reason": "No 10M BPC results found"}
 
-    # H2: BPB gap shrinks with scale
-    bpb_by_size = results.get("bpb_by_size", {})  # e.g. {"10m": {"bpe16": 1.2, ...}, "50m": {...}}
-    if len(bpb_by_size) >= 2:
-        sizes = sorted(bpb_by_size.keys(), key=lambda s: int(s.replace("m", "")))
-        first_size = sizes[0]
-        last_size = sizes[-1]
-        first_vals = list(bpb_by_size[first_size].values())
-        last_vals = list(bpb_by_size[last_size].values())
+    # H2: Akshara-vs-BPE gap regressed on log N over three funded scales (10M, 25M, 50M)
+    # Model: Gap(N) = beta_0 + beta_1 * ln(N), with confidence interval on slope beta_1 (no exponent fit).
+    # 100M is listed as future work, unbudgeted.
+    import math
 
-        gap_first = max(first_vals) - min(first_vals)
-        gap_last = max(last_vals) - min(last_vals)
-        confirmed = gap_last < gap_first
+    scale_n_map = {
+        "10m": 10621824,
+        "25m": 25698816,
+        "50m": 49575040,
+    }
+    bpb_by_size = results.get("bpb_by_size", {})
+    pts = []
+    for s_name in ["10m", "25m", "50m"]:
+        if s_name in bpb_by_size:
+            s_dict = bpb_by_size[s_name]
+            aks_bpb = s_dict.get("akshara") if "akshara" in s_dict else s_dict.get("aks")
+            bpe_bpb = s_dict.get("bpe16")
+            if aks_bpb is not None and bpe_bpb is not None:
+                gap = float(aks_bpb - bpe_bpb)
+                ln_n = math.log(scale_n_map[s_name])
+                pts.append((ln_n, gap, s_name))
+
+    if len(pts) >= 2:
+        xs = [p[0] for p in pts]
+        ys = [p[1] for p in pts]
+        n_pts = len(pts)
+        x_bar = sum(xs) / n_pts
+        y_bar = sum(ys) / n_pts
+        s_xx = sum((x - x_bar) ** 2 for x in xs)
+        s_xy = sum((x - x_bar) * (y - y_bar) for x, y in zip(xs, ys))
+        beta_1 = s_xy / s_xx if s_xx > 0 else 0.0
+        beta_0 = y_bar - beta_1 * x_bar
+
+        residuals = [y - (beta_0 + beta_1 * x) for x, y in zip(xs, ys)]
+        df = max(1, n_pts - 2)
+        s_err = math.sqrt(sum(r ** 2 for r in residuals) / df)
+        se_beta = s_err / math.sqrt(s_xx) if s_xx > 0 else 0.0
+
+        # 95% Confidence Interval
+        t_crit = 12.706 if df == 1 else 1.96
+        ci_lower = beta_1 - t_crit * se_beta
+        ci_upper = beta_1 + t_crit * se_beta
+
+        confirmed = beta_1 < 0
         verdicts["H2"] = {
             "verdict": "CONFIRMED" if confirmed else "REFUTED",
-            "gap_10m": gap_first,
-            f"gap_{last_size}": gap_last,
-            "delta": gap_first - gap_last,
+            "evaluated_scales": [p[2] for p in pts],
+            "gaps": {p[2]: round(p[1], 4) for p in pts},
+            "regression": {
+                "slope_beta_1": round(beta_1, 6),
+                "intercept_beta_0": round(beta_0, 6),
+                "std_err": round(se_beta, 6),
+                "ci_95": [round(ci_lower, 6), round(ci_upper, 6)],
+                "model": "Gap(N) = beta_0 + beta_1 * ln(N) (no exponent fit)",
+            },
             "reason": (
-                f"BPB gap shrank from {gap_first:.4f} at {first_size} to {gap_last:.4f} at {last_size}"
+                f"Akshara-vs-BPE gap slope beta_1 = {beta_1:.6f} < 0 "
+                f"(95% CI [{ci_lower:.6f}, {ci_upper:.6f}] across {len(pts)} scales)"
                 if confirmed else
-                f"BPB gap did not shrink ({gap_first:.4f} -> {gap_last:.4f})"
+                f"Akshara-vs-BPE gap slope beta_1 = {beta_1:.6f} >= 0 across {len(pts)} scales"
             ),
+            "unbudgeted_scales": ["100m (future work, unbudgeted)"],
         }
     else:
-        verdicts["H2"] = {"verdict": "INSUFFICIENT_DATA", "reason": "Requires at least 2 model sizes"}
+        verdicts["H2"] = {
+            "verdict": "INSUFFICIENT_DATA",
+            "reason": "Requires at least 2 funded scales (10M, 25M, 50M) with akshara and bpe16 metrics",
+        }
 
     # H3: Akshara beats char across sizes
     akshara_vs_char = results.get("akshara_vs_char_bpc", {})  # size -> (akshara_bpc, char_bpc)

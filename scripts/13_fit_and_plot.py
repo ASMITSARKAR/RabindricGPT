@@ -57,6 +57,8 @@ def main() -> None:
             {"run_id": "PT-bpe16-50m-s0", "tokenizer": "bpe16", "model_size": "50m", "bpc": 1.10, "ci_lower": 1.08, "ci_upper": 1.12, "bpb": 0.80, "ill_formed_unicode_rate": 0.0, "in_vocab_word_rate": 0.995},
             {"run_id": "PT-char-10m-s0", "tokenizer": "char", "model_size": "10m", "bpc": 1.65, "ci_lower": 1.63, "ci_upper": 1.67, "bpb": 1.20, "ill_formed_unicode_rate": 0.001, "in_vocab_word_rate": 0.95},
             {"run_id": "PT-akshara-10m-s0", "tokenizer": "akshara", "model_size": "10m", "bpc": 1.55, "ci_lower": 1.53, "ci_upper": 1.57, "bpb": 1.12, "ill_formed_unicode_rate": 0.0, "in_vocab_word_rate": 0.96},
+            {"run_id": "PT-akshara-25m-s0", "tokenizer": "akshara", "model_size": "25m", "bpc": 1.35, "ci_lower": 1.33, "ci_upper": 1.37, "bpb": 0.98, "ill_formed_unicode_rate": 0.0, "in_vocab_word_rate": 0.97},
+            {"run_id": "PT-akshara-50m-s0", "tokenizer": "akshara", "model_size": "50m", "bpc": 1.18, "ci_lower": 1.16, "ci_upper": 1.20, "bpb": 0.86, "ill_formed_unicode_rate": 0.0, "in_vocab_word_rate": 0.98},
             {"run_id": "PT-byte-10m-s0", "tokenizer": "byte", "model_size": "10m", "bpc": 1.70, "ci_lower": 1.68, "ci_upper": 1.72, "bpb": 1.23, "ill_formed_unicode_rate": 0.015, "in_vocab_word_rate": 0.92},
         ]
         for demo in demo_runs:
@@ -102,6 +104,7 @@ def main() -> None:
         "10m_bpc": {r["tokenizer"]: r["bpc"] for r in records if r.get("model_size") == "10m"},
         "bpb_by_size": {
             "10m": {r["tokenizer"]: r["bpb"] for r in records if r.get("model_size") == "10m"},
+            "25m": {r["tokenizer"]: r["bpb"] for r in records if r.get("model_size") == "25m"},
             "50m": {r["tokenizer"]: r["bpb"] for r in records if r.get("model_size") == "50m"},
         },
         "akshara_vs_char_bpc": {

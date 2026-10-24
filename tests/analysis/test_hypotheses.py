@@ -17,8 +17,9 @@ def test_hypothesis_evaluation_decision_logic() -> None:
             "akshara": 1.40,
         },
         "bpb_by_size": {
-            "10m": {"bpe16": 1.0, "byte": 1.4},
-            "50m": {"bpe16": 0.8, "byte": 0.9},
+            "10m": {"akshara": 1.15, "bpe16": 1.05},
+            "25m": {"akshara": 1.08, "bpe16": 1.00},
+            "50m": {"akshara": 1.02, "bpe16": 0.96},
         },
         "akshara_vs_char_bpc": {
             "10m": (1.40, 1.50),

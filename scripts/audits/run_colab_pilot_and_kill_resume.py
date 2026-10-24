@@ -33,8 +33,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--mode",
         choices=["l4_10m", "a100_25m", "full"],
-        default="full",
-        help="Benchmark execution mode (default: full covering 5 tokenizers on L4 10M + 1 run on A100 25M)",
+        default="l4_10m",
+        help="Benchmark execution mode (default: l4_10m covering all 5 tokenizers on L4 for funded plan; a100_25m is an optional single 200-step run costing ~0.42u)",
     )
     parser.add_argument("--steps", type=int, default=100, help="Total steps per tokenizer run (default: 100)")
     parser.add_argument("--kill-step", type=int, default=50, help="Step at which to kill and resume (default: 50)")

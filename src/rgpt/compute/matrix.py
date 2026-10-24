@@ -138,6 +138,44 @@ def generate_run_matrix() -> List[Dict[str, Any]]:
             "approved": False,
         })
 
+    # 6. 100M Stage (Future Work, Unfunded & Unbudgeted): approved: False
+    # Retained in repo for completeness but excluded from funded plan & approved totals per Round 17 directive
+    tok_100m = [
+        ("akshara", 79.47),
+        ("bpe16", 29.84),
+        ("uni16", 29.34),
+    ]
+    for tok, units in tok_100m:
+        matrix.append({
+            "stage": "pretrain_100m",
+            "run_id": f"PT-{tok}-100m-s0",
+            "tokenizer": tok,
+            "model_size": "100m",
+            "seed": 0,
+            "lr": 5e-4,
+            "depends_on": f"PT-{tok}-50m-s0",
+            "planned_units": units,
+            "approved": False,
+        })
+
+    adapt_100m = [
+        ("100m", "akshara", 0.20),
+        ("100m", "bpe16", 0.09),
+        ("100m", "uni16", 0.09),
+    ]
+    for size, tok, units in adapt_100m:
+        matrix.append({
+            "stage": f"adapt_{size}",
+            "run_id": f"ADAPT-{tok}-{size}",
+            "tokenizer": tok,
+            "model_size": size,
+            "seed": 0,
+            "lr": 3e-4,
+            "depends_on": f"PT-{tok}-{size}-s0",
+            "planned_units": units,
+            "approved": False,
+        })
+
     # Check uniqueness of run IDs
     seen_ids = set()
     for row in matrix:

@@ -8,10 +8,30 @@
   },
   "H2": {
     "verdict": "CONFIRMED",
-    "gap_10m": 0.17999999999999994,
-    "gap_50m": 0.0,
-    "delta": 0.17999999999999994,
-    "reason": "BPB gap shrank from 0.1800 at 10m to 0.0000 at 50m"
+    "evaluated_scales": [
+      "10m",
+      "25m",
+      "50m"
+    ],
+    "gaps": {
+      "10m": 0.07,
+      "25m": 0.07,
+      "50m": 0.06
+    },
+    "regression": {
+      "slope_beta_1": -0.006129,
+      "intercept_beta_0": 0.170774,
+      "std_err": 0.004268,
+      "ci_95": [
+        -0.060356,
+        0.048098
+      ],
+      "model": "Gap(N) = beta_0 + beta_1 * ln(N) (no exponent fit)"
+    },
+    "reason": "Akshara-vs-BPE gap slope beta_1 = -0.006129 < 0 (95% CI [-0.060356, 0.048098] across 3 scales)",
+    "unbudgeted_scales": [
+      "100m (future work, unbudgeted)"
+    ]
   },
   "H3": {
     "verdict": "CONFIRMED",
