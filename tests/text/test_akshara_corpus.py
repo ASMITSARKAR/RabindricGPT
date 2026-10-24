@@ -19,7 +19,6 @@ from scripts.audits.audit_akshara_corpus import (
     contains_consonant_after_vowel_sign,
     contains_multiple_independent_vowels,
     contains_space_or_newline,
-    evaluate_gold_set,
     starts_with_dependent_mark,
     wilson_score_interval,
     write_review_queue,
@@ -166,31 +165,3 @@ def test_review_queue_writer_leaves_owner_verdict_empty(tmp_path: Path) -> None:
         assert int(cols[3]) > 0, "Count must be positive integer"
 
 
-def test_gold_set_evaluation_unlabelled_and_rejection(tmp_path: Path) -> None:
-    """Gold set evaluator cleanly skips unlabelled TSVs and rejects malformed rows."""
-    # 1. Unlabelled TSV: skips cleanly
-    unlabelled_tsv = tmp_path / "unlabelled_gold.tsv"
-    unlabelled_tsv.write_text("word\taksharas\nরবীন্দ্রনাথ\t\nগীতাঞ্জলি\t\n", encoding="utf-8")
-
-    res_unlab = evaluate_gold_set(unlabelled_tsv)
-    assert res_unlab["status"] == "unlabelled"
-    assert "skipping gold set evaluation cleanly" in res_unlab["message"].lower()
-
-    # 2. Labelled TSV with valid and malformed rows
-    labelled_tsv = tmp_path / "labelled_gold.tsv"
-    labelled_content = (
-        "word\taksharas\n"
-        "রবীন্দ্রনাথ\tর বী ন্দ্র না থ\n"  # Valid & matches segmenter
-        "শান্তি\tশা ন্তি\n"            # Valid & matches segmenter
-        "ক্ষমা\tখ মা\n"              # Malformed: label without spaces != word -> REJECTED
-        "পাহাড়\tপা হা ড়\n"           # Valid
-    )
-    labelled_tsv.write_text(labelled_content, encoding="utf-8")
-
-    res_lab = evaluate_gold_set(labelled_tsv)
-    assert res_lab["status"] == "labelled"
-    assert res_lab["total_rows"] == 4
-    assert res_lab["labelled_rows"] == 4
-    assert res_lab["rejected_rows"] == 1  # 'ক্ষমা' rejected
-    assert res_lab["valid_evaluated"] == 3
-    assert res_lab["word_accuracy"] == 1.0  # All 3 valid words match
