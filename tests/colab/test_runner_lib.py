@@ -10,10 +10,12 @@ import yaml
 
 from colab.runner_lib import (
     ConfigHashMismatchError,
+    QueueGateError,
     RunnerError,
     execute_run,
     run_supervised_queue,
     verify_preflight_and_fingerprint,
+    verify_queue_gate,
 )
 
 
@@ -137,4 +139,51 @@ def test_runner_status_json_persistence() -> None:
         status_data = json.loads(status_file.read_text(encoding="utf-8"))
         assert status_data["status"] == "COMPLETED"
         assert "TEST_RUN_1" in status_data["completed_runs"]
+
+
+def test_queue_gate_requires_bpe16_first() -> None:
+    """Queue gate must refuse non-bpe16 run if PT-bpe16-10m-s0 has not completed."""
+    import tempfile
+    with tempfile.TemporaryDirectory() as tmp:
+        runs_base = Path(tmp)
+        with pytest.raises(QueueGateError) as exc:
+            verify_queue_gate("PT-akshara-10m-s0", runs_base=runs_base)
+        assert "PT-bpe16-10m-s0 must run and complete first" in str(exc.value)
+
+
+def test_queue_gate_aborts_when_bpe16_smoothed_loss_exceeds_threshold() -> None:
+    """Queue gate must halt and refuse subsequent runs if PT-bpe16-10m-s0 smoothed loss >= 7.5."""
+    import json
+    import tempfile
+    with tempfile.TemporaryDirectory() as tmp:
+        runs_base = Path(tmp)
+        bpe16_dir = runs_base / "PT-bpe16-10m-s0"
+        bpe16_dir.mkdir(parents=True)
+        # Record bad smoothed loss >= 7.5
+        (bpe16_dir / "done.json").write_text(json.dumps({
+            "status": "COMPLETED",
+            "smoothed_loss_500": 7.82,
+        }), encoding="utf-8")
+
+        with pytest.raises(QueueGateError) as exc:
+            verify_queue_gate("PT-akshara-10m-s0", runs_base=runs_base)
+        assert "smoothed loss (7.8200) >= 7.5 ceiling" in str(exc.value)
+
+
+def test_queue_gate_allows_subsequent_runs_when_bpe16_passes() -> None:
+    """Queue gate must permit subsequent runs when PT-bpe16-10m-s0 smoothed loss < 7.5."""
+    import json
+    import tempfile
+    with tempfile.TemporaryDirectory() as tmp:
+        runs_base = Path(tmp)
+        bpe16_dir = runs_base / "PT-bpe16-10m-s0"
+        bpe16_dir.mkdir(parents=True)
+        # Record good smoothed loss < 7.5 (e.g. 6.42)
+        (bpe16_dir / "done.json").write_text(json.dumps({
+            "status": "COMPLETED",
+            "smoothed_loss_500": 6.42,
+        }), encoding="utf-8")
+
+        # Must not raise
+        verify_queue_gate("PT-akshara-10m-s0", runs_base=runs_base)
 

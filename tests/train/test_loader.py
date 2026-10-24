@@ -4,6 +4,7 @@ tests/train/test_loader.py : Tests for deterministic batch sampler and padding l
 
 from pathlib import Path
 
+import pytest
 import torch
 
 from src.rgpt.data.chunks import chunk_document

@@ -32,6 +32,77 @@ class ConfigHashMismatchError(RunnerError):
     pass
 
 
+class QueueGateError(RunnerError):
+    """Raised when queue gate condition (bpe16 first, steps 450-500 smoothed loss < 7.5) fails."""
+    pass
+
+
+GATE_RUN_ID = "PT-bpe16-10m-s0"
+SMOOTHED_LOSS_CEILING = 7.5
+
+
+def verify_queue_gate(
+    run_id: str,
+    runs_base: Path,
+    enforce_gate: bool = True,
+    gate_run_id: str = GATE_RUN_ID,
+    ceiling: float = SMOOTHED_LOSS_CEILING,
+) -> None:
+    """Enforce that gate_run_id (PT-bpe16-10m-s0) executes first and its smoothed loss is < 7.5."""
+    if not enforce_gate:
+        return
+
+    # The gate run itself is always allowed to launch first
+    if run_id == gate_run_id:
+        return
+
+    gate_dir = runs_base / gate_run_id
+    done_file = gate_dir / "done.json"
+
+    # If gate run has not completed, refuse subsequent runs
+    if not done_file.exists():
+        raise QueueGateError(
+            f"Queue gate violation: {gate_run_id} must run and complete first before launching {run_id}."
+        )
+
+    try:
+        done_data = json.loads(done_file.read_text(encoding="utf-8"))
+    except Exception as e:
+        raise QueueGateError(f"Queue gate error reading {done_file}: {e}") from e
+
+    if done_data.get("status") != "COMPLETED":
+        raise QueueGateError(
+            f"Queue gate violation: {gate_run_id} status is '{done_data.get('status')}', expected 'COMPLETED'."
+        )
+
+    # Extract smoothed loss across steps 450-500
+    smoothed_loss = done_data.get(
+        "smoothed_loss_500", done_data.get("smoothed_loss", done_data.get("final_loss"))
+    )
+
+    # Check metrics.jsonl if available for exact 450-500 steps window
+    metrics_file = gate_dir / "metrics.jsonl"
+    if metrics_file.exists():
+        window_losses = []
+        with open(metrics_file, "r", encoding="utf-8") as f:
+            for line in f:
+                if line.strip():
+                    r = json.loads(line)
+                    step = r.get("step", 0)
+                    if 450 <= step <= 500 and "loss" in r:
+                        window_losses.append(r["loss"])
+        if window_losses:
+            smoothed_loss = sum(window_losses) / len(window_losses)
+
+    if smoothed_loss is None:
+        raise QueueGateError(f"Queue gate violation: no valid loss metrics found for {gate_run_id}.")
+
+    if smoothed_loss >= ceiling:
+        raise QueueGateError(
+            f"Queue gate failure: {gate_run_id} steps 450-500 smoothed loss ({smoothed_loss:.4f}) >= {ceiling} ceiling. Subsequent runs blocked."
+        )
+
+
 def verify_colab_environment(expected_gpu: str = "L4", check_drive: bool = False) -> bool:
     """Assert active GPU matches expected type and Google Drive is mounted."""
     import torch
@@ -271,6 +342,11 @@ def run_supervised_queue(
 
             # Verify preflight before starting
             verify_preflight_and_fingerprint(rid, is_smoke=is_smoke, root_dir=root)
+
+            # Invariant: Queue gate requires bpe16 first and steps 450-500 smoothed loss < 7.5 before continuing
+            enforce_gate = entry.get("enforce_gate", not is_smoke)
+            if enforce_gate:
+                verify_queue_gate(rid, runs_base=runs_base)
 
             # Execute run
             try:

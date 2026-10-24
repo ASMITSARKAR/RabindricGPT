@@ -24,10 +24,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run quick preflight (P0 - P2)
-        run: |
-          python scripts/00_preflight.py --quick
-
-      - name: Run mini end-to-end pipeline (P3)
+      - name: Run Clean Clone Preflight (P0 - P4)
         run: |
           python scripts/00_preflight.py --full

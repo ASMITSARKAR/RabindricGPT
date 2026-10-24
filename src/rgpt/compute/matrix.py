@@ -2,9 +2,10 @@
 src/rgpt/compute/matrix.py : Generator for results/run_matrix.csv defining all planned training and adaptation runs.
 Backlog/Phase : Phase M      Docs : 15_BUILD_DIRECTIVE.md §2, Phase M; 10_RUN_MATRIX.md; 08_COMPUTE_BUDGET.md
 Contract      : generate_run_matrix() -> list[dict]
-Invariants    : Matrix run counts match section 2 (10M: 15 runs, 25M: 6, 50M: 4, 100M: 2 gated); IDs unique
+Invariants    : Approved runs: 10M all 5 (byte 2 seeds, others 3 seeds = 14), 25M all 5 (1 seed each = 5),
+                50M akshara and bpe16 only (1 seed each = 2); 12 approved adapt runs; total <= 150 u.
 Failure modes : Duplicate run ID generated; budget total exceeds planned ceiling
-Status        : TESTED
+Status        : TESTED (Empirical Calibration Approved Set)
 """
 
 import csv
@@ -20,14 +21,15 @@ def generate_run_matrix() -> List[Dict[str, Any]]:
     """
     matrix: List[Dict[str, Any]] = []
 
-    # 1. 10M Main Ladder: 5 tokenizers (byte: 2 seeds; char, aks, bpe16, uni16: 3 seeds) = 14 runs
-    # Measured on FineWeb shards: byte=6.71, char=1.71, aks=1.20, bpe16=0.49, uni16=0.49
+    # 1. 10M Main Ladder: 5 tokenizers (byte: 2 seeds; char, aks, bpe16, uni16: 3 seeds) = 14 approved runs
+    # Calibrated from measured tokens/s on L4 (burn rate 0.34u / 10.6 min):
+    # byte=11.99, char=3.70, aks=2.63, bpe16=1.06, uni16=1.04
     tok_10m = [
-        ("byte", 6.71, [0, 1]),
-        ("char", 1.71, [0, 1, 2]),
-        ("akshara", 1.20, [0, 1, 2]),
-        ("bpe16", 0.49, [0, 1, 2]),
-        ("uni16", 0.49, [0, 1, 2]),
+        ("byte", 11.99, [0, 1]),
+        ("char", 3.70, [0, 1, 2]),
+        ("akshara", 2.63, [0, 1, 2]),
+        ("bpe16", 1.06, [0, 1, 2]),
+        ("uni16", 1.04, [0, 1, 2]),
     ]
     for tok, units, seeds in tok_10m:
         for seed in seeds:
@@ -43,14 +45,14 @@ def generate_run_matrix() -> List[Dict[str, Any]]:
                 "approved": True,
             })
 
-    # 2. 25M Main Ladder: char/aks/bpe16/uni16 (2 seeds) plus byte (1 seed) = 9 runs
-    # Measured on FineWeb shards: byte=33.61, char=9.14, aks=6.08, bpe16=2.39, uni16=2.35
+    # 2. 25M Main Ladder: all 5 tokenizers, 1 seed each approved (seed 0); seed 1 unapproved
+    # Calibrated from measured throughput: byte=29.00, char=8.94, aks=6.36, bpe16=2.56, uni16=2.51
     tok_25m = [
-        ("byte", 33.61, [0]),
-        ("char", 9.14, [0, 1]),
-        ("akshara", 6.08, [0, 1]),
-        ("bpe16", 2.39, [0, 1]),
-        ("uni16", 2.35, [0, 1]),
+        ("byte", 29.00, [0]),
+        ("char", 8.94, [0, 1]),
+        ("akshara", 6.36, [0, 1]),
+        ("bpe16", 2.56, [0, 1]),
+        ("uni16", 2.51, [0, 1]),
     ]
     for tok, units, seeds in tok_25m:
         for seed in seeds:
@@ -63,18 +65,17 @@ def generate_run_matrix() -> List[Dict[str, Any]]:
                 "lr": 8e-4,
                 "depends_on": f"PT-{tok}-10m-s0",
                 "planned_units": units,
-                "approved": True,
+                "approved": (seed == 0),  # 1 seed approved per user directive
             })
 
-    # 3. 50M Main Ladder: aks/bpe16/uni16 (1 seed) = 3 runs (byte & char excluded per DR-6 & budget cap)
-    # Measured on FineWeb shards: aks=21.03 (exact 21.0284), bpe16=8.07, uni16=7.93
-    # Note: 2.2e16 FLOPs/unit is an unmeasured planning assumption awaiting Action B empirical calibration.
+    # 3. 50M Main Ladder: akshara and bpe16 only, 1 seed each (seed 0); uni16 unapproved
+    # Calibrated from measured throughput: aks=12.26, bpe16=4.93, uni16=4.85
     tok_50m = [
-        ("akshara", 21.03),
-        ("bpe16", 8.07),
-        ("uni16", 7.93),
+        ("akshara", 12.26, True),
+        ("bpe16", 4.93, True),
+        ("uni16", 4.85, False),
     ]
-    for tok, units in tok_50m:
+    for tok, units, is_appr in tok_50m:
         matrix.append({
             "stage": "pretrain_50m",
             "run_id": f"PT-{tok}-50m-s0",
@@ -84,26 +85,26 @@ def generate_run_matrix() -> List[Dict[str, Any]]:
             "lr": 6e-4,
             "depends_on": f"PT-{tok}-25m-s0",
             "planned_units": units,
-            "approved": True,
+            "approved": is_appr,
         })
 
-    # 4. Adaptation Runs on Tagore shards (4 epochs across active model configurations) = 13 runs
+    # 4. Adaptation Runs on Tagore shards (4 epochs) = 12 approved runs
     adapt_runs = [
-        ("10m", "byte", 0.15),
-        ("10m", "char", 0.04),
-        ("10m", "akshara", 0.03),
-        ("10m", "bpe16", 0.01),
-        ("10m", "uni16", 0.01),
-        ("25m", "byte", 0.31),
-        ("25m", "char", 0.08),
-        ("25m", "akshara", 0.06),
-        ("25m", "bpe16", 0.03),
-        ("25m", "uni16", 0.03),
-        ("50m", "akshara", 0.10),
-        ("50m", "bpe16", 0.05),
-        ("50m", "uni16", 0.04),
+        ("10m", "byte", 0.19, True),
+        ("10m", "char", 0.06, True),
+        ("10m", "akshara", 0.04, True),
+        ("10m", "bpe16", 0.02, True),
+        ("10m", "uni16", 0.02, True),
+        ("25m", "byte", 0.40, True),
+        ("25m", "char", 0.13, True),
+        ("25m", "akshara", 0.09, True),
+        ("25m", "bpe16", 0.04, True),
+        ("25m", "uni16", 0.04, True),
+        ("50m", "akshara", 0.16, True),
+        ("50m", "bpe16", 0.07, True),
+        ("50m", "uni16", 0.07, False),  # unapproved matching 50M pretrain
     ]
-    for size, tok, units in adapt_runs:
+    for size, tok, units, is_appr in adapt_runs:
         matrix.append({
             "stage": f"adapt_{size}",
             "run_id": f"ADAPT-{tok}-{size}",
@@ -113,16 +114,15 @@ def generate_run_matrix() -> List[Dict[str, Any]]:
             "lr": 3e-4,
             "depends_on": f"PT-{tok}-{size}-s0",
             "planned_units": units,
-            "approved": True,
+            "approved": is_appr,
         })
 
-    # 5. 10M LR Sweep: bpe16 and akshara, lr in {5e-4, 1e-3, 2e-3}, 1 seed
-    # Relative kill rule: abort at step 500 if loss hasn't dropped by >=15% (ratio > 0.85) or > 7.5 (lr=1e-3 is in main ladder PT-{tok}-10m-s0)
+    # 5. 10M LR Sweep: unapproved
     lr_sweep_runs = [
-        ("bpe16", 5e-4, 0.49),
-        ("bpe16", 2e-3, 0.49),
-        ("akshara", 5e-4, 1.20),
-        ("akshara", 2e-3, 1.20),
+        ("bpe16", 5e-4, 1.06),
+        ("bpe16", 2e-3, 1.06),
+        ("akshara", 5e-4, 2.63),
+        ("akshara", 2e-3, 2.63),
     ]
     for tok, lr_val, units in lr_sweep_runs:
         lr_tag = "5e-4" if lr_val == 5e-4 else "2e-3"
@@ -138,12 +138,11 @@ def generate_run_matrix() -> List[Dict[str, Any]]:
             "approved": False,
         })
 
-    # 6. 100M Stage (Future Work, Unfunded & Unbudgeted): approved: False
-    # Retained in repo for completeness but excluded from funded plan & approved totals per Round 17 directive
+    # 6. 100M Stage: unapproved
     tok_100m = [
-        ("akshara", 79.47),
-        ("bpe16", 29.84),
-        ("uni16", 29.34),
+        ("akshara", 24.52),
+        ("bpe16", 9.86),
+        ("uni16", 9.70),
     ]
     for tok, units in tok_100m:
         matrix.append({
@@ -159,9 +158,9 @@ def generate_run_matrix() -> List[Dict[str, Any]]:
         })
 
     adapt_100m = [
-        ("100m", "akshara", 0.20),
-        ("100m", "bpe16", 0.09),
-        ("100m", "uni16", 0.09),
+        ("100m", "akshara", 0.32),
+        ("100m", "bpe16", 0.14),
+        ("100m", "uni16", 0.14),
     ]
     for size, tok, units in adapt_100m:
         matrix.append({

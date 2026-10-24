@@ -46,21 +46,24 @@ def main() -> None:
     sweep_units = sum(r["planned_units"] for r in matrix if r["stage"] == "lr_sweep_10m")
     funded_with_sweep = approved_units + sweep_units
 
+    count_25m_approved = sum(1 for r in matrix if r["stage"] == "pretrain_25m" and r["approved"])
+    count_50m_approved = sum(1 for r in matrix if r["stage"] == "pretrain_50m" and r["approved"])
+
     print(f"Generated run matrix with {len(matrix)} runs to {saved}")
-    print(f"Counts: 10M={count_10m}, 25M={count_25m}, 50M={count_50m}, 100M={count_100m} (unapproved), Adapt={count_adapt_approved}+{count_adapt_unapproved}, Sweep={count_sweep}")
+    print(f"Counts: 10M={count_10m}, 25M={count_25m_approved} approved (+{count_25m - count_25m_approved} unapproved), 50M={count_50m_approved} approved (+{count_50m - count_50m_approved} unapproved), 100M={count_100m} (unapproved), Adapt={count_adapt_approved}+{count_adapt_unapproved}, Sweep={count_sweep}")
     print(f"Approved sum (10M, 25M, 50M): {approved_units:.2f} u")
     print(f"Sum with LR sweep: {funded_with_sweep:.2f} u")
-    print(f"Cap of 200 with 35u reserve: {funded_with_sweep:.2f} u <= 165.00 u (Reserve: {200.0 - funded_with_sweep:.2f} u >= 35.00 u)")
+    print(f"Confirmed budget ceiling: {approved_units:.2f} u <= 150.00 u (Reserve: {200.0 - approved_units:.2f} u >= 35.00 u)")
 
     assert count_10m == 14, f"Expected 14 runs at 10M, got {count_10m}"
-    assert count_25m == 9, f"Expected 9 runs at 25M, got {count_25m}"
-    assert count_50m == 3, f"Expected 3 runs at 50M, got {count_50m}"
+    assert count_25m_approved == 5, f"Expected 5 approved runs at 25M, got {count_25m_approved}"
+    assert count_50m_approved == 2, f"Expected 2 approved runs at 50M, got {count_50m_approved}"
     assert count_100m == 3, f"Expected 3 unapproved runs at 100M, got {count_100m}"
-    assert count_adapt_approved == 13, f"Expected 13 approved adapt runs, got {count_adapt_approved}"
-    assert count_adapt_unapproved == 3, f"Expected 3 unapproved 100M adapt runs, got {count_adapt_unapproved}"
+    assert count_adapt_approved == 12, f"Expected 12 approved adapt runs, got {count_adapt_approved}"
+    assert count_adapt_unapproved == 4, f"Expected 4 unapproved adapt runs, got {count_adapt_unapproved}"
     assert count_sweep == 4, f"Expected 4 sweep runs, got {count_sweep}"
     assert len(matrix) == 49, f"Expected 49 total runs, got {len(matrix)}"
-    assert approved_units <= 165.0, f"Approved units {approved_units} exceed 165u cap"
+    assert approved_units <= 150.0, f"Approved units {approved_units:.2f} exceed 150u ceiling"
 
 
 if __name__ == "__main__":

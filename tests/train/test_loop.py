@@ -5,6 +5,7 @@ tests/train/test_loop.py : Tests for training loop, NaN loss abort guard, and id
 import json
 from pathlib import Path
 
+import pytest
 import yaml
 
 from src.rgpt.train.loop import train
