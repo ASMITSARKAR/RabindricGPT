@@ -42,6 +42,7 @@ def normalize_text(text: str) -> Tuple[str, Dict[str, int]]:
         "u09f0_mapped": 0,
         "khanda_ta_canonicalized": 0,
         "control_chars_removed": 0,
+        "bom_stripped": 0,
     }
 
     # Step 1: NFC Normalization
@@ -90,8 +91,15 @@ def normalize_text(text: str) -> Tuple[str, Dict[str, int]]:
 
     text = c_ya_pattern.sub(_zwj_replace, text)
 
-    # Step 5: Control character removal (keep \n and \t)
-    # Strip all Unicode general category C (control, format, surrogate, private use) except \n and \t
+    # Step 5: Control character and BOM removal (keep \n and \t)
+    # Strip U+FEFF (BOM / Zero-Width No-Break Space)
+    feff_count = text.count("\ufeff")
+    if feff_count > 0:
+        stats["bom_stripped"] = feff_count
+        stats["control_chars_removed"] += feff_count
+        text = text.replace("\ufeff", "")
+
+    # Strip all Unicode general category C control codes except \n and \t
     text, ctrl_count = re.subn(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f-\x9f]", "", text)
     stats["control_chars_removed"] += ctrl_count
 

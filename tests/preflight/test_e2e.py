@@ -19,6 +19,7 @@ def test_mini_e2e_pipeline_execution() -> None:
     assert res["stages"]["equal_bytes_invariant"]
     assert res["stages"]["shard_tokens_match_encode"]
     assert res["stages"]["spm_shards_and_compression_valid"]
+    assert res["stages"]["tagore_shard_char_totals_match_cleaned"]
     assert res["stages"]["model_forward"]
     assert res["stages"]["bpc_evaluated"]
     assert res["stages"]["bootstrap_ci"]

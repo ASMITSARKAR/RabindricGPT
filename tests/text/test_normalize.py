@@ -113,3 +113,14 @@ def test_poetry_newlines_preserved() -> None:
     poem = "মেঘের কোলে রোদ হেসেছে,\nবাদল গেছে টুটি—\nআজ আমাদের ছুটি ও ভাই,\nআজ আমাদের ছুটি।"
     norm, _ = normalize_text(poem)
     assert norm.count("\n") == 3
+
+
+def test_feff_bom_stripped() -> None:
+    """U+FEFF (BOM / Zero-Width No-Break Space) must be stripped from text."""
+    raw = "\ufeffরবীন্দ্রনাথ\ufeff \ufeffঠাকুর\ufeff\n"
+    norm, stats = normalize_text(raw)
+    assert "\ufeff" not in norm
+    assert norm == "রবীন্দ্রনাথ ঠাকুর"
+    assert stats["bom_stripped"] == 4
+    assert stats["control_chars_removed"] >= 4
+

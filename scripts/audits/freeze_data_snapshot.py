@@ -34,6 +34,7 @@ def generate_data_snapshot() -> Dict[str, Any]:
 
     cleaned_dir = PROJECT_ROOT / "data/cleaned"
     shards_dir = PROJECT_ROOT / "shards"
+    tok_dir = PROJECT_ROOT / "tok"
 
     cleaned_files: List[Dict[str, Any]] = []
     for p in sorted(cleaned_dir.glob("**/*")):
@@ -51,13 +52,24 @@ def generate_data_snapshot() -> Dict[str, Any]:
             sha = hash_file_sha256(p)
             shard_files.append({"path": rel, "size_bytes": size, "sha256": sha})
 
+    tok_files: List[Dict[str, Any]] = []
+    if tok_dir.exists():
+        for p in sorted(tok_dir.glob("**/*")):
+            if p.is_file():
+                rel = str(p.relative_to(PROJECT_ROOT)).replace("\\", "/")
+                size = p.stat().st_size
+                sha = hash_file_sha256(p)
+                tok_files.append({"path": rel, "size_bytes": size, "sha256": sha})
+
     snapshot = {
         "git_commit_sha": git_sha,
         "frozen_timestamp": timestamp,
         "num_cleaned_files": len(cleaned_files),
         "num_shard_files": len(shard_files),
+        "num_tok_files": len(tok_files),
         "data_cleaned": cleaned_files,
         "shards": shard_files,
+        "tok": tok_files,
     }
     return snapshot
 
@@ -71,6 +83,7 @@ def format_snapshot_text(snapshot: Dict[str, Any]) -> str:
         f"Frozen Timestamp : {snapshot['frozen_timestamp']}",
         f"Cleaned Files    : {snapshot['num_cleaned_files']}",
         f"Shard Files      : {snapshot['num_shard_files']}",
+        f"Tokenizer Files  : {snapshot.get('num_tok_files', 0)}",
         "-" * 80,
         "\n1. Cleaned Data Files (data/cleaned/**):",
     ]
@@ -79,6 +92,10 @@ def format_snapshot_text(snapshot: Dict[str, Any]) -> str:
 
     lines.append("\n2. Shard Files & Indices (shards/**):")
     for item in snapshot["shards"]:
+        lines.append(f"  {item['sha256']}  {item['size_bytes']:>12,d} bytes  {item['path']}")
+
+    lines.append("\n3. Tokenizer Files (tok/**):")
+    for item in snapshot.get("tok", []):
         lines.append(f"  {item['sha256']}  {item['size_bytes']:>12,d} bytes  {item['path']}")
 
     lines.append("-" * 80)
@@ -97,7 +114,10 @@ def main() -> None:
     txt_content = format_snapshot_text(snapshot)
     txt_path.write_text(txt_content, encoding="utf-8")
 
-    print(f"Data snapshot frozen: {len(snapshot['data_cleaned'])} cleaned files, {len(snapshot['shards'])} shard files.")
+    print(
+        f"Data snapshot frozen: {len(snapshot['data_cleaned'])} cleaned files, "
+        f"{len(snapshot['shards'])} shard files, {len(snapshot['tok'])} tokenizer files."
+    )
     print(f"Saved to: {json_path} and {txt_path}")
 
 

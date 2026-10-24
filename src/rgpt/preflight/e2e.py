@@ -156,6 +156,24 @@ def run_mini_pipeline(fixture_dir: Union[str, Path]) -> Dict[str, Any]:
                         spm_valid = False
         stages["spm_shards_and_compression_valid"] = spm_valid
 
+        # P3 check: verify that shards/*/index.json char totals equal lengths of data/cleaned/tagore/*.txt
+        tagore_chars_matched = True
+        tagore_dir = Path("data/cleaned/tagore")
+        shards_dir = Path("shards/wikisource")
+        if tagore_dir.exists() and shards_dir.exists():
+            for sname in ("train", "val", "test"):
+                t_file = tagore_dir / f"{sname}.txt"
+                if t_file.exists():
+                    expected_chars = len(t_file.read_text(encoding="utf-8"))
+                    for tok_id in ("byte", "char", "aks", "bpe16", "bpe8", "uni16"):
+                        idx_file = shards_dir / tok_id / sname / "index.json"
+                        if idx_file.exists():
+                            idx_meta = json.loads(idx_file.read_text(encoding="utf-8"))
+                            if idx_meta.get("total_chars") != expected_chars:
+                                tagore_chars_matched = False
+                                break
+        stages["tagore_shard_char_totals_match_cleaned"] = tagore_chars_matched
+
 
         # Stage 4: Model Forward Pass
         cfg = ModelConfig(

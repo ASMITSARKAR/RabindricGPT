@@ -1,15 +1,15 @@
 ================================================================================
 CORPUS-WIDE AKSHARA SEGMENTATION AUDIT REPORT
 ================================================================================
-Git Commit SHA : 6e93d78e0507046c1cede9bf7d7679e5f8355925
-Audit Timestamp: 2026-10-24 05:31:48 UTC
+Git Commit SHA : 7231bf3b84bc6c50b4563e2f61217e0247ecb12f
+Audit Timestamp: 2026-10-24 13:13:24 UTC
 Baseline Engine: regex module \X (version 2026.7.19)
 Tokenizer Vocab: tok/aks/vocab.json (vocab_size=8192)
 
 Input File SHA-256 Checksums:
   - data/cleaned/fineweb2/egen.txt: 80c8d403aa200ce66600846e6430c302682d80c47100054e11b774414ccaa22a
   - data/cleaned/fineweb2/fw2_tokenizer_sample_100m.txt: 7a1163f6c16390a23fb66e9561f291e2a6123e819b546f6608246060b2059910
-  - data/cleaned/tagore/test.txt: d9cc7d2b1c3fc09e9a6693e53da163f70343e376e0283f2dfd31c6b51f44de07
+  - data/cleaned/tagore/test.txt: 177b1f4cd40198c9199cf9c7fad09a01562b8d3808e22e88187c5502c74423a2
   - data/cleaned/tagore/train.txt: 935d4aa0386afe5a01e4b0e66205c94e118041c7f553a7ad5166e07df9e8b851
   - data/cleaned/tagore/val.txt: 3e8f7121ad334833154834db451c423e3e2bd40457f8811e3dc33272514691d3
   - tok/aks/vocab.json: 0843e3d10b46538a4efd6e07e7c80422c27d9b5d28922b91d0b3eb2d5bdc7892
@@ -18,7 +18,7 @@ Input File SHA-256 Checksums:
 [TAGORE TRAIN] Scanning: data/cleaned/tagore/train.txt
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Character Count : 1,606,399 characters (loaded in 0.01s)
-Segmentation    : 1,050,429 units emitted in 1.17s
+Segmentation    : 1,050,429 units emitted in 0.74s
 
   1. Losslessness Invariant:
      Result: PASS ("".join(segment(text)) == text exactly)
@@ -35,7 +35,7 @@ Segmentation    : 1,050,429 units emitted in 1.17s
      (d) Contains space or newline (units must not cross whitespace): 0 violations
      (e) Contains consonant after vowel sign (second CV core): 0 violations
 
-  3. Baseline Comparison (regex module \X (v2026.7.19)) (evaluated in 1.50s):
+  3. Baseline Comparison (regex module \X (v2026.7.19)) (evaluated in 0.89s):
      Our boundaries     : 1,050,428
      Baseline boundaries: 1,050,433
      Agreed boundaries  : 1,050,424
@@ -57,7 +57,7 @@ Segmentation    : 1,050,429 units emitted in 1.17s
        05. [count=1] Ours: [ৱ · ি] vs Base: [ৱি] | Ex: 'িত গণক কোষ্ঠী হইতে আৱিষ্কার করিয়াছে; সহধর'
        06. [count=1] Ours: [ৱ · ো] vs Base: [ৱো] | Ex: 'বয়স আট; এখন আমি আঠোৱো। পিতার মতে আমার বিব'
 
-  4. Akshara Vocabulary Coverage (evaluated in 0.13s):
+  4. Akshara Vocabulary Coverage (evaluated in 0.07s):
      Total units      : 1,050,429
      OOV units        : 191 (0.0182%)
      Total tokens     : 1,051,109
@@ -87,7 +87,7 @@ Segmentation    : 1,050,429 units emitted in 1.17s
 [TAGORE VAL] Scanning: data/cleaned/tagore/val.txt
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Character Count : 164,746 characters (loaded in 0.00s)
-Segmentation    : 109,574 units emitted in 0.17s
+Segmentation    : 109,574 units emitted in 0.09s
 
   1. Losslessness Invariant:
      Result: PASS ("".join(segment(text)) == text exactly)
@@ -103,7 +103,7 @@ Segmentation    : 109,574 units emitted in 0.17s
      (d) Contains space or newline (units must not cross whitespace): 0 violations
      (e) Contains consonant after vowel sign (second CV core): 0 violations
 
-  3. Baseline Comparison (regex module \X (v2026.7.19)) (evaluated in 0.17s):
+  3. Baseline Comparison (regex module \X (v2026.7.19)) (evaluated in 0.08s):
      Our boundaries     : 109,573
      Baseline boundaries: 109,582
      Agreed boundaries  : 109,573
@@ -120,7 +120,7 @@ Segmentation    : 109,574 units emitted in 0.17s
      Top Disagreement Patterns (up to 50):
        01. [count=9] Ours: [অ্যা] vs Base: [অ্ · যা] | Ex: 'মিটেড ৪৭ গণেশচন্দ্র অ্যাভিনিউ। কলিকাত ১৩  ১৫'
 
-  4. Akshara Vocabulary Coverage (evaluated in 0.02s):
+  4. Akshara Vocabulary Coverage (evaluated in 0.01s):
      Total units      : 109,574
      OOV units        : 51 (0.0465%)
      Total tokens     : 109,758
@@ -149,8 +149,8 @@ Segmentation    : 109,574 units emitted in 0.17s
 
 [TAGORE TEST] Scanning: data/cleaned/tagore/test.txt
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Character Count : 461,467 characters (loaded in 0.00s)
-Segmentation    : 308,132 units emitted in 0.38s
+Character Count : 461,468 characters (loaded in 0.00s)
+Segmentation    : 308,132 units emitted in 0.20s
 
   1. Losslessness Invariant:
      Result: PASS ("".join(segment(text)) == text exactly)
@@ -167,7 +167,7 @@ Segmentation    : 308,132 units emitted in 0.38s
      (d) Contains space or newline (units must not cross whitespace): 0 violations
      (e) Contains consonant after vowel sign (second CV core): 0 violations
 
-  3. Baseline Comparison (regex module \X (v2026.7.19)) (evaluated in 0.39s):
+  3. Baseline Comparison (regex module \X (v2026.7.19)) (evaluated in 0.21s):
      Our boundaries     : 308,131
      Baseline boundaries: 308,137
      Agreed boundaries  : 308,129
@@ -186,11 +186,11 @@ Segmentation    : 308,132 units emitted in 0.38s
        02. [count=1] Ours: [  · ঁ] vs Base: [ ঁ] | Ex: 'া গেলে তো চলবেই না।” ঁ  “আমার কী করবার আছে'
        03. [count=1] Ours: [ৱ · া] vs Base: [ৱা] | Ex: 'হারী সমাজের উৎপাতে এৱা দ্বিতীয়বার ছাড়ল ভ'
 
-  4. Akshara Vocabulary Coverage (evaluated in 0.03s):
+  4. Akshara Vocabulary Coverage (evaluated in 0.02s):
      Total units      : 308,132
-     OOV units        : 39 (0.0127%)
-     Total tokens     : 308,260
-     Byte-fallback    : 0 (0.0000%)
+     OOV units        : 40 (0.0130%)
+     Total tokens     : 308,266
+     Byte-fallback    : 3 (0.0010%)
      Top 20 Frequent OOV Units:
        01. 'র্ছো': 5
        02. 'ণ্টিং': 4
@@ -216,7 +216,7 @@ Segmentation    : 308,132 units emitted in 0.38s
 [FINEWEB-2 E-GEN] Scanning: data/cleaned/fineweb2/egen.txt
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Character Count : 206,966 characters (loaded in 0.00s)
-Segmentation    : 132,791 units emitted in 0.18s
+Segmentation    : 132,791 units emitted in 0.09s
 
   1. Losslessness Invariant:
      Result: PASS ("".join(segment(text)) == text exactly)
@@ -233,7 +233,7 @@ Segmentation    : 132,791 units emitted in 0.18s
      (d) Contains space or newline (units must not cross whitespace): 0 violations
      (e) Contains consonant after vowel sign (second CV core): 0 violations
 
-  3. Baseline Comparison (regex module \X (v2026.7.19)) (evaluated in 0.18s):
+  3. Baseline Comparison (regex module \X (v2026.7.19)) (evaluated in 0.09s):
      Our boundaries     : 132,790
      Baseline boundaries: 132,874
      Agreed boundaries  : 132,783
@@ -255,7 +255,7 @@ Segmentation    : 132,791 units emitted in 0.18s
        05. [count=1] Ours: [œ · া · ং] vs Base: [œাং] | Ex: 'অর্ধউলঙ্গ শরীরের নি¤œাংশে একজন পুরুষ বিভিন্'
        06. [count=1] Ours: [তু্ · য] vs Base: [তু্য] | Ex: 'র নিতে পারেন যদি, মৃতু্য, বা রক্ত এবং সাহস, '
 
-  4. Akshara Vocabulary Coverage (evaluated in 0.02s):
+  4. Akshara Vocabulary Coverage (evaluated in 0.01s):
      Total units      : 132,791
      OOV units        : 7 (0.0053%)
      Total tokens     : 132,813
@@ -271,8 +271,8 @@ Segmentation    : 132,791 units emitted in 0.18s
 
 [FINEWEB-2 20M SAMPLE] Scanning: data/cleaned/fineweb2/fw2_tokenizer_sample_100m.txt (first 20,000,000 chars)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Character Count : 20,000,000 characters (loaded in 0.20s)
-Segmentation    : 12,859,552 units emitted in 16.53s
+Character Count : 20,000,000 characters (loaded in 0.12s)
+Segmentation    : 12,859,552 units emitted in 16.34s
 
   1. Losslessness Invariant:
      Result: PASS ("".join(segment(text)) == text exactly)
@@ -289,7 +289,7 @@ Segmentation    : 12,859,552 units emitted in 16.53s
      (d) Contains space or newline (units must not cross whitespace): 0 violations
      (e) Contains consonant after vowel sign (second CV core): 0 violations
 
-  3. Baseline Comparison (regex module \X (v2026.7.19)) (evaluated in 17.32s):
+  3. Baseline Comparison (regex module \X (v2026.7.19)) (evaluated in 17.68s):
      Our boundaries     : 12,859,551
      Baseline boundaries: 12,864,118
      Agreed boundaries  : 12,858,764
@@ -355,7 +355,7 @@ Segmentation    : 12,859,552 units emitted in 16.53s
        49. [count=3] Ours: [¯ · ি] vs Base: [¯ি] | Ex: ' রয়েছে অগণিত পদ্ম। ¯িœগ্ধতার রং আর আকাশে '
        50. [count=3] Ours: [μ · া] vs Base: [μা] | Ex: 'ষ্ট্রের নিরাপত্তা সংμান- কতিপয় সুনির্দিষ্'
 
-  4. Akshara Vocabulary Coverage (evaluated in 1.48s):
+  4. Akshara Vocabulary Coverage (evaluated in 1.56s):
      Total units      : 12,859,552
      OOV units        : 0 (0.0000%)
      Total tokens     : 12,859,552
@@ -384,5 +384,5 @@ Honest Scope & Cost:
   results/audits/akshara_review_queue.tsv provides empirical ground truth validation.
 
 ================================================================================
-AUDIT COMPLETED IN 83.48 SECONDS (< 10 minutes CPU constraint PASS)
+AUDIT COMPLETED IN 77.68 SECONDS (< 10 minutes CPU constraint PASS)
 ================================================================================
