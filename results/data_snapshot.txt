@@ -1,0 +1,110 @@
+================================================================================
+RABINDRICGPT FROZEN DATA & SHARD SNAPSHOT MANIFEST
+================================================================================
+Git Commit SHA   : 178472718fdbb9ac64ff783eadb076848f62ce8a
+Frozen Timestamp : 2026-10-24 03:20:20 UTC
+Cleaned Files    : 6
+Shard Files      : 90
+--------------------------------------------------------------------------------
+
+1. Cleaned Data Files (data/cleaned/**):
+  80c8d403aa200ce66600846e6430c302682d80c47100054e11b774414ccaa22a       551,430 bytes  data/cleaned/fineweb2/egen.txt
+  7a1163f6c16390a23fb66e9561f291e2a6123e819b546f6608246060b2059910   265,991,444 bytes  data/cleaned/fineweb2/fw2_tokenizer_sample_100m.txt
+  9f5b46f01c0d489bb4eb66c30c113cfb68cd0752a8957146adcefc9dd3bffea2     2,023,293 bytes  data/cleaned/fineweb2/train.txt
+  d9cc7d2b1c3fc09e9a6693e53da163f70343e376e0283f2dfd31c6b51f44de07     1,202,371 bytes  data/cleaned/tagore/test.txt
+  935d4aa0386afe5a01e4b0e66205c94e118041c7f553a7ad5166e07df9e8b851     4,232,396 bytes  data/cleaned/tagore/train.txt
+  3e8f7121ad334833154834db451c423e3e2bd40457f8811e3dc33272514691d3       430,320 bytes  data/cleaned/tagore/val.txt
+
+2. Shard Files & Indices (shards/**):
+  fab14a971b88460179df8184e351d36e3643b78be23aff3c3dec3982877fcf59        35,289 bytes  shards/fineweb2/aks/egen/index.json
+  7a52381bfd95193210db738bd93a629ab637ec260a5289171d9fd0eb90b7a10c       267,188 bytes  shards/fineweb2/aks/egen/shard_00000.bin
+  d3831dd86cb8c4b53cfaa1d0e5b1771df11c2850ae3a18f03bbd92ce25c0aa90       130,503 bytes  shards/fineweb2/aks/train/index.json
+  96b92ac84cd6bf7a4ee4e8e1767a157ed99dc356b3aa76605c5e728fd538e7e2       991,790 bytes  shards/fineweb2/aks/train/shard_00000.bin
+  d9033740a41cbdd24047fce56e4da4c952da44b683a8a38786af1e19752c10ad        35,208 bytes  shards/fineweb2/bpe16/egen/index.json
+  dc9133d2411208b6fe91552d27d2ee9312e645c4008714dbca261e8f9e56f658        96,042 bytes  shards/fineweb2/bpe16/egen/shard_00000.bin
+  ebb434a31b1a51ac675457601fb50984cdff2aace59a22e98e0722f0a63d9cd8       130,229 bytes  shards/fineweb2/bpe16/train/index.json
+  02ad18686729683d1984b45d715f3fac66f228074af65fd2da1fb2c06723b4c8       381,282 bytes  shards/fineweb2/bpe16/train/shard_00000.bin
+  ed3370f0d81bcab57645aefd35a1181864ed3dd34499c03525a339d82fe3efe1        35,211 bytes  shards/fineweb2/bpe8/egen/index.json
+  29869c03fa974e3e878327598b15d82985c28c2cc2ff71d21f2531a02338df89       109,404 bytes  shards/fineweb2/bpe8/egen/shard_00000.bin
+  7f49c78401158812bbe8b225763740913da653cd416d812bec6a9ba13bdad4da       130,281 bytes  shards/fineweb2/bpe8/train/index.json
+  bb16aaa8a69a9ddb5330b737926666ae7ca0f7cdcfe451e34aaa839c896813a8       435,292 bytes  shards/fineweb2/bpe8/train/shard_00000.bin
+  e75c2cd46b2f102a9ab93d6d835d18a8b33e63d1a7ff236057a0c6b908207891        35,619 bytes  shards/fineweb2/byte/egen/index.json
+  ec26f75d8b70f57f9bef55ba1f0d0e69c5f06193508b726c8b963117c6c15f94     1,102,860 bytes  shards/fineweb2/byte/egen/shard_00000.bin
+  3885fd0d8e004f7fda452d957fd3c74b01ae23481a16ae18e30e78268f23fe5b       131,756 bytes  shards/fineweb2/byte/train/index.json
+  4360c7aad704d02835553a224bd4a23a6dfbeb7fe12b5674446fe598f3bd5b9e     4,046,586 bytes  shards/fineweb2/byte/train/shard_00000.bin
+  b20d3822bd61dc99d36fbf56d68b99bfb4b452b593ff13d53d9684f80b22cde1        35,552 bytes  shards/fineweb2/char/egen/index.json
+  b21046bb2acae4ae912117a51ee59a3afc2e8efde23d49980cb225065c9d4dbc       413,974 bytes  shards/fineweb2/char/egen/shard_00000.bin
+  bad8dd5c308acb65474a897a915fc009fab1b1edd74db0ddbfb9c7a6e24012a7       131,308 bytes  shards/fineweb2/char/train/index.json
+  b02a013d8a0c2d26cde93e58840686bca35224bc2f5c13daaf2eb49e1d5c67ae     1,535,488 bytes  shards/fineweb2/char/train/shard_00000.bin
+  a7813383cfde5fc3fc88f37adefb2aa142426247a68f8c22d45e16468d15c248        35,207 bytes  shards/fineweb2/uni16/egen/index.json
+  37255d9f5b6bda31425c0456f4ac2d287c072e501fd71c74e395dbcbb512528b        94,154 bytes  shards/fineweb2/uni16/egen/shard_00000.bin
+  b372e52a3d9f55093630141f0e2cf6731c20662373854e36429ddd6501675e85       130,224 bytes  shards/fineweb2/uni16/train/index.json
+  d7d7b5076da5fd8d461e5c21053aa4511872dfe23b42d9b6de2dd86dba16501f       375,196 bytes  shards/fineweb2/uni16/train/shard_00000.bin
+  db159477cb1cf3986c53396c503157a90c93ff5d51f32b67f419e30339d8656e       317,440 bytes  shards/fineweb2_aks_egen.tar
+  9172f92aff7f5a804925f0e25d9c547739bef654d230000ae3e6ebf079d3e289     1,136,640 bytes  shards/fineweb2_aks_train.tar
+  cca4e81c4d7b3f5ee4940b1640cf73db9a8dde41c300535adbe5976f909dc69f       153,600 bytes  shards/fineweb2_bpe16_egen.tar
+  ddfd275541994bf7d593ee29690b5a542dbdaf3f737a0323c1667642cac1d9e1       512,000 bytes  shards/fineweb2_bpe16_train.tar
+  f7398ccc3bdb239c8f10e53cf5cb8de83429bf1ab9ee8d40707a547ec0dd43f5       163,840 bytes  shards/fineweb2_bpe8_egen.tar
+  a6d19dc8f5953ef07c5c9d4e61c096a5f520d40e442eb6e596e55345736cb86f       573,440 bytes  shards/fineweb2_bpe8_train.tar
+  8023e32ccff5611bccc8bfc2341ce3c719c71e8e8286342a8d2e2e63fa048be3     1,146,880 bytes  shards/fineweb2_byte_egen.tar
+  95fb9ee74581f21a2d55071977423a29925429b4ae24f50df2f34032a6347665     4,188,160 bytes  shards/fineweb2_byte_train.tar
+  e26a322022cbeb093978b1718be7b85fec17b7f335cb1ca42c8eb1dccce54fd9       460,800 bytes  shards/fineweb2_char_egen.tar
+  90c23baf1b6bd59265157e3b276684ebb790eecb85a17258c213741ee433ab7a     1,679,360 bytes  shards/fineweb2_char_train.tar
+  c4821b4a5952aad328b0723fef48c337a5a822991ac5ebd77aee51568ed4bfeb       153,600 bytes  shards/fineweb2_uni16_egen.tar
+  3b739b3b6a786c960b186a3d00aad05f1638fc70b0a307dcce911e7b4d5b8d82       501,760 bytes  shards/fineweb2_uni16_train.tar
+  cafb08a0dc1ac6f401ba625a8c3c4d1262f6e9b2c02500588fa734bcc64393b8        79,556 bytes  shards/wikisource/aks/test/index.json
+  978f4bfff86bae6b25503fd4fccc694e98b2bc41c919e668e35d530bb04e10b1       617,540 bytes  shards/wikisource/aks/test/shard_00000.bin
+  74bfce3c5a31568f5d79ed6a34ac22546baf5ce07c7c3b3b3c6afd969e007b5e       277,969 bytes  shards/wikisource/aks/train/index.json
+  468fe112454834c0c5eadab7a50d0b2d5e8d323b073895ea33fd613168ebfd81     2,102,162 bytes  shards/wikisource/aks/train/shard_00000.bin
+  4578ca55fa3f640158e6dcdec9dffa82dd8b66829c73d797f9b4e3397800bc3b        28,354 bytes  shards/wikisource/aks/val/index.json
+  9f5ee5de5d4a0745210437e63a3291867c4c1a8c86e910fcc43d59a6bd1fb65f       219,934 bytes  shards/wikisource/aks/val/shard_00000.bin
+  7aaab7b132260abc8794589d0218f1a8e94e68f54db02bb27c8a3c2e9f918833        79,387 bytes  shards/wikisource/bpe16/test/index.json
+  60733742ed50bae8d0fe2ba5af745d796aab3a7f6027885a620ad90fc1da011f       285,936 bytes  shards/wikisource/bpe16/test/shard_00000.bin
+  8f45df4ed3c21731f5a2fe007c1a6e81e04f8191d1ff6b8664b68285cb54738c       277,724 bytes  shards/wikisource/bpe16/train/index.json
+  b887cf117ffd76b522616aaa68911d8f5c37c2d40600e16dd365009ebb5d1f59       924,566 bytes  shards/wikisource/bpe16/train/shard_00000.bin
+  f35bf431e9bd3500694f9ff0492b8da6b81be9589796b84707e8592c58406844        28,318 bytes  shards/wikisource/bpe16/val/index.json
+  2e5502d2bcd9dc560afc0a17bfce1adc0897f5080323c2bb27950b1b3d546caf        94,754 bytes  shards/wikisource/bpe16/val/shard_00000.bin
+  7a236bbc159acbe91be50fb9e597334d1f86178a1d533800e890a5bb35b6b168        79,419 bytes  shards/wikisource/bpe8/test/index.json
+  67053538f69d5ad89148b99f816797a13c09fb1bffd16d8b7d226e1bc7df06c7       315,076 bytes  shards/wikisource/bpe8/test/shard_00000.bin
+  eb47df13a4cedeefa5d55152365a030830e21eb344e06c64d0b988b5657a9bac       277,762 bytes  shards/wikisource/bpe8/train/index.json
+  1c46c552d4df3dc511b58f96e0f256914bf26850eb9c8e971de6a50ec0eea757     1,035,426 bytes  shards/wikisource/bpe8/train/shard_00000.bin
+  b72d6b30184a54d57086594972cd39d9ddcc93577a9dbf6df8125d944f608053        28,322 bytes  shards/wikisource/bpe8/val/index.json
+  a78a6b5df0e424f0a1c42ff9b7d3ec77b9f7d7babd96e3807cacea7928a3cbd0       105,500 bytes  shards/wikisource/bpe8/val/shard_00000.bin
+  176138808175746ec6750db25ad2611bcdba629e92c6483db0b11c194c5b2b18        80,204 bytes  shards/wikisource/byte/test/index.json
+  15ea9fcd9706a60fd154278329fe7c6fae9d6c2618ce95fd62f01f169bdb381a     2,404,742 bytes  shards/wikisource/byte/test/shard_00000.bin
+  84308213c50593da6c489ab018ab1bf5923c9073f809d20bfbc193fc0cfdf87b       280,785 bytes  shards/wikisource/byte/train/index.json
+  6dfc2fe9faef83e2d35d9d1e35d0f3282356d024f77965c2ce6801ea21581430     8,464,792 bytes  shards/wikisource/byte/train/shard_00000.bin
+  2711c87a7b70746181561bc5fa70c59a170e9049d00aa0fec0e7a5906306a781        28,635 bytes  shards/wikisource/byte/val/index.json
+  11ce4313fa538a595e53a2f6dec9b8ed95406515ebaaec676da866d753c84f15       860,640 bytes  shards/wikisource/byte/val/shard_00000.bin
+  fe35216a85df819034be9d8a25ce0d9fb561d9791ada2eb69b9f6904986ed2a9        80,061 bytes  shards/wikisource/char/test/index.json
+  8b8920d89e50040af025a272383d9bacb72cf9f08477c0db12013dd72a07c291       922,942 bytes  shards/wikisource/char/test/shard_00000.bin
+  d81d1703ebf6a7edf0a7033e5d0de55fca34ec135a92b41f905791c588515193       280,112 bytes  shards/wikisource/char/train/index.json
+  04a0d3a55d835a3129036c01305167068efa528a165cd18ba4b125d156d74b97     3,212,826 bytes  shards/wikisource/char/train/shard_00000.bin
+  96d9d46d575643221b0b4bc292b01a8148e8231b56305a33aa51ca7d39376430        28,568 bytes  shards/wikisource/char/val/index.json
+  dbaf5cbad2c9eb4f3a0795f8c1353c92e0e44c472a62b966fa9a5cd5932a0e1b       329,496 bytes  shards/wikisource/char/val/shard_00000.bin
+  e8315b71ec2942e7aede008aa2cb7ad741513e93b643e46eda8550c91c9cb2d2        79,389 bytes  shards/wikisource/uni16/test/index.json
+  33c34e9320d19017952c55aed2c60d4a8f6f9ee255b89852a69ebe64970b9d13       287,486 bytes  shards/wikisource/uni16/test/shard_00000.bin
+  4ec403fd1d9be09005b8fad075d80c0518dce15dfbfe7f438107bf75c42ff93c       277,721 bytes  shards/wikisource/uni16/train/index.json
+  3a1b3ac81b7bdc07a95e3bf679300d7c0ee37a418e42f5b7e0f7c5dfe2681115       914,682 bytes  shards/wikisource/uni16/train/shard_00000.bin
+  ed9739db1fa8ad52f40b7668fc242625741a9f408602ce87c8fed3e216ac7762        28,318 bytes  shards/wikisource/uni16/val/index.json
+  5578ebaa2c89aedacdd695f5fcb8146a84b0a6ded80c535cb901a179173667e7        94,708 bytes  shards/wikisource/uni16/val/shard_00000.bin
+  5deaaf758f4ae20e5268c3ee7cfa5c0dcfa9ecf65d2fc2ae4c04c3f4ce7f4741       604,160 bytes  shards/wikisource_aks_test.tar
+  015014ec3acd148e0eab33df9505770e2b0d5e9436b8e4448385694ba0f28042     2,385,920 bytes  shards/wikisource_aks_train.tar
+  be7cee3fe277956cf884dfa9272f38384137ab76e6f567160a9320419f5e2db5       266,240 bytes  shards/wikisource_aks_val.tar
+  d3ada9449e33d12e83fa90ff9f36e6d4b68db7460b00bf9f2204f34662733a32       296,960 bytes  shards/wikisource_bpe16_test.tar
+  90597919105a5ccbe88a4a776af38f2fbeb71d010accb09c96c627a877b2e992     1,024,000 bytes  shards/wikisource_bpe16_train.tar
+  6f50c6c8ad81b570bcd676e91758503b404bbca1dbe479dd1410214644f61318       133,120 bytes  shards/wikisource_bpe16_val.tar
+  fc7f975b11d0959b730833f8b6dd33c400c467f0b48b4c3eae12882e0cd70025       317,440 bytes  shards/wikisource_bpe8_test.tar
+  653da992f499116d040ea1951112e4bf5758e1b2034c48ee1fe507a85dfb53f4     1,095,680 bytes  shards/wikisource_bpe8_train.tar
+  5efe24540e65ed1225efb62c185ce458bc2a76ac860e39828d8c22cc672d552f       143,360 bytes  shards/wikisource_bpe8_val.tar
+  bd89c9a0cea7afe72598c12a8b19113201ba0be2eed30962507ba9ae2455f7b3     2,140,160 bytes  shards/wikisource_byte_test.tar
+  26f75a1a881b890147bc0977b2b745c79ee7903e59224c26d6e3f51e4e8e1198     8,734,720 bytes  shards/wikisource_byte_train.tar
+  a1d3f49e33f54379885fb7cfa9cea9ca3c5ebb7c3f2dd2ba14f860749fef61cc       931,840 bytes  shards/wikisource_byte_val.tar
+  e2450f7e78ee58bdbe26db0b3df2d088e8f1ccaca0048bb2037a5af44ece3aa1       870,400 bytes  shards/wikisource_char_test.tar
+  ea8d6ee0589463c5c35fad36aed87f169126c6cae8f39f2a4357c6dcb1703395     3,502,080 bytes  shards/wikisource_char_train.tar
+  144b9d6bf46d89ef09b918a9950d38ec91d32f8a5e92e467746e7e3f7875672a       378,880 bytes  shards/wikisource_char_val.tar
+  0f97eee0fa13085a2c47763647a2f51cec6275ec8a45bdba4795b3c4e2507709       307,200 bytes  shards/wikisource_uni16_test.tar
+  73c794074387981df949eb7df7b9d61bf6471bbf6072595de695b51b9b0a9f9c     1,024,000 bytes  shards/wikisource_uni16_train.tar
+  049f866fe4dc27fe2282f0f590eb2db80875ed9812279f7ddf4c58d4079b638b       133,120 bytes  shards/wikisource_uni16_val.tar
+--------------------------------------------------------------------------------
+END OF MANIFEST

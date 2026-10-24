@@ -39,42 +39,45 @@ def normalize_text(text: str) -> Tuple[str, Dict[str, int]]:
         "zwj_stripped": 0,
         "zwnj_kept": 0,
         "zwnj_stripped": 0,
+        "u09f0_mapped": 0,
+        "khanda_ta_canonicalized": 0,
         "control_chars_removed": 0,
     }
 
     # Step 1: NFC Normalization
     text = unicodedata.normalize("NFC", text)
 
-    # Step 2: ZWJ / ZWNJ Policy
-    # Keep inside Bengali words (surrounded by Bengali word characters), strip elsewhere
-    out_chars = []
-    n = len(text)
-    for i, ch in enumerate(text):
-        if ch == ZWJ:
-            prev_bengali = (i > 0 and text[i - 1] in BENGALI_WORD_CHARS)
-            next_bengali = (i + 1 < n and text[i + 1] in BENGALI_WORD_CHARS)
-            if prev_bengali and next_bengali:
-                out_chars.append(ch)
-                stats["zwj_kept"] += 1
-            else:
-                stats["zwj_stripped"] += 1
-        elif ch == ZWNJ:
-            prev_bengali = (i > 0 and text[i - 1] in BENGALI_WORD_CHARS)
-            next_bengali = (i + 1 < n and text[i + 1] in BENGALI_WORD_CHARS)
-            if prev_bengali and next_bengali:
-                out_chars.append(ch)
-                stats["zwnj_kept"] += 1
-            else:
-                stats["zwnj_stripped"] += 1
-        elif unicodedata.category(ch).startswith("C") and ch not in ("\n", "\t"):
-            # Control character removal
-            stats["control_chars_removed"] += 1
-        else:
-            out_chars.append(ch)
+    # Step 2: Character mappings (U+09F0 Assamese Ra -> U+09B0 Bengali Ra)
+    u09f0_count = text.count("\u09f0")
+    if u09f0_count > 0:
+        stats["u09f0_mapped"] = u09f0_count
+        text = text.replace("\u09f0", "\u09b0")
 
-    text = "".join(out_chars)
+    # Step 3: Khanda-Ta canonicalization before joiner removal
+    # Historical representations: ত (U+09A4) + virama (U+09CD) + [ZWJ|ZWNJ] -> ৎ (U+09CE)
+    khanda_ta_pattern = re.compile(r"\u09a4\u09cd[\u200c\u200d]")
+    khanda_matches = len(khanda_ta_pattern.findall(text))
+    if khanda_matches > 0:
+        stats["khanda_ta_canonicalized"] = khanda_matches
+        text = khanda_ta_pattern.sub("\u09ce", text)
 
-    # Step 3: Whitespace normalization
+    # Step 4: ZWJ / ZWNJ Policy
+    # Strip all remaining ZWJ (\u200d) and ZWNJ (\u200c) uniformly. In Bengali, joiners
+    # are purely rendering hints to break or force ligatures; stripping them preserves
+    # semantic identity and prevents token/grapheme fragmentation and lone-virama artifacts.
+    zwj_count = text.count(ZWJ)
+    zwnj_count = text.count(ZWNJ)
+    stats["zwj_stripped"] += zwj_count
+    stats["zwnj_stripped"] += zwnj_count
+    if zwj_count > 0 or zwnj_count > 0:
+        text = text.replace(ZWJ, "").replace(ZWNJ, "")
+
+    # Step 5: Control character removal (keep \n and \t)
+    # Strip all Unicode general category C (control, format, surrogate, private use) except \n and \t
+    text, ctrl_count = re.subn(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f-\x9f]", "", text)
+    stats["control_chars_removed"] += ctrl_count
+
+    # Step 6: Whitespace normalization
     # Collapse multiple horizontal whitespace runs (spaces, tabs) to a single space
     # Keep single newlines for poetry, collapse 3+ newlines to max 2
     text = re.sub(r"[^\S\n]+", " ", text)

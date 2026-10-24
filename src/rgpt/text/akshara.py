@@ -7,6 +7,7 @@ Failure modes : Malformed orphan marks handled gracefully as single units; unbou
 Status        : TESTED
 """
 
+import unicodedata
 from typing import List
 
 from src.rgpt.text.bengali_unicode import (
@@ -20,6 +21,7 @@ from src.rgpt.text.bengali_unicode import (
     VOWEL_SIGNS,
     ZWJ,
     ZWNJ,
+    is_bengali_char,
 )
 
 DEPENDENT_MARKS = VOWEL_SIGNS | MODIFIERS | {VIRAMA, NUKTA}
@@ -31,10 +33,12 @@ def segment(text: str) -> List[str]:
 
     Grammar (04_TOKENIZER_PLAN.md §2.2):
         C        := consonant [NUKTA]
-        CLUSTER  := C ( VIRAMA [ZWJ|ZWNJ]? C )*
-        AKSHARA  := ( CLUSTER | INDEP_VOWEL | KHANDA_TA | AVAGRAHA )
+        CLUSTER  := C ( [ZWJ|ZWNJ]? VIRAMA [ZWJ|ZWNJ]? C [NUKTA] )*
+        V_YA     := INDEP_VOWEL ( [ZWJ|ZWNJ]? VIRAMA [ZWJ|ZWNJ]? YA [NUKTA]? )?
+        AKSHARA  := ( CLUSTER | V_YA | KHANDA_TA | AVAGRAHA )
                     [ VOWEL_SIGN ]* [ MODIFIERS ]*
-                    [ VIRAMA ]?
+                    [ [ZWJ|ZWNJ]? VIRAMA [ZWJ|ZWNJ]? ]?
+        NON_BENG := Extended grapheme cluster (base code point + category M combining marks)
         OTHER    := any other single code point -> its own unit
 
     Invariants:
@@ -78,23 +82,46 @@ def segment(text: str) -> List[str]:
                 if i < n and text[i] == NUKTA:
                     i += 1
 
-                # Conjunct chain: (VIRAMA [ZWJ|ZWNJ]? C [NUKTA])*
-                while i < n and text[i] == VIRAMA:
-                    lookahead = i + 1
-                    # Check optional ZWJ/ZWNJ after virama
+                # Conjunct chain: ( [ZWJ|ZWNJ]? VIRAMA [ZWJ|ZWNJ]? C [NUKTA] )*
+                while i < n:
+                    k = i
+                    if k < n and text[k] in (ZWJ, ZWNJ):
+                        k += 1
+                    if k < n and text[k] == VIRAMA:
+                        lookahead = k + 1
+                        if lookahead < n and text[lookahead] in (ZWJ, ZWNJ):
+                            lookahead += 1
+                        if lookahead < n and text[lookahead] in CONSONANTS:
+                            # Valid conjunct extension
+                            i = lookahead + 1
+                            if i < n and text[i] == NUKTA:
+                                i += 1
+                            continue
+                        else:
+                            # Trailing hasanta / word-final virama attached to this cluster
+                            i = k + 1
+                            if i < n and text[i] in (ZWJ, ZWNJ):
+                                i += 1
+                            break
+                    else:
+                        break
+
+            elif ch in INDEPENDENT_VOWELS:
+                i += 1
+                # Support vowel + virama + ya-phala as a single unit (e.g. অ্যা, এ্যা, অ্য, এ্য)
+                k = i
+                if k < n and text[k] in (ZWJ, ZWNJ):
+                    k += 1
+                if k < n and text[k] == VIRAMA:
+                    lookahead = k + 1
                     if lookahead < n and text[lookahead] in (ZWJ, ZWNJ):
                         lookahead += 1
-
-                    if lookahead < n and text[lookahead] in CONSONANTS:
-                        # Valid conjunct extension
+                    if lookahead < n and text[lookahead] in ("\u09af", "\u09df"):  # য, য়
                         i = lookahead + 1
                         if i < n and text[i] == NUKTA:
                             i += 1
-                    else:
-                        # Trailing hasanta / word-final virama
-                        break
             else:
-                # INDEPENDENT_VOWEL, KHANDA_TA, or AVAGRAHA
+                # KHANDA_TA or AVAGRAHA
                 i += 1
 
             # Attach vowel signs
@@ -105,18 +132,33 @@ def segment(text: str) -> List[str]:
             while i < n and text[i] in MODIFIERS:
                 i += 1
 
-            # Optional word-final virama (hasanta)
-            if i < n and text[i] == VIRAMA:
-                i += 1
-                # Optional trailing ZWJ/ZWNJ
-                if i < n and text[i] in (ZWJ, ZWNJ):
-                    i += 1
+            # Optional word-final virama (hasanta) if not already consumed
+            if i < n:
+                k = i
+                if k < n and text[k] in (ZWJ, ZWNJ):
+                    k += 1
+                if k < n and text[k] == VIRAMA:
+                    i = k + 1
+                    if i < n and text[i] in (ZWJ, ZWNJ):
+                        i += 1
 
             units.append(text[start_idx:i])
             continue
 
-        # Rule 4: Everything else is one unit per code point
-        units.append(ch)
+        # Rule 4: Non-Bengali / other characters
+        # Segment per extended grapheme cluster so non-Bengali base characters and their
+        # combining marks (e.g. Arabic fatha/kasra, Latin accents) remain together.
+        start_idx = i
         i += 1
+        while i < n:
+            next_ch = text[i]
+            if next_ch.isspace() or next_ch in START_CHARS or next_ch in DEPENDENT_MARKS or is_bengali_char(next_ch):
+                break
+            if unicodedata.category(next_ch).startswith("M") or next_ch in (ZWJ, ZWNJ):
+                i += 1
+            else:
+                break
+
+        units.append(text[start_idx:i])
 
     return units

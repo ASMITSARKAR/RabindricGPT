@@ -116,7 +116,7 @@ def generate_run_matrix() -> List[Dict[str, Any]]:
         })
 
     # 5. 10M LR Sweep: bpe16 and akshara, lr in {5e-4, 1e-3, 2e-3}, 1 seed
-    # Kill rule: abort at step 500 if loss > 7.5 (lr=1e-3 is in main ladder PT-{tok}-10m-s0)
+    # Relative kill rule: abort at step 500 if loss hasn't dropped by >=15% (ratio > 0.85) or > 7.5 (lr=1e-3 is in main ladder PT-{tok}-10m-s0)
     lr_sweep_runs = [
         ("bpe16", 5e-4, 0.49),
         ("bpe16", 2e-3, 0.49),

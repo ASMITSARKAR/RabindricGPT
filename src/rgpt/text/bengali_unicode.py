@@ -36,6 +36,7 @@ CONSONANTS: Set[str] = {
     "\u09dc", "\u09dd", "\u09df",  # Precomposed RRA, RHA, YYA
     "\u09b1",  # Assamese Ra
     "\u09b5",  # Assamese Va
+    "\u09f0",  # Assamese Ra with middle diagonal (mapped to \u09b0 in normalizer)
 }
 
 # 4. Signs & Marks

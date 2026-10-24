@@ -1,5 +1,6 @@
 """
-tests/text/test_normalize.py : Tests for Bengali normalization, NFC, ZWJ/ZWNJ preservation, and whitespace policy.
+tests/text/test_normalize.py : Tests for Bengali normalization, NFC, ZWJ/ZWNJ stripping policy,
+Khanda-Ta canonicalization, U+09F0 mapping, and whitespace policy.
 """
 
 from src.rgpt.text.normalize import is_normalized, normalize_text
@@ -28,19 +29,45 @@ def test_nukta_composition_invariance() -> None:
     assert "বাড়ি" in norm or "বাড\u09bcি" in norm
 
 
-def test_zwj_zwnj_preservation_and_stripping() -> None:
-    """ZWJ/ZWNJ inside Bengali words must be kept; orphan ZWJ/ZWNJ stripped."""
-    # Word-internal ZWJ / ZWNJ (e.g. ক্‍ষ)
-    internal = "ক\u09cd\u200dষ"
+def test_zwj_zwnj_stripping_policy() -> None:
+    """All ZWJ and ZWNJ must be stripped in the normalizer to prevent token fragmentation."""
+    # Word-internal ZWJ / ZWNJ (e.g. ক্‍ষ, পোস্ট্‌মাস্টার)
+    internal = "পোস্ট\u200cমাস্টার এবং ক\u09cd\u200dষ"
     norm_int, stats_int = normalize_text(internal)
-    assert "\u200d" in norm_int
-    assert stats_int["zwj_kept"] == 1
+    assert "\u200c" not in norm_int
+    assert "\u200d" not in norm_int
+    assert stats_int["zwnj_stripped"] == 1
+    assert stats_int["zwj_stripped"] == 1
+    assert stats_int["zwj_kept"] == 0
+    assert stats_int["zwnj_kept"] == 0
 
     # Isolated / trailing ZWJ
     isolated = "হ্যালো \u200d বিশ্ব"
     norm_iso, stats_iso = normalize_text(isolated)
     assert "\u200d" not in norm_iso
     assert stats_iso["zwj_stripped"] == 1
+
+
+def test_khanda_ta_canonicalization() -> None:
+    """Historical ত্+ZWJ and ত্+ZWNJ sequences must canonicalize to Khanda-Ta (ৎ, U+09CE)."""
+    cases = [
+        ("হঠাৎ", "হঠাৎ"),
+        ("হত\u09cd\u200d", "হৎ"),
+        ("হত\u09cd\u200c", "হৎ"),
+        ("উত\u09cd\u200cসব", "উৎসব"),
+    ]
+    for raw, expected in cases:
+        norm, stats = normalize_text(raw)
+        assert norm == expected, f"Failed canonicalization on {repr(raw)}: got {repr(norm)}"
+
+
+def test_u09f0_mapped_to_bengali_ra() -> None:
+    """U+09F0 (Assamese Ra ৰ) must be mapped to Bengali Ra (র, U+09B0)."""
+    text_assamese = "উৰ্দ্ধশ্বাসে ৰূপালী"
+    norm, stats = normalize_text(text_assamese)
+    assert "\u09f0" not in norm
+    assert norm == "উর্দ্ধশ্বাসে রূপালী"
+    assert stats["u09f0_mapped"] == 2
 
 
 def test_poetry_newlines_preserved() -> None:

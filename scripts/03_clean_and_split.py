@@ -24,6 +24,7 @@ from src.rgpt.data.dedup import ExactDeduplicator, MinHashDeduplicator
 from src.rgpt.data.leakage import CrossCorpusLeakageDetector
 from src.rgpt.data.splits import assign_work_splits, verify_whole_work_invariant
 from src.rgpt.data.wikitext_clean import clean_wikitext
+from src.rgpt.text.clean import clean_pipeline
 
 
 def parse_args() -> argparse.Namespace:
@@ -122,10 +123,13 @@ def main() -> None:
     if fw2_train_file.exists():
         for row in read_jsonl(fw2_train_file):
             t = row.get("text", "")
-            if leak_detector.contains_leakage(t):
+            clean_t, passes, _ = clean_pipeline(t, threshold=0.8)
+            if not passes or not clean_t:
+                continue
+            if leak_detector.contains_leakage(clean_t):
                 purged_count += 1
-            elif not minhash_dedup.is_near_duplicate(t):
-                fw2_clean_texts.append(t)
+            elif not minhash_dedup.is_near_duplicate(clean_t):
+                fw2_clean_texts.append(clean_t)
     else:
         fw2_clean_texts = [
             "বাঙালি সংস্কৃতির মূল ভিত্তি বাংলা ভাষা ও সাহিত্য। বিশ্বজুড়ে কোটি কোটি মানুষ এই ভাষায় কথা বলেন।"
@@ -138,7 +142,10 @@ def main() -> None:
     egen_texts: List[str] = []
     if fw2_egen_file.exists():
         for row in read_jsonl(fw2_egen_file):
-            egen_texts.append(row.get("text", ""))
+            t = row.get("text", "")
+            clean_t, passes, _ = clean_pipeline(t, threshold=0.8)
+            if clean_t:
+                egen_texts.append(clean_t)
     else:
         egen_texts = ["পরীক্ষা ও মূল্যায়নের জন্য সংরক্ষিত টেক্সট।"] * 20
     atomic_write_text(fw2_out / "egen.txt", "\n\n".join(egen_texts))

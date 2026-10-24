@@ -1,363 +1,204 @@
 ================================================================================
 CORPUS-WIDE AKSHARA SEGMENTATION AUDIT REPORT
 ================================================================================
-Git Commit SHA : 360340148298676fd749021eae3432602b97f8d1
-Audit Timestamp: 2026-10-24 02:54:20 UTC
+Git Commit SHA : 178472718fdbb9ac64ff783eadb076848f62ce8a
+Audit Timestamp: 2026-10-24 03:14:46 UTC
 Baseline Engine: regex module \X (version 2026.7.19)
 Tokenizer Vocab: tok/aks/vocab.json (vocab_size=8192)
 
 Input File SHA-256 Checksums:
   - data/cleaned/fineweb2/egen.txt: 80c8d403aa200ce66600846e6430c302682d80c47100054e11b774414ccaa22a
-  - data/cleaned/fineweb2/fw2_tokenizer_sample_100m.txt: ec3bf708e99bf371ce6f611517302f071a99b76adf65bf30ff5bb7815e228016
-  - data/cleaned/tagore/test.txt: 850cd64e26eb8127821c4a86d142b3433fc1df5a449857d325b72e1705723f14
-  - data/cleaned/tagore/train.txt: 48464f8580aca6ec463c4db4b478cdef12abed990a01653ab39b5b7211eabe01
-  - data/cleaned/tagore/val.txt: 147059978bb186e835ea4ddce9a0a9d08ece66458d6e379a2d900005e39f57f5
-  - tok/aks/vocab.json: 05e2e9fa68fd71e5a4e787b19f1255cf0689593ae1deed2526bab61d0412677b
+  - data/cleaned/fineweb2/fw2_tokenizer_sample_100m.txt: 7a1163f6c16390a23fb66e9561f291e2a6123e819b546f6608246060b2059910
+  - data/cleaned/tagore/test.txt: d9cc7d2b1c3fc09e9a6693e53da163f70343e376e0283f2dfd31c6b51f44de07
+  - data/cleaned/tagore/train.txt: 935d4aa0386afe5a01e4b0e66205c94e118041c7f553a7ad5166e07df9e8b851
+  - data/cleaned/tagore/val.txt: 3e8f7121ad334833154834db451c423e3e2bd40457f8811e3dc33272514691d3
+  - tok/aks/vocab.json: 81fc73150a07f5806deb3b2da1b8c13ed8c46cc3bd17f67bc01e4700635b0874
 --------------------------------------------------------------------------------
 
 [TAGORE TRAIN] Scanning: data/cleaned/tagore/train.txt
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Character Count : 1,606,918 characters (loaded in 0.01s)
-Segmentation    : 1,050,603 units emitted in 0.56s
+Character Count : 1,606,399 characters (loaded in 0.01s)
+Segmentation    : 1,050,429 units emitted in 0.85s
 
   1. Losslessness Invariant:
      Result: PASS ("".join(segment(text)) == text exactly)
 
   2. Structural Invariants Over Emitted Units:
-     (a) Starts with virama, vowel sign, nukta, or modifier: 59 violations
-         Top offending units: [('্', 55), ('ঁ', 1), ('ি', 1), ('ে', 1), ('ো', 1)]
+     (a) Starts with virama, vowel sign, nukta, or modifier: 3 violations
+         Top offending units: [('ঁ', 1), ('ি', 1), ('ো', 1)]
      (b) Contains virama as last character:
          - Word-final hasanta units (legitimate): 630
-           Top word-final units: [('ন্', 174), ('ক্', 112), ('ল্', 79), ('স্', 42), ('প্', 40), ('ম্', 38), ('ট্', 35), ('র্', 28), ('ড়্', 17), ('খ্', 10)]
-         - Mid-word virama-ending units (violations): 109
-           Top offending units: [('্', 55), ('র্', 32), ('অ্', 9), ('ড়্\u200c', 3), ('স্ট্\u200c', 2), ('হে্\u200c', 2), ('দ্\u200c', 1), ('ব্\u200cল্\u200c', 1), ('ম্', 1), ('র্\u200c', 1)]
+           Top word-final units: [('ন্', 174), ('ক্', 112), ('ল্', 79), ('প্', 40), ('স্', 40), ('ম্', 37), ('ট্', 35), ('র্', 28), ('ড়্', 17), ('খ্', 10)]
+         - Mid-word virama-ending units (violations): 43
+           Top offending units: [('র্', 33), ('ড়্', 3), ('স্ট্', 2), ('হে্', 2), ('দ্্', 1), ('ব্ল্', 1), ('ল্ড্স্', 1)]
      (c) Contains two or more independent vowels: 0 violations
      (d) Contains space or newline (units must not cross whitespace): 0 violations
      (e) Contains consonant after vowel sign (second CV core): 0 violations
 
-  3. Baseline Comparison (regex module \X (v2026.7.19)) (evaluated in 1.11s):
-     Our boundaries     : 1,050,602
-     Baseline boundaries: 1,050,890
-     Agreed boundaries  : 1,050,435
-     Precision (ours vs baseline): 0.999841 (99.9841%)
-     Recall (ours vs baseline)   : 0.999567 (99.9567%)
-     F1 Boundary Agreement       : 0.999704 (99.9704%)
-     Total disagreement instances: 520
-     Distinct disagreement patterns: 244
+  3. Baseline Comparison (regex module \X (v2026.7.19)) (evaluated in 0.83s):
+     Our boundaries     : 1,050,428
+     Baseline boundaries: 1,050,433
+     Agreed boundaries  : 1,050,424
+     Precision (ours vs baseline): 0.999996 (99.9996%)
+     Recall (ours vs baseline)   : 0.999991 (99.9991%)
+     F1 Boundary Agreement       : 0.999994 (99.9994%)
+     Total disagreement instances: 13
+     Distinct disagreement patterns: 6
      Disagreement Concentration:
-       - Top 10 patterns cover: 132 / 520 (25.38%)
-       - Top 25 patterns cover: 209 / 520 (40.19%)
-       - Top 50 patterns cover: 288 / 520 (55.38%)
+       - Top 10 patterns cover: 13 / 13 (100.00%)
+       - Top 25 patterns cover: 13 / 13 (100.00%)
+       - Top 50 patterns cover: 13 / 13 (100.00%)
 
      Top Disagreement Patterns (up to 50):
-       01. [count=33] Ours: [স্ট্‌মা] vs Base: [স্ট্‌ · মা] | Ex: '়াই উলাপুর গ্রামে পোস্ট্\u200cমাস্টারকে আসিতে হয়। গ'
-       02. [count=16] Ours: [দ্‌বে] vs Base: [দ্‌ · বে] | Ex: 'মানিল না, মুহূর্তে উদ্\u200cবেলিত হইয়া উঠিল।   রা'
-       03. [count=15] Ours: [দ্‌বি] vs Base: [দ্‌ · বি] | Ex: 'েকাও।”   আনন্দময়ী উদ্\u200cবিগ্ন হইয়া জিজ্ঞাসা ক'
-       04. [count=13] Ours: [ল্‌টা] vs Base: [ল্‌ · টা] | Ex: ' সেগুলি উল্টাইয়া পাল্\u200cটাইয়া এখানে ওখানে পড়'
-       05. [count=13] Ours: [ল্‌না] vs Base: [ল্‌ · না] | Ex: 'থায় কাঁদিতেছে।   ফেল্\u200cনা— রাইচরণের ভগ্নী ইহা'
-       06. [count=9] Ours: [ন্‌খা] vs Base: [ন্‌ · খা] | Ex: '  সহসা উঠিল গাহি’ কোন্\u200cখান্ হতে বন-অন্ধকারঘন '
-       07. [count=9] Ours: [ল্‌ছ] vs Base: [ল্‌ · ছ] | Ex: ' দেখিল, জল খল্\u200cখল্ ছল্\u200cছল্ করিয়া ছুটিয়া চল'
-       08. [count=8] Ours: [ক্‌খ] vs Base: [ক্‌ · খ] | Ex: 'ল, “না। আমি তোমাকে কক্\u200cখনোই ভালোবাসব না।” তা'
-       09. [count=8] Ours: [ট্‌ফ] vs Base: [ট্‌ · ফ] | Ex: 'যায় অন্তরে অন্তরে ছট্\u200cফট্ করিতে লাগিল। দাসী'
-       10. [count=8] Ours: [ল্‌ভ] vs Base: [ল্‌ · ভ] | Ex: 'ি এবং কথামাত্রই প্রগল্\u200cভতা। হঠাৎ কাপড়চোপড়ে'
-       11. [count=7] Ours: [ক্‌কা] vs Base: [ক্‌ · কা] | Ex: 'ে নিজেকে বার বার, ধিক্\u200cকার দিতে লাগিল। ইহাদের'
-       12. [count=7] Ours: [দ্‌ঘা] vs Base: [দ্‌ · ঘা] | Ex: 'েখিল। তাহার পর বসন উদ্\u200cঘাটন করিয়া নিজের বক্ষ'
-       13. [count=7] Ours: [র্‌ঝ] vs Base: [র্‌ · ঝ] | Ex: 'ম্রবনের মধ্যে পাতা ঝর্\u200cঝর্ করিয়া বাতাস কেমন'
-       14. [count=6] Ours: [দ্‌যো] vs Base: [দ্‌ · যো] | Ex: ' আমার বিবাহের জন্য উদ্\u200cযোগী হইলেন।   আমি পনের'
-       15. [count=6] Ours: [ল্‌টো] vs Base: [ল্‌ · টো] | Ex: 'েন! তোমাদের সমস্তই উল্\u200cটো বিচার।”   মহিম নীচে'
-       16. [count=5] Ours: [গ্‌বি] vs Base: [গ্‌ · বি] | Ex: 'ক্ষিণাত্য হইতে এক দিগ্\u200cবিজয়ী কবি শার্দূলবিক্'
-       17. [count=5] Ours: [ন্‌টা] vs Base: [ন্‌ · টা] | Ex: 'নিসটা ব্রাহ্ম এবং কোন্\u200cটা অব্রাহ্ম তাহারই ভেদ'
-       18. [count=5] Ours: [ন্‌লো] vs Base: [ন্‌ · লো] | Ex: ' ম্যাজিস্ট্রেট ব্রাউন্\u200cলো সাহেবের সহিত ঢাকায়'
-       19. [count=5] Ours: [ল্‌টে] vs Base: [ল্‌ · টে] | Ex: 'ঁট করে থাকে না। সে উল্\u200cটে তার সিঁধকাটিটা তুলে'
-       20. [count=4] Ours: [ক্‌চে] vs Base: [ক্‌ · চে] | Ex: 'ীল আকাশে হাত তুলে ডাক্\u200cচে। অনেক দূরের যারা ঘর'
-       21. [count=4] Ours: [ক্‌তে] vs Base: [ক্‌ · তে] | Ex: 'িল—না করে কোনোমতে থাক্\u200cতে পারতুম না। কিন্তু এ'
-       22. [count=4] Ours: [গ্‌ডু] vs Base: [গ্‌ · ডু] | Ex: 'অতিদ্রুত উচ্চারণে ‘আগ্\u200cডুম বাগ্\u200cডুম’ খেলিতে আ'
-       23. [count=4] Ours: [ট্‌প] vs Base: [ট্‌ · প] | Ex: 'া যদি থাকে কিছু বল চট্\u200cপট্!” সভাসুদ্ধ বলি’ উ'
-       24. [count=4] Ours: [দ্‌গ] vs Base: [দ্‌ · গ] | Ex: '”   রাইচরণ করজোড়ে গদ্\u200cগদ কণ্ঠে বলিল, “প্রভু'
-       25. [count=4] Ours: [দ্‌ব] vs Base: [দ্‌ · ব] | Ex: 'েখিল, না, সে তাহার উদ্\u200cবন্ধনরজ্জু।   আর, তাহ'
-       26. [count=4] Ours: [দ্‌ভা] vs Base: [দ্‌ · ভা] | Ex: 'নে নির্মল মূর্তিতে উদ্\u200cভাসিত হইয়া উঠুন।  পরদ'
-       27. [count=4] Ours: [ন্‌দি] vs Base: [ন্‌ · দি] | Ex: 'লাইব! আমি জানি, ও কোন্\u200cদিন কী সর্বনাশ করিয়া '
-       28. [count=4] Ours: [ম্‌ছ] vs Base: [ম্‌ · ছ] | Ex: 'েছে। কিন্তু তবু গা ছম্\u200cছম্ করিতে লাগিল। জোর '
-       29. [count=4] Ours: [ম্‌থ] vs Base: [ম্‌ · থ] | Ex: 'াঝখানে সমস্ত দেশটা থম্\u200cথম্ করিতেছে- কথা নাই,'
-       30. [count=4] Ours: [র্‌ত] vs Base: [র্‌ · ত] | Ex: ' ইস্কাবন, চিড়েতন, হর্\u200cতন, অথবা রুহিতন?   এ-'
-       31. [count=4] Ours: [ল্‌কি] vs Base: [ল্‌ · কি] | Ex: 'ুই ভ্রূর মাঝে একটি উল্\u200cকির দাগ— গায়ে অলংকার '
-       32. [count=3] Ours: [ক্‌ট] vs Base: [ক্‌ · ট] | Ex: 'নি ম্লেচ্ছমুখ রাঙা টক্\u200cটকে, আগুন ছুটিতে চায়'
-       33. [count=3] Ours: [ক্‌পা] vs Base: [ক্‌ · পা] | Ex: 'ন, সে দিকে তাঁহার দৃক্\u200cপাত নাই। অরণ্যপথ দিয়া'
-       34. [count=3] Ours: [ক্‌বে] vs Base: [ক্‌ · বে] | Ex: 'র এ ঘর যেন আর ঘরই থাক্\u200cবে না। কবিরাজ মশায় আপ'
-       35. [count=3] Ours: [ক্‌মি] vs Base: [ক্‌ · মি] | Ex: 'ে ইন্দ্রের ঘােড়া চিক্\u200cমিকে বিদ্যুতের আলাে। চ'
-       36. [count=3] Ours: [ক্‌মো] vs Base: [ক্‌ · মো] | Ex: 'ার করিতে হয়।   ম্যাক্\u200cমোরান্ কোম্পানির আপিসে'
-       37. [count=3] Ours: [ট্‌খ] vs Base: [ট্‌ · খ] | Ex: 'াসে তাহার হাড়গুলা খট্\u200cখট শব্দ করিয়া নড়িত।'
-       38. [count=3] Ours: [ট্‌মি] vs Base: [ট্‌ · মি] | Ex: 'কোনো কথা কহিল না। মিট্\u200cমিট্ করিয়া প্রদীপ জ্ব'
-       39. [count=3] Ours: [ড় · ‍ · ্ · ফ] vs Base: [ড়‍্ফ] | Ex: 'সিয়া পড়িয়াছে।   ধড়\u200d্ফড়্ করিয়া উঠিয়া বস'
-       40. [count=3] Ours: [ন্‌ট্রে] vs Base: [ন্‌ · ট্রে] | Ex: 'ত তুচ্ছ বোধ হইল।   এন্\u200cট্রেন্স, পাস করিয়াছি, ফ'
-       41. [count=3] Ours: [ন্‌তে] vs Base: [ন্‌ · তে] | Ex: 'ি পড়লেই কি সমস্ত জান্\u200cতে পারে?  মাধব   বেশ! '
-       42. [count=3] Ours: [ন্‌সা] vs Base: [ন্‌ · সা] | Ex: '্রমাণ করিবার জন্য খান্\u200cসামাকে ডাকিয়া জিজ্ঞাস'
-       43. [count=3] Ours: [প্‌ল্] vs Base: [প্‌ · ল্] | Ex: '। তিনি একটা প্রিন্সিপ্\u200cল্ ধরিয়া চলিতে লাগিলে'
-       44. [count=3] Ours: [র · ‍ · ্ · ঝ] vs Base: [র‍্ঝ] | Ex: 'েন। তাঁর চোখ দিয়া ঝর\u200d্ঝর্ করিয়া জল পড়িতে '
-       45. [count=3] Ours: [ল · ‍ · ্ · ছ] vs Base: [ল‍্ছ] | Ex: 'ই তাঁর চোখে যেন জল ছল\u200d্ছল্ করিত; তাঁর মনে হই'
-       46. [count=3] Ours: [ল্‌ডি] vs Base: [ল্‌ · ডি] | Ex: '্তু মাট্\u200cসীনি গারিবাল্\u200cডি হইবার আয়োজন করিতে '
-       47. [count=3] Ours: [স্‌মি] vs Base: [স্‌ · মি] | Ex: 'ার মা তাহাকে বলিত কুস্\u200cমি। যখন-তখন দেখিতাম, ক'
-       48. [count=3] Ours: [ৰ · ্ · দ্ধ] vs Base: [ৰ্দ্ধ] | Ex: 'াঁপি’, রুদ্ধশ্বাসে উৰ্দ্ধশ্বাসে চীৎকারি’ উঠিত'
-       49. [count=2] Ours: [ক্‌ঝ] vs Base: [ক্‌ · ঝ] | Ex: '় দুটি মিষ্টান্ন ও ঝক্\u200cঝকে কাঁসার ঘটিতে জল ল'
-       50. [count=2] Ours: [ক্‌ব] vs Base: [ক্‌ · ব] | Ex: 'ে বাজাইছে তাল, দশ দিক্\u200cবধু খুলি কেশজাল নাচে '
+       01. [count=5] Ours: [অ্যাঁ] vs Base: [অ্ · যাঁ] | Ex: 'কার করিয়া কহিলেন, “অ্যাঁ, তুই আমার গায়ে হাত'
+       02. [count=4] Ours: [অ্যা] vs Base: [অ্ · যা] | Ex: ' সকৌতুকে পাশ্ববর্তী অ্যাটর্নিকে বলিলেন, “বাই'
+       03. [count=1] Ours: [  · ঁ] vs Base: [ ঁ] | Ex: 'েও বিস্তৃত হইয়াছিল। ঁ  এই-সকল নানা কারণে '
+       04. [count=1] Ours: [দ্্ · যো] vs Base: [দ্্যো] | Ex: 'য়ে তুমি যদি নিজেও উদ্্যোগী না হও তা হলে হয়ত'
+       05. [count=1] Ours: [ৱ · ি] vs Base: [ৱি] | Ex: 'িত গণক কোষ্ঠী হইতে আৱিষ্কার করিয়াছে; সহধর'
+       06. [count=1] Ours: [ৱ · ো] vs Base: [ৱো] | Ex: 'বয়স আট; এখন আমি আঠোৱো। পিতার মতে আমার বিব'
 
-  4. Akshara Vocabulary Coverage (evaluated in 0.09s):
-     Total units      : 1,050,603
-     OOV units        : 590 (0.0562%)
-     Total tokens     : 1,052,829
-     Byte-fallback    : 135 (0.0128%)
+  4. Akshara Vocabulary Coverage (evaluated in 0.08s):
+     Total units      : 1,050,429
+     OOV units        : 2 (0.0002%)
+     Total tokens     : 1,050,436
+     Byte-fallback    : 0 (0.0000%)
      Top 20 Frequent OOV Units:
-       01. '\u200d': 44
-       02. 'স্ট্\u200cমা': 33
-       03. 'দ্\u200cবে': 16
-       04. 'দ্\u200cবি': 15
-       05. 'ল্\u200cটা': 13
-       06. 'ল্\u200cনা': 13
-       07. 'ন্\u200cখা': 9
-       08. 'ল্\u200cছ': 9
-       09. 'ক্\u200cখ': 8
-       10. 'ট্\u200cফ': 8
-       11. 'ণ্ট্': 8
-       12. 'ল্\u200cভ': 8
-       13. 'ক্\u200cকা': 7
-       14. 'দ্\u200cঘা': 7
-       15. 'র্\u200cঝ': 7
-       16. 'দ্\u200cযো': 6
-       17. 'র্ত্ত্য': 6
-       18. 'ল্\u200cটো': 6
-       19. 'গ্\u200cবি': 5
-       20. 'ট্\u200cপ': 5
+       01. 'ক্ষ্মি': 1
+       02. 'পাি': 1
 
 [TAGORE VAL] Scanning: data/cleaned/tagore/val.txt
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Character Count : 164,886 characters (loaded in 0.00s)
-Segmentation    : 109,635 units emitted in 0.07s
+Character Count : 164,746 characters (loaded in 0.00s)
+Segmentation    : 109,574 units emitted in 0.09s
 
   1. Losslessness Invariant:
      Result: PASS ("".join(segment(text)) == text exactly)
 
   2. Structural Invariants Over Emitted Units:
-     (a) Starts with virama, vowel sign, nukta, or modifier: 17 violations
-         Top offending units: [('্', 17)]
+     (a) Starts with virama, vowel sign, nukta, or modifier: 0 violations
      (b) Contains virama as last character:
-         - Word-final hasanta units (legitimate): 90
-           Top word-final units: [('ন্', 24), ('ক্', 12), ('স্', 10), ('ট্', 7), ('ন্\u200cস্', 5), ('র্', 5), ('র্\u200cস্', 3), ('ল্', 3), ('ণ্ড্', 2), ('প্', 2)]
-         - Mid-word virama-ending units (violations): 29
-           Top offending units: [('্', 17), ('অ্', 9), ('ন্\u200c', 1), ('র্', 1), ('স্\u200c', 1)]
+         - Word-final hasanta units (legitimate): 92
+           Top word-final units: [('ন্', 24), ('ক্', 12), ('স্', 10), ('ট্', 6), ('ন্স্', 5), ('র্', 5), ('র্স্', 3), ('ল্', 3), ('ণ্ড্', 2), ('প্', 2)]
+         - Mid-word virama-ending units (violations): 3
+           Top offending units: [('ন্', 1), ('র্', 1), ('স্', 1)]
      (c) Contains two or more independent vowels: 0 violations
      (d) Contains space or newline (units must not cross whitespace): 0 violations
      (e) Contains consonant after vowel sign (second CV core): 0 violations
 
-  3. Baseline Comparison (regex module \X (v2026.7.19)) (evaluated in 0.10s):
-     Our boundaries     : 109,634
-     Baseline boundaries: 109,713
-     Agreed boundaries  : 109,595
-     Precision (ours vs baseline): 0.999644 (99.9644%)
-     Recall (ours vs baseline)   : 0.998924 (99.8924%)
-     F1 Boundary Agreement       : 0.999284 (99.9284%)
-     Total disagreement instances: 131
-     Distinct disagreement patterns: 90
+  3. Baseline Comparison (regex module \X (v2026.7.19)) (evaluated in 0.08s):
+     Our boundaries     : 109,573
+     Baseline boundaries: 109,582
+     Agreed boundaries  : 109,573
+     Precision (ours vs baseline): 1.000000 (100.0000%)
+     Recall (ours vs baseline)   : 0.999918 (99.9918%)
+     F1 Boundary Agreement       : 0.999959 (99.9959%)
+     Total disagreement instances: 9
+     Distinct disagreement patterns: 1
      Disagreement Concentration:
-       - Top 10 patterns cover: 35 / 131 (26.72%)
-       - Top 25 patterns cover: 65 / 131 (49.62%)
-       - Top 50 patterns cover: 91 / 131 (69.47%)
+       - Top 10 patterns cover: 9 / 9 (100.00%)
+       - Top 25 patterns cover: 9 / 9 (100.00%)
+       - Top 50 patterns cover: 9 / 9 (100.00%)
 
      Top Disagreement Patterns (up to 50):
-       01. [count=5] Ours: [ক্‌স্‌ফো] vs Base: [ক্‌ · স্‌ · ফো] | Ex: 'দেবার পূর্বেই অমিত অক্\u200cস্\u200cফোর্ডে ভর্তি হয়; সেখা'
-       02. [count=5] Ours: [ন্‌স্] vs Base: [ন্‌ · স্] | Ex: 'ি যাকে মনে কর রোম্যান্\u200cস্ সেইটেতে কমতি পড়ে! '
-       03. [count=5] Ours: [ল · ‌ · ্] vs Base: [ল‌্] | Ex: ' নয় কেন? বলে, ওর কাল\u200c্চার নেই। কেন ভাই, সে'
-       04. [count=4] Ours: [ন্‌টা] vs Base: [ন্‌ · টা] | Ex: 'ো এইটেই ভালো।’   ‘কোন্\u200cটা ভালো?’   ‘ভালো এই য'
-       05. [count=3] Ours: [ক · ‌ · ্] vs Base: [ক‌্] | Ex: ' মনটা এমন এক রকমের চক\u200c্মকি যে ঠুন করে একটু '
-       06. [count=3] Ours: [ন্‌সি] vs Base: [ন্‌ · সি] | Ex: 'র লাগালে, অঞ্জনের পেন্\u200cসিল নিয়ে ভুরুর রেখাটা'
-       07. [count=3] Ours: [প্‌টা] vs Base: [প্‌ · টা] | Ex: ' নি।   সেই য়ুক্যালিপ্\u200cটাস্ গাছের তলায় অমিত '
-       08. [count=3] Ours: [র্‌স্] vs Base: [র্‌ · স্] | Ex: ' পূর্বের লেখার রিসিভর্\u200cস্ অফ স্টোল্\u200cন্ প্রপার'
-       09. [count=2] Ours: [ক্‌কা] vs Base: [ক্‌ · কা] | Ex: 'ই। তুমি আমাকে আত্মধিক্\u200cকার থেকে বাঁচিয়েছ।’  '
-       10. [count=2] Ours: [ক্‌সে] vs Base: [ক্‌ · সে] | Ex: 'লের দৃষ্টান্ত। পলিটিক্\u200cসের একটা মূলনীতি এখানে'
-       11. [count=2] Ours: [ঙ্ক্‌চু] vs Base: [ঙ্ক্‌ · চু] | Ex: 'দের বিস্তর তাদেরই পাঙ্ক্\u200cচুয়াল হওয়া শোভা পায়'
-       12. [count=2] Ours: [ড্‌ডো] vs Base: [ড্‌ · ডো] | Ex: ', অর্থাৎ তাকে নাকি বড্\u200cডো বেশি স্বাভাবিক দেখা'
-       13. [count=2] Ours: [দ্‌দু] vs Base: [দ্‌ · দু] | Ex: 'ড়েছে সকালবেলাকার রোদ্\u200cদুর। কোলে রুমালের উপর '
-       14. [count=2] Ours: [দ্‌বি] vs Base: [দ্‌ · বি] | Ex: 'নরব শুনে এরা বিশেষ উদ্\u200cবিগ্ন হয়ে চলে এসেছে। '
-       15. [count=2] Ours: [দ্‌বে] vs Base: [দ্‌ · বে] | Ex: 'ন্ধে অমিতর এত বেশি উদ্\u200cবেগ যোগমায়ার কাছে অসং'
-       16. [count=2] Ours: [দ্‌ভা] vs Base: [দ্‌ · ভা] | Ex: '। ওর কতকগুলি নিজের উদ্\u200cভাবিত বিশেষ মত সম্বন্ধ'
-       17. [count=2] Ours: [ন্‌সে] vs Base: [ন্‌ · সে] | Ex: '্পের বই থেকেই রোম্যান্\u200cসের বাঁধা বরাদ্দ ছাঁচে'
-       18. [count=2] Ours: [প্‌ট] vs Base: [প্‌ · ট] | Ex: 'তে এক মস্ত য়ুক্যালিপ্\u200cটস্ গাছ। তারই গুঁড়িত'
-       19. [count=2] Ours: [ম্ফ · ‌ · ্] vs Base: [ম্ফ‌্] | Ex: 'র এক কোণে নানাবিধ পাম্ফ\u200c্লেট ম্যাগাজিন প্রভৃত'
-       20. [count=2] Ours: [ম্‌বৃ] vs Base: [ম্‌ · বৃ] | Ex: 'ষ্টন করে সমস্ত দেহ সম্\u200cবৃত। পায়ে জুতো নেই, দ'
-       21. [count=2] Ours: [র্‌বা] vs Base: [র্‌ · বা] | Ex: 'বাগানটা ডায়মণ্ড্ হার্\u200cবারের ওইদিকটাতে। ছোটো '
-       22. [count=2] Ours: [ল্‌ছ] vs Base: [ল্‌ · ছ] | Ex: 'লির মন এক মুহূর্তে ছল্\u200cছলিয়ে উঠেছিল, কিন্তু'
-       23. [count=2] Ours: [ল্‌টি] vs Base: [ল্‌ · টি] | Ex: ', ‘সাহিত্য থেকে লয়াল্\u200cটি উঠিয়ে দিতে চান?’  '
-       24. [count=2] Ours: [ল্‌ড] vs Base: [ল্‌ · ড] | Ex: '়ে পড়ে। ম্যাথু আর্নল্\u200cড কাব্যকে বলেছেন ক্রি'
-       25. [count=2] Ours: [ল্‌ফ্] vs Base: [ল্‌ · ফ্] | Ex: 'ে আছে একটি বইয়ের শেল্\u200cফ্, একটি কাপড়ের তেরঙ্'
-       26. [count=2] Ours: [স্‌টি] vs Base: [স্‌ · টি] | Ex: 'ইংরেজিতে যাকে বলে ডিস্\u200cটিঙ্গুইশ্\u200cড্। নিজেকে অ'
-       27. [count=1] Ours: [ক্খু · ‌] vs Base: [ক্খু‌] | Ex: 'ত কিছু একটার জন্যে এক্খু\u200cনি চোখ বুজে প্রাণ দি'
-       28. [count=1] Ours: [ক্জা · ‌] vs Base: [ক্জা‌] | Ex: 'য়েই তারও পুর্বে আলেক্জা\u200cণ্ডারের রণযাত্রা। খু'
-       29. [count=1] Ours: [ক্‌ঝ] vs Base: [ক্‌ · ঝ] | Ex: 'াগরিক চাঁচা, মাজা, ঝক্\u200cঝকে। এখন কেবল যে খোলা'
-       30. [count=1] Ours: [ক্‌নি] vs Base: [ক্‌ · নি] | Ex: 'সুরক্ষিত।   সেদিন পিক্\u200cনিকে গঙ্গার ধারে যখন ও'
-       31. [count=1] Ours: [ক্‌পা] vs Base: [ক্‌ · পা] | Ex: '   দুই সখীর প্রতি দৃক্\u200cপাত মাত্র না করে ‘মাসি'
-       32. [count=1] Ours: [ক্‌শ] vs Base: [ক্‌ · শ] | Ex: 'াই সোজা নয়। আমরা ডিক্\u200cশনারিতে যে কথার এক মা'
-       33. [count=1] Ours: [ক্‌শো] vs Base: [ক্‌ · শো] | Ex: 'ৃতির হাতের অক্ষরের মক্\u200cশো-করা। নতুন  প্রেসিডে'
-       34. [count=1] Ours: [ক্‌স্‌ট্] vs Base: [ক্‌ · স্‌ · ট্] | Ex: ' একটা ঢিলে মলাটের টেক্\u200cস্\u200cট্ বুক। আগামী দিনটার জ'
-       35. [count=1] Ours: [গ্‌টা] vs Base: [গ্‌ · টা] | Ex: 'ল কিন্তু অমিত হাম্বাগ্\u200cটা না ফেরে কোলকাতায়, '
-       36. [count=1] Ours: [গ্‌বি] vs Base: [গ্‌ · বি] | Ex: '  অমিতর বাপ ছিলেন দিগ্\u200cবিজয়ী ব্যারিস্টার। যে'
-       37. [count=1] Ours: [গ্‌ভ] vs Base: [গ্‌ · ভ] | Ex: ' শাড়িটা গায়ে তির্যগ্\u200cভঙ্গিতে আঁট করে ল্যাপ'
-       38. [count=1] Ours: [জ্‌ম] vs Base: [জ্‌ · ম] | Ex: '্যকে বলেছেন ক্রিটিসিজ্\u200cম অফ লাইফ, আমি কথাটাক'
-       39. [count=1] Ours: [ট · ‌ · ্] vs Base: [ট‌্] | Ex: 'াল চামড়ার কাজ-করা কট\u200c্কি জুতো। বাইরে যখন য'
-       40. [count=1] Ours: [ট্‌কে] vs Base: [ট্‌ · কে] | Ex: 'ল সে তো ভান করলে অমিট্\u200cকে সে কোনোকালে জানেই ন'
-       41. [count=1] Ours: [দ্‌গ] vs Base: [দ্‌ · গ] | Ex: 'ের কণ্ঠস্বরে এইরকম গদ্\u200cগদ জড়িমা। এর উপরে ঘৌ'
-       42. [count=1] Ours: [দ্‌গা] vs Base: [দ্‌ · গা] | Ex: '-ধূমাকৃত অত্যুক্তি-উদ্\u200cগারে সিসি-লিসি-মহলে কৌ'
-       43. [count=1] Ours: [দ্‌গু] vs Base: [দ্‌ · গু] | Ex: 'দ্ধি মানুষের একটা মহদ্\u200cগুণ, তার ডাক পড়লেই এক'
-       44. [count=1] Ours: [দ্‌ঘা] vs Base: [দ্‌ · ঘা] | Ex: 'পুরাবৃত্ত নিয়ে; অনুদ্\u200cঘাটিত বইয়ের সামনে স্থ'
-       45. [count=1] Ours: [দ্‌বু] vs Base: [দ্‌ · বু] | Ex: 'শি দাবি করতে গেলে বুদ্\u200cবুদের উপরকার বর্ণচ্ছটা'
-       46. [count=1] Ours: [দ্‌বৃ] vs Base: [দ্‌ · বৃ] | Ex: 'একরকম চলে যাচ্ছিল। উদ্\u200cবৃত্ত সময়টা ঠাসা ছিল '
-       47. [count=1] Ours: [দ্‌ব্য] vs Base: [দ্‌ · ব্য] | Ex: 'া কেঁই কেঁই স্বরে অসদ্\u200cব্যবহার সম্বন্ধে তীব্র '
-       48. [count=1] Ours: [ন্‌খা] vs Base: [ন্‌ · খা] | Ex: 'ম ওর জীবনের মধ্যে কোন্\u200cখানে অত্যন্ত একটা নিষ্'
-       49. [count=1] Ours: [ন্‌গু] vs Base: [ন্‌ · গু] | Ex: 'ার শিখরে রডোডেন্\u200cড্রন্\u200cগুচ্ছ।  নাই আমাদের সঞ্'
-       50. [count=1] Ours: [ন্‌গ্র্যা] vs Base: [ন্‌ · গ্র্যা] | Ex: 'করলে না। বললে, ‘আই কন্\u200cগ্র্যাচুলেট। কমলালেবুর মধু'
+       01. [count=9] Ours: [অ্যা] vs Base: [অ্ · যা] | Ex: 'মিটেড ৪৭ গণেশচন্দ্র অ্যাভিনিউ। কলিকাত ১৩  ১৫'
 
   4. Akshara Vocabulary Coverage (evaluated in 0.01s):
-     Total units      : 109,635
-     OOV units        : 133 (0.1213%)
-     Total tokens     : 110,175
-     Byte-fallback    : 0 (0.0000%)
+     Total units      : 109,574
+     OOV units        : 99 (0.0903%)
+     Total tokens     : 109,908
+     Byte-fallback    : 9 (0.0082%)
      Top 20 Frequent OOV Units:
-       01. 'ক্\u200cস্\u200cফো': 5
-       02. 'ন্\u200cস্': 5
-       03. 'ন্\u200cটা': 4
-       04. 'ন্\u200cসি': 3
-       05. 'প্\u200cটা': 3
-       06. 'র্\u200cস্': 3
-       07. 'ক্\u200cকা': 2
-       08. 'ক্\u200cসে': 2
-       09. 'ঙ্ক্\u200cচু': 2
-       10. 'ড্\u200cডো': 2
-       11. 'ণ্ড্': 2
-       12. 'তাঁঁ': 2
-       13. 'দ্\u200cদু': 2
-       14. 'দ্\u200cবি': 2
-       15. 'দ্\u200cবে': 2
-       16. 'দ্\u200cভা': 2
-       17. 'ন্\u200cসে': 2
-       18. 'প্\u200cট': 2
-       19. 'ফাঁঁ': 2
-       20. 'ম্\u200cবৃ': 2
+       01. 'ক্স্ফো': 5
+       02. 'ণ্টি': 3
+       03. 'র্স্': 3
+       04. 'ল্যু': 3
+       05. '•': 3
+       06. 'ঙ্ক্চু': 2
+       07. 'ছ্যা': 2
+       08. 'নোে': 2
+       09. 'প্যাঁ': 2
+       10. 'ব্যূ': 2
+       11. 'ম্ফ্লে': 2
+       12. 'ম্ভু': 2
+       13. 'ল্ফ্': 2
+       14. 'সোঁ': 2
+       15. 'ক্খু': 1
+       16. 'ক্নি': 1
+       17. 'ক্শো': 1
+       18. 'ক্ষ্ণৌ': 1
+       19. 'ক্ষ্মা': 1
+       20. 'ক্স্ট্': 1
 
 [TAGORE TEST] Scanning: data/cleaned/tagore/test.txt
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Character Count : 461,575 characters (loaded in 0.01s)
-Segmentation    : 308,206 units emitted in 0.17s
+Character Count : 461,467 characters (loaded in 0.00s)
+Segmentation    : 308,132 units emitted in 0.23s
 
   1. Losslessness Invariant:
      Result: PASS ("".join(segment(text)) == text exactly)
 
   2. Structural Invariants Over Emitted Units:
-     (a) Starts with virama, vowel sign, nukta, or modifier: 25 violations
-         Top offending units: [('্', 23), ('ঁ', 1), ('া', 1)]
+     (a) Starts with virama, vowel sign, nukta, or modifier: 2 violations
+         Top offending units: [('ঁ', 1), ('া', 1)]
      (b) Contains virama as last character:
-         - Word-final hasanta units (legitimate): 205
-           Top word-final units: [('ন্', 87), ('ক্', 54), ('র্', 11), ('স্', 11), ('ল্', 10), ('ড়্', 8), ('খ্', 7), ('ট্', 5), ('ম্', 5), ('চ্', 2)]
-         - Mid-word virama-ending units (violations): 34
-           Top offending units: [('্', 23), ('অ্', 8), ('র্', 2), ('স্', 1)]
+         - Word-final hasanta units (legitimate): 208
+           Top word-final units: [('ন্', 87), ('ক্', 57), ('র্', 11), ('স্', 11), ('ল্', 10), ('ড়্', 8), ('খ্', 7), ('ট্', 5), ('ম্', 5), ('চ্', 2)]
+         - Mid-word virama-ending units (violations): 2
+           Top offending units: [('র্', 2)]
      (c) Contains two or more independent vowels: 0 violations
      (d) Contains space or newline (units must not cross whitespace): 0 violations
      (e) Contains consonant after vowel sign (second CV core): 0 violations
 
-  3. Baseline Comparison (regex module \X (v2026.7.19)) (evaluated in 0.35s):
-     Our boundaries     : 308,205
-     Baseline boundaries: 308,223
-     Agreed boundaries  : 308,137
-     Precision (ours vs baseline): 0.999779 (99.9779%)
-     Recall (ours vs baseline)   : 0.999721 (99.9721%)
-     F1 Boundary Agreement       : 0.999750 (99.9750%)
-     Total disagreement instances: 115
-     Distinct disagreement patterns: 75
+  3. Baseline Comparison (regex module \X (v2026.7.19)) (evaluated in 0.34s):
+     Our boundaries     : 308,131
+     Baseline boundaries: 308,137
+     Agreed boundaries  : 308,129
+     Precision (ours vs baseline): 0.999994 (99.9994%)
+     Recall (ours vs baseline)   : 0.999974 (99.9974%)
+     F1 Boundary Agreement       : 0.999984 (99.9984%)
+     Total disagreement instances: 10
+     Distinct disagreement patterns: 3
      Disagreement Concentration:
-       - Top 10 patterns cover: 39 / 115 (33.91%)
-       - Top 25 patterns cover: 65 / 115 (56.52%)
-       - Top 50 patterns cover: 90 / 115 (78.26%)
+       - Top 10 patterns cover: 10 / 10 (100.00%)
+       - Top 25 patterns cover: 10 / 10 (100.00%)
+       - Top 50 patterns cover: 10 / 10 (100.00%)
 
      Top Disagreement Patterns (up to 50):
-       01. [count=7] Ours: [ল · ‍ · ্ · তে] vs Base: [ল‍্তে] | Ex: 'নন্দ আছে  এই কথাটি বল\u200d্তে দাও হে বলতে দাও।  আ'
-       02. [count=6] Ours: [ক্‌কা] vs Base: [ক্‌ · কা] | Ex: 'পাখি মেরে তার এমন ধিক্\u200cকার হয়েছিল যে, সেই অব'
-       03. [count=5] Ours: [ন্‌টা] vs Base: [ন্‌ · টা] | Ex: 'ে বুদ্\u200cবুদ্\u200cগুলোর কোন্\u200cটার কোথায় স্থান তাতে '
-       04. [count=3] Ours: [ক · ‍ · ্] vs Base: [ক‍্] | Ex: ' আর ফিরে চাহিনী,  যাক\u200d্ সে ধূলাতে! এখন তোমা'
-       05. [count=3] Ours: [দ্‌গ] vs Base: [দ্‌ · গ] | Ex: 'মহলে। ভদ্রতায় অতি গদ্\u200cগদভাবে অবনম্র, আর হাস'
-       06. [count=3] Ours: [ন্‌খা] vs Base: [ন্‌ · খা] | Ex: 'আমি,  প্রণাম আমার কোন্\u200cখানে যায় থামি, তােমার'
-       07. [count=3] Ours: [প্‌না] vs Base: [প্‌ · না] | Ex: 'স করে তোমার পদমূলে আপ্\u200cনারে আজ ধরি নাই যে তুল'
-       08. [count=3] Ours: [ম্‌নি] vs Base: [ম্‌ · নি] | Ex: 'র সুরধুনী। মনে করি অম্\u200cনি সুরে গাই, কণ্ঠে আমা'
-       09. [count=3] Ours: [ল্‌বে] vs Base: [ল্‌ · বে] | Ex: 'দিয়ে লুকিয়ে গেলে চল্\u200cবেনা। এবার হৃদয় মাঝে '
-       10. [count=3] Ours: [স্‌টি] vs Base: [স্‌ · টি] | Ex: 'র্থাৎ, পূর্বজন্মের ইস্\u200cটিমেতেই এ-জন্মের গাড়ি'
-       11. [count=2] Ours: [খ্‌বে] vs Base: [খ্‌ · বে] | Ex: 'কে  তোমায় কেউ যে রাখ্\u200cবে ঢেকে,  কোনোমতেই সইব'
-       12. [count=2] Ours: [ট্‌চে] vs Base: [ট্‌ · চে] | Ex: 'া চাষ,- পাথর ভেঙে কাট্\u200cচে যেথায় পথ খাট্\u200cচে ব'
-       13. [count=2] Ours: [ট্‌ফ] vs Base: [ট্‌ · ফ] | Ex: 'র সাহস হল না, মনটা ছট্\u200cফট্ করতে লাগল।   সুবা'
-       14. [count=2] Ours: [ড়্‌ফ] vs Base: [ড়্‌ · ফ] | Ex: 'রে ওর বুকের ভিতরটা ধড়্\u200cফড়্ ধড়্\u200cফড়্ করতে ল'
-       15. [count=2] Ours: [দ্‌দু] vs Base: [দ্‌ · দু] | Ex: 'ঘর সাফ করা হল না। রোদ্\u200cদুর ঘরের মধ্যে এল, দরো'
-       16. [count=2] Ours: [দ্‌বু] vs Base: [দ্‌ · বু] | Ex: ' কথা। ফেনার মধ্যে বুদ্\u200cবুদ্\u200cগুলোর কোন্\u200cটার কো'
-       17. [count=2] Ours: [দ্‌যো] vs Base: [দ্‌ · যো] | Ex: ' আমােদের উৎসাহদাতা উদ্\u200cযোগকর্তা, তারা যদি সাম'
-       18. [count=2] Ours: [প্‌নি] vs Base: [প্‌ · নি] | Ex: 'ছে দাও এ আমার দান। আপ্\u200cনি যদি আমার হাতে ধরে ক'
-       19. [count=2] Ours: [ল্‌চে] vs Base: [ল্‌ · চে] | Ex: 'তীত জীবন ছায়ার মত চল্\u200cচে পিছে পিছে,  কত মায়'
-       20. [count=2] Ours: [স্‌রে] vs Base: [স্‌ · রে] | Ex: 'বেলা ক্ষয় করে সব যাস্\u200cরে যদি  এসেছি এই পৃথিব'
-       21. [count=2] Ours: [ৰ · ্ · ব] vs Base: [ৰ্ব] | Ex: 'বে ভেদি মরুপথ গিরি-পৰ্বত  যারা এসেছিল সবে, '
-       22. [count=1] Ours: [  · ঁ] vs Base: [ ঁ] | Ex: 'া গেলে তো চলবেই না।” ঁ  “আমার কী করবার আছে'
-       23. [count=1] Ours: [ক · ‍ · ্ · না] vs Base: [ক‍্না] | Ex: '্নে যখন যাবি ওরে  থাক\u200d্না পিছন পিছে পড়ে,  পি'
-       24. [count=1] Ours: [ক্‌খ] vs Base: [ক্‌ · খ] | Ex: 'খানি বাজে।”   “না, কক্\u200cখনো না।”   “হাঁ, অল্প'
-       25. [count=1] Ours: [ক্‌চে] vs Base: [ক্‌ · চে] | Ex: 'ায়ার বাঁশির সুরে ডাক্\u200cচে আমায় মিছে। মিল ছুট'
-       26. [count=1] Ours: [ক্‌ঝ] vs Base: [ক্‌ · ঝ] | Ex: 'ক আসতে লাগল। এদিকে ঝক্\u200cঝকে চাপরাস-ঝােলানাে হ'
-       27. [count=1] Ours: [ক্‌ট] vs Base: [ক্‌ · ট] | Ex: 'াতে মােটা মোটা ফুল টক্\u200cটকে কড়া রঙে আঁকা। বি'
-       28. [count=1] Ours: [ক্‌ন] vs Base: [ক্‌ · ন] | Ex: 'ু দেখতে হয় না। ম্যাক্\u200cনটন সাহেবের উপরেই বেশ'
-       29. [count=1] Ours: [ক্‌ম] vs Base: [ক্‌ · ম] | Ex: 'র উপর সূর্যের আলাে ঝক্\u200cমক্ করছে। সবলে পালকির'
-       30. [count=1] Ours: [খ · ‍ · ্ · তে] vs Base: [খ‍্তে] | Ex: 'যা’পরে।  জগতে কেউ দেখ\u200d্তে না পায় লুকানো তার '
-       31. [count=1] Ours: [খ্‌তে] vs Base: [খ্‌ · তে] | Ex: ' হবে কি আজ স্থান? দেখ্\u200cতে পাব অপূর্ব্ব সেই মু'
-       32. [count=1] Ours: [গ · ‍ · ্ · তে] vs Base: [গ‍্তে] | Ex: 'ায়?   তোমার সাথে জাগ\u200d্তে সে চায়  আনন্দে পাগ'
-       33. [count=1] Ours: [গ · ‍ · ্ · ল] vs Base: [গ‍্ল] | Ex: '্ল তোমার প্রেমে।  লাগ\u200d্ল বিশ্ব তানের মাঝে  এ'
-       34. [count=1] Ours: [গ্‌চে] vs Base: [গ্‌ · চে] | Ex: 'ে আমার গানের শেষে জাগ্\u200cচে ক্ষণে ক্ষণে। সুর গি'
-       35. [count=1] Ours: [ঙ্‌না] vs Base: [ঙ্‌ · না] | Ex: 'হয়ে উঠছে না। এই  দিঙ্\u200cনাগের স্থূলহস্তাবলেপ থ'
-       36. [count=1] Ours: [চ · ‍ · ্ · ত] vs Base: [চ‍্ত] | Ex: ' আমার প্রাণ,  সদা নাচ\u200d্ত হৃদয় অশান্ত।  হঠাৎ'
-       37. [count=1] Ours: [জ · ‍ · ্ · ল] vs Base: [জ‍্ল] | Ex: 'ণহীনের গানখানি আজ বাজ\u200d্ল তোমার প্রেমে।  লাগ\u200d'
-       38. [count=1] Ours: [জ্‌কে] vs Base: [জ্‌ · কে] | Ex: 'আছে, এই কথাটি, মনে আজ্\u200cকে আমার গানের শেষে জাগ'
-       39. [count=1] Ours: [জ্‌চে] vs Base: [জ্‌ · চে] | Ex: ' না কভু, নীরবতায় বাজ্\u200cচে বীণা বিনা প্রয়োজনে'
-       40. [count=1] Ours: [জ্‌ম] vs Base: [জ্‌ · ম] | Ex: 'মাজে প্রচলিত পজিটিভিজ্\u200cম যাঁর ধর্ম ছিল, দেবত'
-       41. [count=1] Ours: [ট্‌বে] vs Base: [ট্‌ · বে] | Ex: '্য, আমার এমন সুদিন ঘট্\u200cবে কবে! সত্য সত্য সত্য'
-       42. [count=1] Ours: [ঠ্‌চে] vs Base: [ঠ্‌ · চে] | Ex: 'সহে না,— দিনে দিনে উঠ্\u200cচে জমে কতই দেনা। সবাই '
-       43. [count=1] Ours: [ড়্‌গু] vs Base: [ড়্‌ · গু] | Ex: 'ভীরভাবে খানিকক্ষণ গুড়্\u200cগুড়ি টেনে বললে, “আচ্ছ'
-       44. [count=1] Ours: [দ্‌গু] vs Base: [দ্‌ · গু] | Ex: ' ফেনার মধ্যে বুদ্\u200cবুদ্\u200cগুলোর কোন্\u200cটার কোথায় '
-       45. [count=1] Ours: [দ্‌ব] vs Base: [দ্‌ · ব] | Ex: 'া হাতে খানসামা পশ্চাদ্\u200cবর্তী, দ্বারের কাছে স'
-       46. [count=1] Ours: [দ্‌বি] vs Base: [দ্‌ · বি] | Ex: 'েহারি,  তুমি আমার হৃদ্\u200cবিহারী হৃদয় পানে হাসি'
-       47. [count=1] Ours: [দ্‌ব্রা] vs Base: [দ্‌ · ব্রা] | Ex: 'র রটে গেছে—ঘোষালরা সদ্\u200cব্রাহ্মণ নয়। বাড়ির লোক'
-       48. [count=1] Ours: [দ্‌য] vs Base: [দ্‌ · য] | Ex: '”   ডাক্তার বলেছে হৃদ্\u200cযন্ত্রের বিকারের লক্ষ'
-       49. [count=1] Ours: [দ্‌যাে] vs Base: [দ্‌ · যাে] | Ex: ' দোকান থেকে আপিসে, উদ্\u200cযােগপর্ব থেকে স্বর্গারা'
-       50. [count=1] Ours: [ন্‌গ্র্যা] vs Base: [ন্‌ · গ্র্যা] | Ex: 'ে গেলে এরা এসে যখন কন্\u200cগ্র্যাচুলেট করতে লাগল, কুম'
+       01. [count=8] Ours: [অ্যা] vs Base: [অ্ · যা] | Ex: ' দেখাতে। সে হল বড়ো অ্যাটর্নি-আপিসের আর্টিকে'
+       02. [count=1] Ours: [  · ঁ] vs Base: [ ঁ] | Ex: 'া গেলে তো চলবেই না।” ঁ  “আমার কী করবার আছে'
+       03. [count=1] Ours: [ৱ · া] vs Base: [ৱা] | Ex: 'হারী সমাজের উৎপাতে এৱা দ্বিতীয়বার ছাড়ল ভ'
 
   4. Akshara Vocabulary Coverage (evaluated in 0.03s):
-     Total units      : 308,206
-     OOV units        : 123 (0.0399%)
-     Total tokens     : 308,640
-     Byte-fallback    : 57 (0.0185%)
+     Total units      : 308,132
+     OOV units        : 170 (0.0552%)
+     Total tokens     : 308,611
+     Byte-fallback    : 3 (0.0010%)
      Top 20 Frequent OOV Units:
-       01. '\u200d': 19
-       02. 'ক্\u200cকা': 6
-       03. 'ন্\u200cটা': 5
-       04. 'র্ছো': 5
+       01. 'ড়াে': 41
+       02. 'পাে': 27
+       03. 'র্ছো': 5
+       04. 'ঝাে': 4
        05. 'ণ্টিং': 4
-       06. 'ঢ়ু': 3
-       07. 'দ্\u200cগ': 3
-       08. 'ন্\u200cখা': 3
-       09. 'প্\u200cনা': 3
-       10. 'ম্\u200cনি': 3
-       11. 'ল্\u200cবে': 3
-       12. 'স্\u200cটি': 3
-       13. 'খ্\u200cবে': 2
-       14. 'ট্\u200cচে': 2
-       15. 'ট্\u200cফ': 2
-       16. 'ড়্\u200cফ': 2
-       17. 'দ্\u200cদু': 2
-       18. 'দ্\u200cবু': 2
-       19. 'দ্\u200cযো': 2
-       20. 'প্\u200cনি': 2
+       06. 'ম্নি': 4
+       07. 'স্ত্রৈ': 4
+       08. 'ডাে': 3
+       09. 'ঢ়ু': 3
+       10. 'ল্বে': 3
+       11. 'খ্বে': 2
+       12. 'ট্চে': 2
+       13. 'ণ্যি': 2
+       14. 'নুঃ': 2
+       15. 'ন্য়': 2
+       16. 'ন্য়ে': 2
+       17. 'প্নি': 2
+       18. 'ফ্লু': 2
+       19. 'হ্য়': 2
+       20. 'ক্ট্রে': 1
 
 [FINEWEB-2 E-GEN] Scanning: data/cleaned/fineweb2/egen.txt
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Character Count : 206,966 characters (loaded in 0.00s)
-Segmentation    : 133,072 units emitted in 0.11s
+Segmentation    : 132,791 units emitted in 0.18s
 
   1. Losslessness Invariant:
      Result: PASS ("".join(segment(text)) == text exactly)
@@ -368,191 +209,179 @@ Segmentation    : 133,072 units emitted in 0.11s
      (b) Contains virama as last character:
          - Word-final hasanta units (legitimate): 13
            Top word-final units: [('ত্', 6), ('র্', 4), ('হ্', 2), ('স্', 1)]
-         - Mid-word virama-ending units (violations): 93
-           Top offending units: [('অ্', 82), ('এ্', 9), ('ই্', 1), ('তু্', 1)]
+         - Mid-word virama-ending units (violations): 2
+           Top offending units: [('ই্', 1), ('তু্', 1)]
      (c) Contains two or more independent vowels: 0 violations
      (d) Contains space or newline (units must not cross whitespace): 0 violations
      (e) Contains consonant after vowel sign (second CV core): 0 violations
 
-  3. Baseline Comparison (regex module \X (v2026.7.19)) (evaluated in 0.15s):
-     Our boundaries     : 133,071
+  3. Baseline Comparison (regex module \X (v2026.7.19)) (evaluated in 0.14s):
+     Our boundaries     : 132,790
      Baseline boundaries: 132,874
-     Agreed boundaries  : 132,874
-     Precision (ours vs baseline): 0.998520 (99.8520%)
-     Recall (ours vs baseline)   : 1.000000 (100.0000%)
-     F1 Boundary Agreement       : 0.999259 (99.9259%)
-     Total disagreement instances: 170
-     Distinct disagreement patterns: 75
+     Agreed boundaries  : 132,783
+     Precision (ours vs baseline): 0.999947 (99.9947%)
+     Recall (ours vs baseline)   : 0.999315 (99.9315%)
+     F1 Boundary Agreement       : 0.999631 (99.9631%)
+     Total disagreement instances: 97
+     Distinct disagreement patterns: 6
      Disagreement Concentration:
-       - Top 10 patterns cover: 58 / 170 (34.12%)
-       - Top 25 patterns cover: 105 / 170 (61.76%)
-       - Top 50 patterns cover: 145 / 170 (85.29%)
+       - Top 10 patterns cover: 97 / 97 (100.00%)
+       - Top 25 patterns cover: 97 / 97 (100.00%)
+       - Top 50 patterns cover: 97 / 97 (100.00%)
 
      Top Disagreement Patterns (up to 50):
-       01. [count=8] Ours: [أ · َ] vs Base: [أَ] | Ex: 'اوَاتِ وَمَا فِي الْأَرْضِ جَمِيعًا مِّنْه'
-       02. [count=7] Ours: [م · َ] vs Base: [مَ] | Ex: 'لَكُم مَّا فِي السَّمَاوَاتِ وَمَا فِي الْ'
-       03. [count=6] Ours: [ك · ُ] vs Base: [كُ] | Ex: 'া বলেন, وَسَخَّرَ لَكُم مَّا فِي السَّمَاو'
-       04. [count=6] Ours: [ل · َ] vs Base: [لَ] | Ex: 'আলা বলেন, وَسَخَّرَ لَكُم مَّا فِي السَّمَ'
-       05. [count=6] Ours: [ه · َ] vs Base: [هَ] | Ex: 'াআলা বলেন, يَا أَيُّهَا النَّاسُ اذْكُرُوا'
-       06. [count=6] Ours: [و · َ] vs Base: [وَ] | Ex: ' আল্লাহ তাআলা বলেন, وَسَخَّرَ لَكُم مَّا ف'
-       07. [count=5] Ours: [ل · َ · ّ] vs Base: [لَّ] | Ex: 'ذْكُرُوا نِعْمَتَ اللَّهِ عَلَيْكُمْ هَلْ م'
-       08. [count=5] Ours: [ن · َ · ّ] vs Base: [نَّ] | Ex: ' جَمِيعًا مِّنْهُ إِنَّ فِي ذَٰلِكَ لَآيَات'
-       09. [count=5] Ours: [ي · َ] vs Base: [يَ] | Ex: 'ِنَّ فِي ذَٰلِكَ لَآيَاتٍ لِّقَوْمٍ يَتَفَ'
-       10. [count=4] Ours: [ر · ُ] vs Base: [رُ] | Ex: ' لِّقَوْمٍ يَتَفَكَّرُونَ ﴿الجاثية: ١٣﴾ এব'
-       11. [count=4] Ours: [ع · َ] vs Base: [عَ] | Ex: 'وا نِعْمَتَ اللَّهِ عَلَيْكُمْ هَلْ مِنْ خ'
-       12. [count=4] Ours: [ل · ِ] vs Base: [لِ] | Ex: 'ِّنْهُ إِنَّ فِي ذَٰلِكَ لَآيَاتٍ لِّقَوْم'
-       13. [count=3] Ours: [  · ঃ] vs Base: [ ঃ] | Ex: 'বাংলা চলচ্চিত্র ২০১৩ ঃ এক নজরে ২০১৩ সালে ম'
-       14. [count=3] Ours: [إ · ِ] vs Base: [إِ] | Ex: 'ضِ جَمِيعًا مِّنْهُ إِنَّ فِي ذَٰلِكَ لَآي'
-       15. [count=3] Ours: [ر · ْ] vs Base: [رْ] | Ex: 'َاتِ وَمَا فِي الْأَرْضِ جَمِيعًا مِّنْهُ '
-       16. [count=3] Ours: [غ · َ] vs Base: [غَ] | Ex: 'ْ هَلْ مِنْ خَالِقٍ غَيْرُ اللَّهِ يَرْزُق'
-       17. [count=3] Ours: [ف · َ] vs Base: [فَ] | Ex: 'يَاتٍ لِّقَوْمٍ يَتَفَكَّرُونَ ﴿الجاثية: ١'
-       18. [count=3] Ours: [ف · ِ] vs Base: [فِ] | Ex: 'َسَخَّرَ لَكُم مَّا فِي السَّمَاوَاتِ وَمَ'
-       19. [count=3] Ours: [ل · ْ] vs Base: [لْ] | Ex: 'مَاوَاتِ وَمَا فِي الْأَرْضِ جَمِيعًا مِّن'
-       20. [count=3] Ours: [م · ِ] vs Base: [مِ] | Ex: 'مَا فِي الْأَرْضِ جَمِيعًا مِّنْهُ إِنَّ ف'
-       21. [count=3] Ours: [م · ْ] vs Base: [مْ] | Ex: 'َتَ اللَّهِ عَلَيْكُمْ هَلْ مِنْ خَالِقٍ غ'
-       22. [count=3] Ours: [ن · َ] vs Base: [نَ] | Ex: 'ّقَوْمٍ يَتَفَكَّرُونَ ﴿الجاثية: ١٣﴾ এবং ত'
-       23. [count=3] Ours: [ن · ْ] vs Base: [نْ] | Ex: 'ْأَرْضِ جَمِيعًا مِّنْهُ إِنَّ فِي ذَٰلِكَ'
-       24. [count=3] Ours: [ه · ِ] vs Base: [هِ] | Ex: 'ُرُوا نِعْمَتَ اللَّهِ عَلَيْكُمْ هَلْ مِن'
-       25. [count=3] Ours: [ى · ٰ] vs Base: [ىٰ] | Ex: ' إِلَّا هُوَ فَأَنَّىٰ تُؤْفَكُونَ ﴿فاطر: '
-       26. [count=2] Ours: [ب · ِ] vs Base: [بِ] | Ex: ' তিনি বলেন, ذَٰلِكَ بِأَنَّ اللَّهَ لَمْ ي'
-       27. [count=2] Ours: [ت · َ] vs Base: [تَ] | Ex: 'َآيَاتٍ لِّقَوْمٍ يَتَفَكَّرُونَ ﴿الجاثية:'
-       28. [count=2] Ours: [ذ · َ · ٰ] vs Base: [ذَٰ] | Ex: 'ا مِّنْهُ إِنَّ فِي ذَٰلِكَ لَآيَاتٍ لِّقَو'
-       29. [count=2] Ours: [س · َ] vs Base: [سَ] | Ex: 'ল্লাহ তাআলা বলেন, وَسَخَّرَ لَكُم مَّا فِي'
-       30. [count=2] Ours: [س · َ · ّ] vs Base: [سَّ] | Ex: 'رَ لَكُم مَّا فِي السَّمَاوَاتِ وَمَا فِي ا'
-       31. [count=2] Ours: [ض · ِ] vs Base: [ضِ] | Ex: 'تِ وَمَا فِي الْأَرْضِ جَمِيعًا مِّنْهُ إِ'
-       32. [count=2] Ours: [ع · ْ] vs Base: [عْ] | Ex: 'لنَّاسُ اذْكُرُوا نِعْمَتَ اللَّهِ عَلَيْك'
-       33. [count=2] Ours: [ق · َ] vs Base: [قَ] | Ex: 'ذَٰلِكَ لَآيَاتٍ لِّقَوْمٍ يَتَفَكَّرُونَ '
-       34. [count=2] Ours: [ك · َ] vs Base: [كَ] | Ex: 'نْهُ إِنَّ فِي ذَٰلِكَ لَآيَاتٍ لِّقَوْمٍ '
-       35. [count=2] Ours: [م · ٍ] vs Base: [مٍ] | Ex: 'ِكَ لَآيَاتٍ لِّقَوْمٍ يَتَفَكَّرُونَ ﴿الج'
-       36. [count=2] Ours: [م · ِ · ّ] vs Base: [مِّ] | Ex: ' الْأَرْضِ جَمِيعًا مِّنْهُ إِنَّ فِي ذَٰلِ'
-       37. [count=2] Ours: [ه · ُ] vs Base: [هُ] | Ex: 'َرْضِ جَمِيعًا مِّنْهُ إِنَّ فِي ذَٰلِكَ ل'
-       38. [count=2] Ours: [و · ْ] vs Base: [وْ] | Ex: 'ٰلِكَ لَآيَاتٍ لِّقَوْمٍ يَتَفَكَّرُونَ ﴿ا'
-       39. [count=2] Ours: [ي · ِ · ّ] vs Base: [يِّ] | Ex: 'لَّهَ لَمْ يَكُ مُغَيِّرًا نِّعْمَةً أَنْعَ'
-       40. [count=2] Ours: [ي · ْ] vs Base: [يْ] | Ex: 'ِعْمَتَ اللَّهِ عَلَيْكُمْ هَلْ مِنْ خَالِ'
-       41. [count=1] Ours: [  · ঁ] vs Base: [ ঁ] | Ex: 'ঈদ মোবারক’। মুহাম্মদ ঁনূরুল আবছার তৈয়বীঃ '
-       42. [count=1] Ours: [œ · া · ং] vs Base: [œাং] | Ex: 'অর্ধউলঙ্গ শরীরের নি¤œাংশে একজন পুরুষ বিভিন্'
-       43. [count=1] Ours: [ء · ِ] vs Base: [ءِ] | Ex: 'قُكُم مِّنَ السَّمَاءِ وَالْأَرْضِ لَا إِل'
-       44. [count=1] Ours: [ؤ · ْ] vs Base: [ؤْ] | Ex: 'ّا هُوَ فَأَنَّىٰ تُؤْفَكُونَ ﴿فاطر: ٣﴾ হে'
-       45. [count=1] Ours: [ة · ً] vs Base: [ةً] | Ex: 'ُ مُغَيِّرًا نِّعْمَةً أَنْعَمَهَا عَلَىٰ '
-       46. [count=1] Ours: [ت · ٍ] vs Base: [تٍ] | Ex: 'ّ فِي ذَٰلِكَ لَآيَاتٍ لِّقَوْمٍ يَتَفَكَّ'
-       47. [count=1] Ours: [ت · َ · ّ] vs Base: [تَّ] | Ex: 'هَا عَلَىٰ قَوْمٍ حَتَّىٰ يُغَيِّرُوا مَا ب'
-       48. [count=1] Ours: [ت · ُ] vs Base: [تُ] | Ex: 'لَّا هُوَ فَأَنَّىٰ تُؤْفَكُونَ ﴿فاطر: ٣﴾ '
-       49. [count=1] Ours: [ت · ِ] vs Base: [تِ] | Ex: 'مَّا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ'
-       50. [count=1] Ours: [ج · َ] vs Base: [جَ] | Ex: 'وَمَا فِي الْأَرْضِ جَمِيعًا مِّنْهُ إِنَّ'
+       01. [count=82] Ours: [অ্যা] vs Base: [অ্ · যা] | Ex: 'টপাত… খামারবাড়ির টিঅ্যান্ডটি মাঠ থেকে তেজগা'
+       02. [count=9] Ours: [এ্যা] vs Base: [এ্ · যা] | Ex: 'বটা খুব সাধারণভাবেই এ্যারেঞ্জ করা হয়েছিল। এ'
+       03. [count=3] Ours: [  · ঃ] vs Base: [ ঃ] | Ex: 'বাংলা চলচ্চিত্র ২০১৩ ঃ এক নজরে ২০১৩ সালে ম'
+       04. [count=1] Ours: [  · ঁ] vs Base: [ ঁ] | Ex: 'ঈদ মোবারক’। মুহাম্মদ ঁনূরুল আবছার তৈয়বীঃ '
+       05. [count=1] Ours: [œ · া · ং] vs Base: [œাং] | Ex: 'অর্ধউলঙ্গ শরীরের নি¤œাংশে একজন পুরুষ বিভিন্'
+       06. [count=1] Ours: [তু্ · য] vs Base: [তু্য] | Ex: 'র নিতে পারেন যদি, মৃতু্য, বা রক্ত এবং সাহস, '
 
-  4. Akshara Vocabulary Coverage (evaluated in 0.01s):
-     Total units      : 133,072
-     OOV units        : 7 (0.0053%)
-     Total tokens     : 133,094
-     Byte-fallback    : 0 (0.0000%)
+  4. Akshara Vocabulary Coverage (evaluated in 0.02s):
+     Total units      : 132,791
+     OOV units        : 283 (0.2131%)
+     Total tokens     : 133,509
+     Byte-fallback    : 515 (0.3857%)
      Top 20 Frequent OOV Units:
-       01. 'ইঁং': 1
-       02. 'ঋঁঃঁ': 1
-       03. 'জ্যোঃ': 1
-       04. 'ড়েঃ': 1
-       05. 'র্পৌ': 1
-       06. 'শ্ন্যা': 1
-       07. 'ষঁং': 1
+       01. '‚': 15
+       02. 'শ্রঃ': 13
+       03. 'أَ': 8
+       04. 'জৌ': 8
+       05. 'مَ': 7
+       06. 'كُ': 6
+       07. 'لَ': 6
+       08. 'هَ': 6
+       09. 'وَ': 6
+       10. 'لَّ': 5
+       11. 'نَّ': 5
+       12. 'يَ': 5
+       13. 'رُ': 4
+       14. 'عَ': 4
+       15. 'لِ': 4
+       16. 'চ্চু': 4
+       17. 'إِ': 3
+       18. 'رْ': 3
+       19. 'غَ': 3
+       20. 'فَ': 3
 
 [FINEWEB-2 20M SAMPLE] Scanning: data/cleaned/fineweb2/fw2_tokenizer_sample_100m.txt (first 20,000,000 chars)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Character Count : 20,000,000 characters (loaded in 0.21s)
-Segmentation    : 12,870,938 units emitted in 10.82s
+Character Count : 20,000,000 characters (loaded in 0.19s)
+Segmentation    : 12,859,552 units emitted in 14.04s
 
   1. Losslessness Invariant:
      Result: PASS ("".join(segment(text)) == text exactly)
 
   2. Structural Invariants Over Emitted Units:
-     (a) Starts with virama, vowel sign, nukta, or modifier: 909 violations
-         Top offending units: [('া', 315), ('্', 207), ('ে', 114), ('ঃ', 84), ('ি', 55), ('ী', 45), ('ু', 31), ('়', 28), ('ো', 12), ('ৃ', 6)]
+     (a) Starts with virama, vowel sign, nukta, or modifier: 653 violations
+         Top offending units: [('া', 259), ('ে', 95), ('ঃ', 81), ('্', 81), ('ি', 35), ('়', 28), ('ী', 27), ('ু', 27), ('ো', 7), ('ৃ', 6)]
      (b) Contains virama as last character:
-         - Word-final hasanta units (legitimate): 879
+         - Word-final hasanta units (legitimate): 881
            Top word-final units: [('হ্', 233), ('স্', 170), ('ত্', 87), ('ন্', 70), ('ক্', 55), ('ল্', 40), ('ম্', 30), ('ট্', 29), ('র্', 29), ('ফ্', 22)]
-         - Mid-word virama-ending units (violations): 5,942
-           Top offending units: [('অ্', 4995), ('এ্', 347), ('্', 207), ('প্', 46), ('গ্', 27), ('ত্', 25), ('র্', 23), ('ক্', 19), ('আ্', 18), ('স্', 14)]
+         - Mid-word virama-ending units (violations): 275
+           Top offending units: [('্', 81), ('র্', 15), ('হ্', 10), ('দু্', 9), ('ন্', 8), ('তু্', 6), ('মু্', 6), ('সু্', 6), ('ক্্', 5), ('চু্', 5)]
      (c) Contains two or more independent vowels: 0 violations
      (d) Contains space or newline (units must not cross whitespace): 0 violations
      (e) Contains consonant after vowel sign (second CV core): 0 violations
 
-  3. Baseline Comparison (regex module \X (v2026.7.19)) (evaluated in 16.54s):
-     Our boundaries     : 12,870,937
+  3. Baseline Comparison (regex module \X (v2026.7.19)) (evaluated in 11.78s):
+     Our boundaries     : 12,859,551
      Baseline boundaries: 12,864,118
-     Agreed boundaries  : 12,864,118
-     Precision (ours vs baseline): 0.999470 (99.9470%)
-     Recall (ours vs baseline)   : 1.000000 (100.0000%)
-     F1 Boundary Agreement       : 0.999735 (99.9735%)
-     Total disagreement instances: 6,067
-     Distinct disagreement patterns: 780
+     Agreed boundaries  : 12,858,764
+     Precision (ours vs baseline): 0.999939 (99.9939%)
+     Recall (ours vs baseline)   : 0.999584 (99.9584%)
+     F1 Boundary Agreement       : 0.999761 (99.9761%)
+     Total disagreement instances: 6,121
+     Distinct disagreement patterns: 292
      Disagreement Concentration:
-       - Top 10 patterns cover: 1,402 / 6,067 (23.11%)
-       - Top 25 patterns cover: 2,557 / 6,067 (42.15%)
-       - Top 50 patterns cover: 3,576 / 6,067 (58.94%)
+       - Top 10 patterns cover: 5,560 / 6,121 (90.83%)
+       - Top 25 patterns cover: 5,714 / 6,121 (93.35%)
+       - Top 50 patterns cover: 5,828 / 6,121 (95.21%)
 
      Top Disagreement Patterns (up to 50):
-       01. [count=199] Ours: [ل · َ] vs Base: [لَ] | Ex: 'سِ بْنِ مَالِكٍ، قَالَ سَمِعْتُ رَسُولَ ال'
-       02. [count=173] Ours: [و · َ] vs Base: [وَ] | Ex: 'مَكَانَهَا أُخْرَى، وَمَنْ كَانَ لَمْ يَذْ'
-       03. [count=170] Ours: [ن · َ] vs Base: [نَ] | Ex: 'াদিসে এসেছে, عَنْ أَنَسِ بْنِ مَالِكٍ، قَا'
-       04. [count=159] Ours: [م · َ] vs Base: [مَ] | Ex: 'ে, عَنْ أَنَسِ بْنِ مَالِكٍ، قَالَ سَمِعْت'
-       05. [count=147] Ours: [ه · ُ] vs Base: [هُ] | Ex: '“ لاَ يَقْبَلُ اللَّهُ صَلاَةً بِغَيْرِ طُ'
-       06. [count=126] Ours: [م · ْ] vs Base: [مْ] | Ex: 'رَى، وَمَنْ كَانَ لَمْ يَذْبَحْ، فَلْيَذْب'
-       07. [count=117] Ours: [ن · ْ] vs Base: [نْ] | Ex: 'না। হাদিসে এসেছে, عَنْ أَنَسِ بْنِ مَالِكٍ'
-       08. [count=106] Ours: [ل · ْ] vs Base: [لْ] | Ex: ' -أَوْ نُصَلِّيَ- فَلْيَذْبَحْ مَكَانَهَا '
-       09. [count=103] Ours: [ك · َ] vs Base: [كَ] | Ex: 'েন। তখন বললেন, مَنْ كَانَ ذَبَحَ أُضْحِيَّ'
-       10. [count=102] Ours: [’ · া] vs Base: [’া] | Ex: '্তা এলেই তা সবাই আমর’া গু’গলে সার্চ (Googl'
-       11. [count=92] Ours: [ل · َ · ّ] vs Base: [لَّ] | Ex: ' سَمِعْتُ رَسُولَ اللَّهِ ـ صلى الله عليه و'
-       12. [count=81] Ours: [أ · َ] vs Base: [أَ] | Ex: ' হাদিসে এসেছে, عَنْ أَنَسِ بْنِ مَالِكٍ، ق'
-       13. [count=81] Ours: [ع · َ] vs Base: [عَ] | Ex: 'ে না। হাদিসে এসেছে, عَنْ أَنَسِ بْنِ مَالِ'
-       14. [count=81] Ours: [ي · َ] vs Base: [يَ] | Ex: 'لى الله عليه وسلم ـ يَقُولُ “ لاَ يَقْبَلُ'
-       15. [count=81] Ours: [ی · ْ] vs Base: [یْ] | Ex: 'ইরশাদ করেন- وَ وَصَّیْنَا الْاِنْسَانَ بِو'
-       16. [count=80] Ours: [ه · ِ] vs Base: [هِ] | Ex: 'مِعْتُ رَسُولَ اللَّهِ ـ صلى الله عليه وسل'
-       17. [count=79] Ours: [و · ْ] vs Base: [وْ] | Ex: 'َ أَنْ يُصَلِّيَ -أَوْ نُصَلِّيَ- فَلْيَذْ'
-       18. [count=78] Ours: [ت · َ] vs Base: [تَ] | Ex: 'انَ ذَبَحَ أُضْحِيَّتَهُ قَبْلَ أَنْ يُصَل'
-       19. [count=77] Ours: [ر · َ] vs Base: [رَ] | Ex: 'ِكٍ، قَالَ سَمِعْتُ رَسُولَ اللَّهِ ـ صلى '
-       20. [count=75] Ours: [ب · ِ] vs Base: [بِ] | Ex: 'َلُ اللَّهُ صَلاَةً بِغَيْرِ طُهُورٍ আনাস '
-       21. [count=74] Ours: [ف · َ] vs Base: [فَ] | Ex: 'يَ -أَوْ نُصَلِّيَ- فَلْيَذْبَحْ مَكَانَهَ'
-       22. [count=74] Ours: [م · ِ] vs Base: [مِ] | Ex: 'نِ مَالِكٍ، قَالَ سَمِعْتُ رَسُولَ اللَّهِ'
-       23. [count=69] Ours: [ب · َ] vs Base: [بَ] | Ex: 'ـ يَقُولُ “ لاَ يَقْبَلُ اللَّهُ صَلاَةً ب'
-       24. [count=67] Ours: [ا · َ] vs Base: [اَ] | Ex: 'ه وسلم ـ يَقُولُ “ لاَ يَقْبَلُ اللَّهُ صَ'
-       25. [count=66] Ours: [ل · ِ] vs Base: [لِ] | Ex: 'عَنْ أَنَسِ بْنِ مَالِكٍ، قَالَ سَمِعْتُ ر'
-       26. [count=57] Ours: [  · ঃ] vs Base: [ ঃ] | Ex: 'ন মুৃন্না, সিরাজগঞ্জ ঃ সিরাজগঞ্জ সদর উপজেল'
-       27. [count=56] Ours: [ن · َ · ّ] vs Base: [نَّ] | Ex: 'আলা ইরশাদ করেন, وَإِنَّ عَلَيْكُمْ لَحَافِظ'
-       28. [count=54] Ours: [ل · ُ] vs Base: [لُ] | Ex: 'له عليه وسلم ـ يَقُولُ “ لاَ يَقْبَلُ اللَ'
-       29. [count=52] Ours: [ا · ِ] vs Base: [اِ] | Ex: 'ন- وَ وَصَّیْنَا الْاِنْسَانَ بِوَالِدَیْه'
-       30. [count=50] Ours: [ذ · ِ] vs Base: [ذِ] | Ex: 'طَقَنَا اللَّهُ الَّذِي أَنْطَقَ كُلَّ شَي'
-       31. [count=45] Ours: [ف · ِ] vs Base: [فِ] | Ex: 'نَّ عَلَيْكُمْ لَحَافِظِينَ، كِرَامًا كَات'
-       32. [count=43] Ours: [إ · ِ] vs Base: [إِ] | Ex: 'َبَّنا لا تُؤاخِذنا إِن نَسينا أَو أَخطَأن'
-       33. [count=43] Ours: [ৰ · ্ · ব্ব] vs Base: [ৰ্ব্ব] | Ex: ' বাণিজ্যালয় আছে ; সৰ্ব্বদাই ধুম ও ধল উধিত হই'
-       34. [count=42] Ours: [ق · َ] vs Base: [قَ] | Ex: 'َنَسِ بْنِ مَالِكٍ، قَالَ سَمِعْتُ رَسُولَ'
-       35. [count=42] Ours: [ه · َ] vs Base: [هَ] | Ex: 'فَلْيَذْبَحْ مَكَانَهَا أُخْرَى، وَمَنْ كَ'
-       36. [count=41] Ours: [م · ُ] vs Base: [مُ] | Ex: 'ا كَاتِبِينَ، يَعْلَمُونَ مَا تَفْعَلُونَ،'
-       37. [count=40] Ours: [ك · ُ] vs Base: [كُ] | Ex: 'করেন, وَإِنَّ عَلَيْكُمْ لَحَافِظِينَ، كِر'
-       38. [count=39] Ours: [ي · ْ] vs Base: [يْ] | Ex: 'اللَّهُ صَلاَةً بِغَيْرِ طُهُورٍ আনাস বিন '
-       39. [count=38] Ours: [ح · َ] vs Base: [حَ] | Ex: 'লেন, مَنْ كَانَ ذَبَحَ أُضْحِيَّتَهُ قَبْل'
-       40. [count=38] Ours: [ك · ْ] vs Base: [كْ] | Ex: 'ُلُنَا لَدَيْهِمْ يَكْتُبُونَ ‘তারা কি মনে'
-       41. [count=38] Ours: [ن · ُ] vs Base: [نُ] | Ex: 'َنْ يُصَلِّيَ -أَوْ نُصَلِّيَ- فَلْيَذْبَح'
-       42. [count=37] Ours: [ع · ْ] vs Base: [عْ] | Ex: ' مَالِكٍ، قَالَ سَمِعْتُ رَسُولَ اللَّهِ ـ'
-       43. [count=35] Ours: [- · ে] vs Base: [-ে] | Ex: '়সহ অন্যান্য হত্যাকা-ের অগ্রগতি সম্পর্কে ব'
-       44. [count=35] Ours: [ر · ُ] vs Base: [رُ] | Ex: 'نَجْوَاهُمْ بَلَى وَرُسُلُنَا لَدَيْهِمْ ي'
-       45. [count=34] Ours: [س · َ] vs Base: [سَ] | Ex: 'بْنِ مَالِكٍ، قَالَ سَمِعْتُ رَسُولَ اللَّ'
-       46. [count=33] Ours: [প্ · ৰ] vs Base: [প্ৰ] | Ex: 'িবাযাত্ৰ সাগর-তরঙ্গ-প্ৰপীড়িত ফুঙ্গিরো পৰ্ব'
-       47. [count=32] Ours: [ر · ِ] vs Base: [رِ] | Ex: 'لَّهُ صَلاَةً بِغَيْرِ طُهُورٍ আনাস বিন মা'
-       48. [count=32] Ours: [ن · ِ] vs Base: [نِ] | Ex: 'সেছে, عَنْ أَنَسِ بْنِ مَالِكٍ، قَالَ سَمِ'
-       49. [count=32] Ours: [ی · َ] vs Base: [یَ] | Ex: 'ِ اِحْسَانًا اِمَّا یَبْلُغَنَّ عِنْدَكَ ا'
-       50. [count=31] Ours: [ت · ُ] vs Base: [تُ] | Ex: 'َالِكٍ، قَالَ سَمِعْتُ رَسُولَ اللَّهِ ـ ص'
+       01. [count=4,939] Ours: [অ্যা] vs Base: [অ্ · যা] | Ex: 'করতে গিয়ে মিস করেন অ্যাঞ্জেলো ম্যাথুস। বল ব'
+       02. [count=316] Ours: [এ্যা] vs Base: [এ্ · যা] | Ex: ' জানালেন খামারমালিক এ্যামেলি। ঈদ সামনে রেখে '
+       03. [count=102] Ours: [’ · া] vs Base: [’া] | Ex: '্তা এলেই তা সবাই আমর’া গু’গলে সার্চ (Googl'
+       04. [count=57] Ours: [  · ঃ] vs Base: [ ঃ] | Ex: 'ন মুৃন্না, সিরাজগঞ্জ ঃ সিরাজগঞ্জ সদর উপজেল'
+       05. [count=35] Ours: [- · ে] vs Base: [-ে] | Ex: '়সহ অন্যান্য হত্যাকা-ের অগ্রগতি সম্পর্কে ব'
+       06. [count=26] Ours: [অ্যাং] vs Base: [অ্ · যাং] | Ex: 'ম্বোডিয়ার বিখ্যাত ‘অ্যাংকর ভাট’ মন্দির। খ্মে'
+       07. [count=25] Ours: [¤ · ্] vs Base: [¤্] | Ex: ' আবারও নিষেধ করলেন স¤্রাটকে। কোর্তার বোতাম'
+       08. [count=23] Ours: [- · া] vs Base: [-া] | Ex: 'ায় রাজধানী ঢাকার গে-ারিয়ার আসগর আলী হাসপ'
+       09. [count=21] Ours: [এ্য] vs Base: [এ্ · য] | Ex: ' ট্রান্সফার একাউন্ট এ্যড করবেন? আপনি আপনার '
+       10. [count=16] Ours: [^ · া] vs Base: [^া] | Ex: ' দ্রুত গ্রেফতারের আশ^াস প্রদান করে ডিসি সো'
+       11. [count=14] Ours: [ø · া] vs Base: [øা] | Ex: 'ী প্রমাণ করলেন, এ সেøাগান এখনও বেঁচে আছে। '
+       12. [count=14] Ours: [অ্য়া] vs Base: [অ্ · য়া] | Ex: '্টের বসানো কমিটি অফ অ্য়াডমিনিস্ট্রেটর্স (সিও'
+       13. [count=12] Ours: [¯ · ্] vs Base: [¯্] | Ex: 'াঘ ছাড়াও অসংখ্য হিং¯্র প্রাণির ভয় উপেক্ষ'
+       14. [count=12] Ours: [অ্য] vs Base: [অ্ · য] | Ex: 'ক, বাংলাদেশ মেডিকেল অ্যন্ড ডেন্টাল কাউন্সিল'
+       15. [count=11] Ours: [- · ি] vs Base: [-ি] | Ex: 'চরত্রি শঘ্রিই এক মাট-িঘঁেসা, ভোগী, নারী প্'
+       16. [count=11] Ours: [? · ্] vs Base: [?্] | Ex: 'ক্টিভেটেড পোলিও বা র?্যাবিস ভ্যাকসিনের মতো'
+       17. [count=10] Ours: [r · া] vs Base: [rা] | Ex: 'ি সাবধানতার সাথে pourালাও, আপনি একবার তরলট'
+       18. [count=10] Ours: [¬ · া] vs Base: [¬া] | Ex: 'েশে উৎপাদনের জন্য গে¬াববায়োটেকের ‘বঙ্গভ্য'
+       19. [count=10] Ours: [আ্যা] vs Base: [আ্ · যা] | Ex: '। অনেক হাই-প্রোফাইল আ্যাকাউন্টও তাতে সামিল হ'
+       20. [count=9] Ours: [- · ্] vs Base: [-্] | Ex: 'রল সে। সেটটা নিয়ে প-্যাটফর্মের মেঝেতে প্র'
+       21. [count=9] Ours: [. · া] vs Base: [.া] | Ex: ' পাত্রের মধ্যে পনির .ালা। - অ্যালকোহল বা জ'
+       22. [count=9] Ours: [œ · ী] vs Base: [œী] | Ex: 'নো, ক্রয়-বিক্রয়,আতœীয় স্বজন বা আপনজনের '
+       23. [count=8] Ours: [œ · া] vs Base: [œা] | Ex: 'ং কার্যকর শাওয়ার (¯œানকার্যে ব্যবহৃত ঝর্ণ'
+       24. [count=8] Ours: [’ · ্] vs Base: [’্] | Ex: ' করে ডাক্তারের পরামর’্শ নিন। ৩. গু’গলে কখন'
+       25. [count=7] Ours: [  · ে] vs Base: [ ে] | Ex: ' পনাতীর্থ বা পণতীর্থ েআজোও এখানে তাঁর স্মৃ'
+       26. [count=7] Ours: [Ÿ · া] vs Base: [Ÿা] | Ex: 'ের পাওনা পরিশোধের আহŸান জানিয়ে বলেন, শ্রম'
+       27. [count=7] Ours: [আ্য] vs Base: [আ্ · য] | Ex: 'প্তার করেছে র্যাপিড আ্যকশন ব্যাটালিয়ান (র্'
+       28. [count=6] Ours: [  · া] vs Base: [ া] | Ex: 'দ আলম সিদ্দিক। বিশেষ াতিথি হিসেবে উপস্থিত '
+       29. [count=6] Ours: [তু্ · য] vs Base: [তু্য] | Ex: 'যৎস্পৃষ্টে একজনের মৃতু্য যশোরের চৌগাছায় বিদ'
+       30. [count=6] Ours: [দু্ · য] vs Base: [দু্য] | Ex: 'া বলেন।  চৌগাছায় বিদু্যৎস্পৃষ্টে একজনের মৃত'
+       31. [count=5] Ours: [- · ু] vs Base: [-ু] | Ex: 'ন। পরিষ্কার সিআইএ। ব-ু সুট, সাদা টাই। মাথা'
+       32. [count=5] Ours: [¦ · া] vs Base: [¦া] | Ex: ' অনাগ্রহ। কারণ একই জ¦ালানি খরচে সিম্পল সাই'
+       33. [count=5] Ours: [¯ · ে] vs Base: [¯ে] | Ex: 'াট এলাকা ব্যবস্থাপক ¯েœহজয় চৌধুরী টিটু, প'
+       34. [count=5] Ours: [è · ী] vs Base: [èী] | Ex: 'র দিকে শহরের হাটলক্ষèীগঞ্জ বৌবাজার এলাকায়'
+       35. [count=5] Ours: [এ্যাং] vs Base: [এ্ · যাং] | Ex: 'ং ফ্লাওয়ার মিলস-এর এ্যাংকর ব্র্যান্ডের সুজি,'
+       36. [count=5] Ours: [১ · ঃ] vs Base: [১ঃ] | Ex: 'হমাদডাউনলোড সার্ভার-১ঃ Download Now ডাউনলো'
+       37. [count=5] Ours: [ৱ · ে] vs Base: [ৱে] | Ex: 'পিসে মেসো যে থাকে তাৱেই কর্ম্ম দেয়। ওরি ম'
+       38. [count=4] Ours: [  · ি] vs Base: [ ি] | Ex: 'নয়। কখনই ছিলনা মাহা িমজর্া একজন গবেষক োএব'
+       39. [count=4] Ours: [  · ু] vs Base: [ ু] | Ex: ' যায়। অন্যদিকে, কিছ ুক্ষেত্রে ড্রাগের পার'
+       40. [count=4] Ours: [  · ্] vs Base: [ ্] | Ex: 'ং অন্যরা তাকে উদ্ধার ্করতে গিয়ে ডুবে যায়'
+       41. [count=4] Ours: [d · া] vs Base: [dা] | Ex: ' মরা ঢালাই - গ্যাস ldালাই - চিত্র - চাপ বা'
+       42. [count=4] Ours: [μ · ি] vs Base: [μি] | Ex: 'মাণ শিল্প, খাদ্য প্রμিয়াজাতকরণ, ওষুধ, চাম'
+       43. [count=4] Ours: [ওঁ · ী] vs Base: [ওঁী] | Ex: 'না যে, এককালে স্কট লওঁীয় নৃপতিগণের উহা অতি'
+       44. [count=4] Ours: [বেঁ · ে] vs Base: [বেঁে] | Ex: 'অপবিত্রতা থেকে যারা বেঁেচ থাকে তাদেরকে পছন্দ'
+       45. [count=4] Ours: [’ · ে] vs Base: [’ে] | Ex: 'ায় কখনোই খুঁজতে যাব’েন না। আপনি যদি তা কর'
+       46. [count=3] Ours: [) · ঃ] vs Base: [)ঃ] | Ex: 'ম।  শিশির দাস (এডমিন)ঃ গুগল এডসেন্স কি? আম'
+       47. [count=3] Ours: [- · ৃ] vs Base: [-ৃ] | Ex: 'িরাপত্তা বেষ্টনী বিস-ৃত করা হবে। ২০১৩ সালে'
+       48. [count=3] Ours: [. · ে] vs Base: [.ে] | Ex: '্ষ্ম চালনি দিয়ে জল .েলে দিন। ব্ল্যাক ফুড '
+       49. [count=3] Ours: [¯ · ি] vs Base: [¯ি] | Ex: ' রয়েছে অগণিত পদ্ম। ¯িœগ্ধতার রং আর আকাশে '
+       50. [count=3] Ours: [μ · া] vs Base: [μা] | Ex: 'ষ্ট্রের নিরাপত্তা সংμান- কতিপয় সুনির্দিষ্'
 
-  4. Akshara Vocabulary Coverage (evaluated in 1.32s):
-     Total units      : 12,870,938
-     OOV units        : 0 (0.0000%)
-     Total tokens     : 12,870,938
-     Byte-fallback    : 0 (0.0000%)
+  4. Akshara Vocabulary Coverage (evaluated in 0.96s):
+     Total units      : 12,859,552
+     OOV units        : 14,606 (0.1136%)
+     Total tokens     : 12,899,401
+     Byte-fallback    : 17,758 (0.1377%)
      Top 20 Frequent OOV Units:
-       (None - 100% vocabulary coverage)
+       01. 'لَ': 199
+       02. 'وَ': 173
+       03. 'نَ': 170
+       04. 'র্চু': 169
+       05. '~': 161
+       06. 'مَ': 159
+       07. 'স্কঃ': 155
+       08. 'স্ত্রো': 151
+       09. 'هُ': 147
+       10. '•': 142
+       11. 'مْ': 126
+       12. 'শ্লী': 124
+       13. 'نْ': 117
+       14. 'ধিঃ': 111
+       15. 'لْ': 106
+       16. 'كَ': 103
+       17. 'ত্পা': 102
+       18. 'ম্পো': 99
+       19. 'ফাং': 93
+       20. 'لَّ': 92
 
 ================================================================================
 REVIEW QUEUE GENERATION (OPTIONAL ARTIFACT): results\audits\akshara_review_queue.tsv
 ================================================================================
-Total distinct disagreement patterns across all corpora: 1,123
-Total disagreement occurrences: 7,003
+Total distinct disagreement patterns across all corpora: 296
+Total disagreement occurrences: 6,250
 Written top patterns to review queue: 100 rows
 Header format: pattern_id\tour_split\tbaseline_split\tcount\texample_context\towner_verdict
 Note: The review queue is retained as an optional artifact. The owner_verdict review step is omitted.
@@ -569,5 +398,5 @@ Honest Scope & Cost:
   results/audits/akshara_review_queue.tsv provides empirical ground truth validation.
 
 ================================================================================
-AUDIT COMPLETED IN 66.44 SECONDS (< 10 minutes CPU constraint PASS)
+AUDIT COMPLETED IN 63.02 SECONDS (< 10 minutes CPU constraint PASS)
 ================================================================================

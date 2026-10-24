@@ -89,6 +89,73 @@ def test_akshara_vs_regex_cluster_comparison(tmp_path: Path) -> None:
     assert tsv_path.exists()
 
 
+def test_vowel_plus_ya_phala_single_unit() -> None:
+    """An independent vowel followed by virama and ya-phala (অ্যা, এ্যা, etc.) must segment as one unit."""
+    # অ্যা
+    assert segment("অ্যা") == ["অ্যা"]
+    assert segment("অ্যাকাডেমি") == ["অ্যা", "কা", "ডে", "মি"]
+    assert segment("অ্যাপল") == ["অ্যা", "প", "ল"]
+    assert segment("অ্যাক্ট") == ["অ্যা", "ক্ট"]
+
+    # এ্যা
+    assert segment("এ্যা") == ["এ্যা"]
+    assert segment("এ্যাডভোকেট") == ["এ্যা", "ড", "ভো", "কে", "ট"]
+
+    # Without aa-kar
+    assert segment("অ্য") == ["অ্য"]
+    assert segment("এ্য") == ["এ্য"]
+
+    # With modifier (chandrabindu)
+    assert segment("অ্যাঁ") == ["অ্যাঁ"]
+
+
+def test_no_lone_virama_after_zwj() -> None:
+    """ZWJ/ZWNJ before or after virama must not produce orphan/lone virama units."""
+    samples = [
+        "ধড়\u200d্ফড়্",
+        "ঝর\u200d্ঝর্",
+        "ছল\u200d্ছল্",
+        "পোস্ট\u200cমাস্টার",
+        "ক\u09cd\u200dষ",
+        "হর্\u200cতন",
+    ]
+    for text in samples:
+        units = segment(text)
+        assert "".join(units) == text, f"Losslessness violation on {text}"
+        for u in units:
+            assert u != "\u09cd", f"Found orphan lone virama in segmentation of {text}: {units}"
+            if len(u) > 1 and not u.startswith("\u200c") and not u.startswith("\u200d"):
+                assert not u.startswith("\u09cd"), f"Unit starts with virama: {u} in {units}"
+
+
+def test_non_bengali_grapheme_clusters() -> None:
+    """Non-Bengali scripts must be segmented per extended grapheme cluster (base + combining marks)."""
+    # Arabic base + vowel marks
+    assert segment("لَ") == ["لَ"]
+    assert segment("كَتَبَ") == ["كَ", "تَ", "بَ"]
+    assert segment("بِسْمِ") == ["بِ", "سْ", "مِ"]
+
+    # Latin with combining diacritic
+    assert segment("e\u0301") == ["e\u0301"]
+
+    # Mixed Bengali and Arabic
+    mixed = "বাংলা لَ এবং ইংলিশ e\u0301।"
+    units = segment(mixed)
+    assert "".join(units) == mixed
+    assert "لَ" in units
+    assert "e\u0301" in units
+
+
+def test_u09f0_segmentation() -> None:
+    """Assamese Ra (U+09F0 ৰ) must be recognized as a consonant in segmentation."""
+    units = segment("উৰ্দ্ধশ্বাসে")
+    assert "".join(units) == "উৰ্দ্ধশ্বাসে"
+    # ৰ্দ্ধ should be clustered together without orphan virama
+    assert any("ৰ" in u for u in units)
+    for u in units:
+        assert u != "\u09cd"
+
+
 def test_hand_labelled_gold_akshara_list() -> None:
     """Gold labelled word list test; skips with warning if tests/data/akshara_gold.tsv is absent."""
     gold_path = Path("tests/data/akshara_gold.tsv")
