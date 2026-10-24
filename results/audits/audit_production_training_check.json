@@ -1,0 +1,16 @@
+{
+  "dataset_tokens": 465144,
+  "tokens_per_step": 16384,
+  "total_steps": 2,
+  "epoch_count": 0.07,
+  "logs": [
+    {
+      "step": 2,
+      "train_loss": 9.333,
+      "val_loss": 9.3772,
+      "lr": 0.0001,
+      "tokens_per_step": 16384,
+      "speed_tok_sec": 711.8
+    }
+  ]
+}

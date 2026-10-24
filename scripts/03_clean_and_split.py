@@ -91,8 +91,9 @@ def main() -> None:
             wid = row.get("work_id", "")
             target_split = prefix_to_split.get(pfx) or id_to_split.get(wid, "train")
 
-            text = row.get("clean_text") or clean_wikitext(row.get("raw_text", ""))[0]
-            if not exact_dedup.is_duplicate(text):
+            raw_t = row.get("raw_text", "")
+            text, _ = clean_wikitext(raw_t) if raw_t else (row.get("clean_text", ""), {})
+            if text and not exact_dedup.is_duplicate(text):
                 split_texts[target_split].append(text)
     else:
         # Default representative text per split

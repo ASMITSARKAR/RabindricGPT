@@ -28,17 +28,17 @@ dr_10_amendment:
   split_option: "Option_A"
   val_works:
     - id: "shesher_kobita"
-      clean_chars: 165374
+      clean_chars: 164532
   test_works:
     - id: "gitanjali"
-      clean_chars: 76476
+      clean_chars: 64443
     - id: "jogajog"
-      clean_chars: 360939
+      clean_chars: 360924
     - id: "chitrangada"
-      clean_chars: 35811
-  total_val_chars: 165374
-  total_test_chars: 473226
-  reason: "Genre balance across evaluation splits: Option_A assigns the lyrical poetry work (Gitanjali, 76,476 clean chars) to held-out test alongside drama (Chitrangada, 35,811 clean chars) and novel (Jogajog, 360,939 clean chars), while Shesher Kobita (165,374 clean chars novel) provides a single dedicated novel benchmark for validation."
+      clean_chars: 35114
+  total_val_chars: 164532
+  total_test_chars: 460481
+  reason: "Genre balance across evaluation splits: Option_A assigns the lyrical poetry work (Gitanjali, 64,443 clean chars) to held-out test alongside drama (Chitrangada, 35,114 clean chars) and novel (Jogajog, 360,924 clean chars), while Shesher Kobita (164,532 clean chars novel) provides a single dedicated novel benchmark for validation. Counts reconciled after full residual markup purge."
 
 # DR-5: Training optimization defaults (provisional estimates, calibrated at pilot)
 batch_size_chunks: 64             # Ref: 15_BUILD_DIRECTIVE.md §3.1 DR-5

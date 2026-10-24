@@ -78,17 +78,21 @@ def assert_bengali_script(text: str) -> None:
 
 
 def load_heldout_target() -> List[str]:
-    """Load clean text from all 4 held-out works."""
-    works = []
+    """Load clean text from all 4 held-out works concatenated continuously so n-grams cross line and page boundaries."""
+    from collections import defaultdict
+    work_pages = defaultdict(list)
     with open("data/raw/wikisource/pages.jsonl", "r", encoding="utf-8") as f:
         for line in f:
             row = json.loads(line)
             pfx = row.get("prefix", "")
-            if any(k in pfx for k in ["শেষের কবিতা", "গীতাঞ্জলি", "যোগাযোগ", "চিত্রাঙ্গদা"]):
-                t = row.get("clean_text", "")
-                if t:
-                    works.append(t)
-    return works
+            for target_title in ["শেষের কবিতা", "গীতাঞ্জলি", "যোগাযোগ", "চিত্রাঙ্গদা"]:
+                if target_title in pfx:
+                    t = row.get("clean_text", "")
+                    if t:
+                        work_pages[target_title].append(t)
+                    break
+    # Concatenate pages within each work with newline separation
+    return ["\n\n".join(pages) for pages in work_pages.values()]
 
 
 def load_real_background_docs(n_docs: int = 50) -> List[str]:
@@ -140,8 +144,8 @@ def run_plant_sweep() -> Dict[str, Any]:
     bg_docs = load_real_background_docs(50)
     assert len(bg_docs) >= 20, "Insufficient background documents!"
 
-    # Tokenize each page separately to avoid cross-page straddling
-    per_page_words = [tokenize_bengali_words(t) for t in target_texts if len(tokenize_bengali_words(t)) >= 30]
+    # Continuous words per work so n-grams and plant spans cross line and page boundaries
+    per_work_words = [tokenize_bengali_words(t) for t in target_texts if len(tokenize_bengali_words(t)) >= 50]
 
     lengths = [13, 20, 30]
     subs_list = [0, 1, 2, 3]
@@ -157,9 +161,9 @@ def run_plant_sweep() -> Dict[str, Any]:
             hits_worst = 0
             hits_rand = 0
             for trial in range(trials_per_cell):
-                page_words = random.choice(per_page_words)
-                start_idx = random.randint(0, len(page_words) - L)
-                passage = list(page_words[start_idx : start_idx + L])
+                work_words = random.choice(per_work_words)
+                start_idx = random.randint(0, len(work_words) - L)
+                passage = list(work_words[start_idx : start_idx + L])
 
                 # Worst case placement
                 worst_idxs = generate_worst_case_indices(L, k)
@@ -191,9 +195,9 @@ def run_plant_sweep() -> Dict[str, Any]:
     # Variant (b): 1 substitution + danda / whitespace / ZWNJ perturbation
     hits_b = 0
     for trial in range(trials_per_cell):
-        page_words = random.choice(per_page_words)
-        start_idx = random.randint(0, len(page_words) - 13)
-        passage = list(page_words[start_idx : start_idx + 13])
+        work_words = random.choice(per_work_words)
+        start_idx = random.randint(0, len(work_words) - 13)
+        passage = list(work_words[start_idx : start_idx + 13])
         # 1 sub
         passage[6] = random.choice(SUBSTITUTION_BANK_BENGALI)
         # Perturbation: insert danda, extra spaces, or ZWNJ
@@ -216,12 +220,12 @@ def run_plant_sweep() -> Dict[str, Any]:
     # Variant (c): Sadhu/Cholit verbal inflection swaps
     hits_c = 0
     trials_c = 0
-    for page_words in per_page_words:
+    for work_words in per_work_words:
         if trials_c >= trials_per_cell:
             break
         # Look for passages with sadhu/cholit words
-        for i in range(len(page_words) - 20):
-            window = page_words[i : i + 20]
+        for i in range(len(work_words) - 20):
+            window = work_words[i : i + 20]
             swapped = False
             p_c = list(window)
             for j, w in enumerate(p_c):

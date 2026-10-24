@@ -21,8 +21,13 @@ def main() -> None:
     text = corpus_file.read_text(encoding="utf-8")
     words = set(re.findall(r"[\u0980-\u09FF\u200C\u200D]+", text))
     
-    # Filter out single-letter matras or invalid forms
-    valid_words = [w for w in words if len(w) >= 1 and not re.match(r"^[\u09BE-\u09CD\u09D7]", w)]
+    # Filter out single-letter matras, invalid forms, and numerals
+    valid_words = [
+        w for w in words
+        if len(w) >= 1
+        and not re.match(r"^[\u09BE-\u09CD\u09D7]", w)
+        and not re.search(r"[\u09E6-\u09EF0-9]", w)
+    ]
 
     # Stratify into 6 distinct linguistic categories
     bins = {

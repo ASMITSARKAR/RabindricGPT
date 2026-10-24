@@ -1,7 +1,7 @@
 # Audit: Adversarial Plant Sweep & Cross-Corpus Leakage Calibration
-Git Commit SHA: 2e35c6cd1c8e77bb21efe5a755763be274a03e7f
+Git Commit SHA: 53bc977f5de2e1eedef92acdcf5daf5757e6fe0d
 
-Detector Configuration: Built from all 4 held-out works (103,258 unique 5-grams).
+Detector Configuration: Built from all 4 held-out works (106,144 unique 5-grams).
 Rule: >= 3 distinct 5-grams in a 30-word window.
 
 ## 1. Variant (a): Substring Plant Sweep Across Lengths & Substitutions (Intra-Page)
@@ -9,12 +9,12 @@ Length  | Subs  | Worst-Case Placement Recall  | Random Placement Recall
 ------------------------------------------------------------------------
 13      | 0     |                      100.0% |                   100.0%
 13      | 1     |                      100.0% |                   100.0%
-13      | 2     |                        0.0% |                    74.0%
-13      | 3     |                        0.0% |                    28.0%
+13      | 2     |                        0.0% |                    66.0%
+13      | 3     |                        0.0% |                    22.0%
 20      | 0     |                      100.0% |                   100.0%
 20      | 1     |                      100.0% |                   100.0%
 20      | 2     |                      100.0% |                   100.0%
-20      | 3     |                        0.0% |                    98.0%
+20      | 3     |                        0.0% |                    94.0%
 30      | 0     |                      100.0% |                   100.0%
 30      | 1     |                      100.0% |                   100.0%
 30      | 2     |                      100.0% |                   100.0%

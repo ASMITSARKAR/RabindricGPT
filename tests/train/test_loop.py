@@ -52,6 +52,10 @@ def test_nan_loss_guard_preserves_last_good_checkpoint(tmp_path: Path) -> None:
     }
     cfg_file.write_text(yaml.dump(cfg_data), encoding="utf-8")
 
+    shard_idx = Path("shards/wikisource/byte/train/index.json")
+    if not shard_idx.exists():
+        pytest.skip(f"Shard index missing at {shard_idx}; mount Drive shards first.")
+
     # If run cleanly, completes 2 steps
     res = train(run_dir=run_dir, config_path=cfg_file, override_steps=2)
     assert res["status"] == "COMPLETED"

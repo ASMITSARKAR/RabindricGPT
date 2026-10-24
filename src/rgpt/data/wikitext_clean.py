@@ -100,6 +100,15 @@ def clean_wikitext(raw_wikitext: str) -> Tuple[str, Dict[str, Any]]:
     # 10. Clean headings == Heading == -> Heading
     text = re.sub(r"={2,6}\s*(.*?)\s*={2,6}", r"\1\n", text)
 
+    # 11. Clean MediaWiki indentation colons and definition lists
+    text = re.sub(r"^\s*:+", "", text, flags=re.MULTILINE)
+    text = re.sub(r":{2,}", "", text)
+
+    # 12. Strip any residual unclosed template, link, or tag markup
+    text = re.sub(r"\{\{|\}\}", "", text)
+    text = re.sub(r"\[\[|\]\]", "", text)
+    text = re.sub(r"<[^>]*>", "", text)
+
     # 11. Run through Bengali clean pipeline (NFC normalization, control char removal,
     # whitespace collapsing while preserving single poetry newlines, ZWJ/ZWNJ preservation)
     clean_text, _passed, _metrics = clean_pipeline(text)
