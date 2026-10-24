@@ -156,6 +156,21 @@ def test_u09f0_segmentation() -> None:
         assert u != "\u09cd"
 
 
+def test_reph_and_ryab_segmentation() -> None:
+    """Reph conjuncts (র্য) and ya-phala forms must be segmented losslessly and cleanly."""
+    units_reph = segment("র্য")
+    assert units_reph == ["র্য"]
+
+    units_ryab = segment("র্যাব")
+    assert units_ryab == ["র্যা", "ব"]
+    assert "".join(units_ryab) == "র্যাব"
+
+    # Even with raw ZWJ in non-normalized text, concatenation invariance holds
+    raw_ryab = "র\u09cd\u200d্যাব"
+    assert "".join(segment(raw_ryab)) == raw_ryab
+
+
+
 def test_hand_labelled_gold_akshara_list() -> None:
     """Gold labelled word list test; skips with warning if tests/data/akshara_gold.tsv is absent."""
     gold_path = Path("tests/data/akshara_gold.tsv")

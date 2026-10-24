@@ -127,11 +127,13 @@ def train(
     # 3. Resume checkpoint if available, or load pretrained checkpoint in adapt mode
     start_step = 0
     loaded_ckpt = load_latest_checkpoint(ckpt_dir, expected_config_hash=config_hash, allow_config_change=True)
+    initial_loss: Optional[float] = None
     if loaded_ckpt:
         start_step = loaded_ckpt["step"] + 1
         model.load_state_dict(loaded_ckpt["model_state_dict"])
         optimizer.load_state_dict(loaded_ckpt["optimizer_state_dict"])
-        print(f"Resumed {rdir.name} from step {start_step}")
+        initial_loss = loaded_ckpt.get("initial_loss")
+        print(f"Resumed {rdir.name} from step {start_step} (restored initial_loss={initial_loss})")
     elif mode == "adapt":
         pretrain_ckpt_path = raw_cfg.get("pretrained_checkpoint")
         if pretrain_ckpt_path and Path(pretrain_ckpt_path).exists():
@@ -179,6 +181,7 @@ def train(
 
     log_writer = JsonLogWriter(rdir / "metrics.jsonl")
     last_loss = 0.0
+    recent_losses: List[float] = []
 
     # 5. Optimization loop
     for step in range(start_step, total_steps):
@@ -210,21 +213,28 @@ def train(
                 f"Loss diverged to NaN/Inf at step {step}: aborting immediately to preserve checkpoints!"
             )
 
-        # Relative kill rule: track initial loss at start, abort at step 500 if loss has not dropped
-        # by at least 15% (ratio > 0.85), or if loss > 7.5 threshold for large-vocab models (>= 4096).
-        if step == start_step:
+        # Relative kill rule: track true initial loss at start (persisted in checkpoints across resumes).
+        # Smooth loss across steps 450-500 (average). Abort at step 500 if smoothed loss has not dropped
+        # by at least 15% (smoothed / initial > 0.85), or if smoothed loss > 7.5 for large-vocab models (>= 4096).
+        # Note on token counts: At step 500 with batch size 64 chunks (32,000 chunks total):
+        # BPE16 sees ~9.4M tokens (~295 tok/chunk); Char sees ~31.9M tokens; Byte sees ~84.5M tokens.
+        if initial_loss is None:
             initial_loss = loss.item()
+
+        if 450 <= step <= 500:
+            recent_losses.append(loss.item())
 
         if step == 500:
             rel_thresh = float(raw_cfg.get("kill_relative_ratio", 0.85))
             abs_thresh = float(raw_cfg.get("kill_absolute_loss", 7.5))
-            is_rel_abort = (initial_loss is not None and loss.item() > rel_thresh * initial_loss)
-            is_abs_abort = (vocab_size >= 4096 and loss.item() > abs_thresh)
+            smoothed_loss = sum(recent_losses) / len(recent_losses) if recent_losses else loss.item()
+            is_rel_abort = (initial_loss is not None and smoothed_loss > rel_thresh * initial_loss)
+            is_abs_abort = (vocab_size >= 4096 and smoothed_loss > abs_thresh)
             if is_rel_abort or is_abs_abort:
-                ratio_str = f"{loss.item() / initial_loss:.3f}" if initial_loss else "N/A"
+                ratio_str = f"{smoothed_loss / initial_loss:.3f}" if initial_loss else "N/A"
                 raise RuntimeError(
-                    f"Relative kill rule triggered at step 500: loss {loss.item():.4f} "
-                    f"(initial={initial_loss}, ratio={ratio_str} > {rel_thresh} or loss > {abs_thresh}). "
+                    f"Relative kill rule triggered at step 500: smoothed loss {smoothed_loss:.4f} "
+                    f"(initial={initial_loss:.4f}, ratio={ratio_str} > {rel_thresh} or smoothed loss > {abs_thresh}). "
                     "Aborting run to preserve compute budget."
                 )
 
@@ -268,6 +278,7 @@ def train(
                 config_hash=config_hash,
                 tokenizer_hash="tok_v1",
                 keep_last=2,
+                extra_state={"initial_loss": initial_loss},
             )
 
     # Final checkpoint
@@ -280,6 +291,7 @@ def train(
         config_hash=config_hash,
         tokenizer_hash="tok_v1",
         is_final=True,
+        extra_state={"initial_loss": initial_loss},
     )
 
     target_crossing_step = None

@@ -54,8 +54,9 @@ def normalize_text(text: str) -> Tuple[str, Dict[str, int]]:
         text = text.replace("\u09f0", "\u09b0")
 
     # Step 3: Khanda-Ta canonicalization before joiner removal
-    # Historical representations: ত (U+09A4) + virama (U+09CD) + [ZWJ|ZWNJ] -> ৎ (U+09CE)
-    khanda_ta_pattern = re.compile(r"\u09a4\u09cd[\u200c\u200d]")
+    # Legacy representation: ত (U+09A4) + virama (U+09CD) + ZWJ (\u200d) -> ৎ (U+09CE).
+    # ত + virama + ZWNJ (\u200c) represents an explicit visible hasanta (ত্), NOT Khanda-Ta.
+    khanda_ta_pattern = re.compile(r"\u09a4\u09cd\u200d")
     khanda_matches = len(khanda_ta_pattern.findall(text))
     if khanda_matches > 0:
         stats["khanda_ta_canonicalized"] = khanda_matches

@@ -32,6 +32,7 @@ def save_checkpoint(
     tokenizer_hash: str,
     keep_last: int = 2,
     is_final: bool = False,
+    extra_state: Optional[Dict[str, Any]] = None,
 ) -> Path:
     """Save full training state atomically with atomic_custom_write."""
     cdir = Path(checkpoint_dir)
@@ -49,6 +50,8 @@ def save_checkpoint(
         "scaler_state_dict": scaler.state_dict() if scaler is not None else None,
         "rng_states": get_rng_states(),
     }
+    if extra_state:
+        state.update(extra_state)
 
     def write_fn(temp_path: Path) -> None:
         torch.save(state, temp_path)

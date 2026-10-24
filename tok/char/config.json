@@ -1,5 +1,10 @@
 {
   "id": "char",
   "vocab_size": 512,
-  "type": "char"
+  "type": "char",
+  "training_corpus": {
+    "path": "data/cleaned/fineweb2/fw2_tokenizer_sample_100m.txt",
+    "sha256": "7a1163f6c16390a23fb66e9561f291e2a6123e819b546f6608246060b2059910",
+    "sample_chars": 100085055
+  }
 }

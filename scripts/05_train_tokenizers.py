@@ -17,6 +17,7 @@ from typing import List
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from src.rgpt.common.atomic_io import atomic_write_text
+from src.rgpt.common.hashing import hash_file
 from src.rgpt.common.seed import seed_all
 from src.rgpt.tokenizers.akshara import AksharaTokenizer
 from src.rgpt.tokenizers.byte import ByteTokenizer
@@ -36,7 +37,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--input-corpus",
         type=str,
-        default="data/interim/p1_shuffled.txt",
+        default="data/cleaned/fineweb2/fw2_tokenizer_sample_100m.txt",
         help="Path to cleaned input corpus for tokenizer training",
     )
     parser.add_argument(
@@ -56,27 +57,52 @@ def train_single(
     out_base: Path,
     seed: int,
     sample_path: Path,
+    corpus_sha256: str,
 ) -> None:
     tok_dir = out_base / tok_id
     tok_dir.mkdir(parents=True, exist_ok=True)
     print(f"Training tokenizer '{tok_id}' -> {tok_dir}")
 
+    corpus_info = {
+        "path": str(sample_path).replace("\\", "/"),
+        "sha256": corpus_sha256,
+        "sample_chars": len(text),
+    }
+
     if tok_id == "byte":
         tok = ByteTokenizer()
         tok.to_files(tok_dir)
-        meta = {"id": tok_id, "vocab_size": tok.vocab_size, "type": "byte"}
+        meta = {
+            "id": tok_id,
+            "vocab_size": tok.vocab_size,
+            "type": "byte",
+            "training_corpus": {
+                **corpus_info,
+                "note": "ByteTokenizer uses fixed 256 byte vocabulary + specials; independent of training corpus",
+            },
+        }
         atomic_write_text(tok_dir / "config.json", json.dumps(meta, indent=2))
 
     elif tok_id == "char":
         tok = CharTokenizer.train_from_text(text)
         tok.to_files(tok_dir)
-        meta = {"id": tok_id, "vocab_size": tok.vocab_size, "type": "char"}
+        meta = {
+            "id": tok_id,
+            "vocab_size": tok.vocab_size,
+            "type": "char",
+            "training_corpus": corpus_info,
+        }
         atomic_write_text(tok_dir / "config.json", json.dumps(meta, indent=2))
 
     elif tok_id == "aks":
         tok = AksharaTokenizer.train_from_text(text)
         tok.to_files(tok_dir)
-        meta = {"id": tok_id, "vocab_size": tok.vocab_size, "type": "akshara"}
+        meta = {
+            "id": tok_id,
+            "vocab_size": tok.vocab_size,
+            "type": "akshara",
+            "training_corpus": corpus_info,
+        }
         atomic_write_text(tok_dir / "config.json", json.dumps(meta, indent=2))
 
     elif tok_id in ("bpe16", "bpe8", "uni16"):
@@ -97,6 +123,7 @@ def train_single(
             "type": "spm",
             "model_type": model_type,
             "model_prefix": "spm",
+            "training_corpus": corpus_info,
         }
         atomic_write_text(tok_dir / "config.json", json.dumps(meta, indent=2))
 
@@ -112,6 +139,7 @@ def main() -> None:
     if input_path.exists():
         with open(input_path, "r", encoding="utf-8") as f:
             sample_text = f.read(args.sample_chars)
+        corpus_sha256 = hash_file(input_path)
     else:
         # Fallback to minimal representative Bengali text if full corpus not yet ingested
         sample_text = (
@@ -122,6 +150,7 @@ def main() -> None:
         temp_sample = out_base / "temp_train_sample.txt"
         atomic_write_text(temp_sample, sample_text)
         input_path = temp_sample
+        corpus_sha256 = hash_file(temp_sample)
 
     targets: List[str] = (
         ["byte", "char", "aks", "bpe16", "bpe8", "uni16"]
@@ -136,6 +165,7 @@ def main() -> None:
             out_base=out_base,
             seed=args.seed,
             sample_path=input_path,
+            corpus_sha256=corpus_sha256,
         )
 
     print(f"All tokenizers trained and written to {out_base}/")

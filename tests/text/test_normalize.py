@@ -49,16 +49,30 @@ def test_zwj_zwnj_stripping_policy() -> None:
 
 
 def test_khanda_ta_canonicalization() -> None:
-    """Historical ত্+ZWJ and ত্+ZWNJ sequences must canonicalize to Khanda-Ta (ৎ, U+09CE)."""
+    """Historical ত্+ZWJ sequences must canonicalize to Khanda-Ta (ৎ, U+09CE).
+    Explicit hasanta ত্+ZWNJ must NOT map to Khanda-Ta; stripping ZWNJ leaves visible hasanta ত্.
+    """
     cases = [
         ("হঠাৎ", "হঠাৎ"),
-        ("হত\u09cd\u200d", "হৎ"),
-        ("হত\u09cd\u200c", "হৎ"),
-        ("উত\u09cd\u200cসব", "উৎসব"),
+        ("হত\u09cd\u200d", "হৎ"),          # ত্+ZWJ -> ৎ
+        ("হত\u09cd\u200c", "হত\u09cd"),     # ত্+ZWNJ -> ত্ (visible hasanta, not ৎ)
+        ("উত\u09cd\u200dসব", "উৎসব"),      # ত্+ZWJ -> ৎ
     ]
     for raw, expected in cases:
         norm, stats = normalize_text(raw)
         assert norm == expected, f"Failed canonicalization on {repr(raw)}: got {repr(norm)}"
+
+
+def test_ryab_and_reph_normalization() -> None:
+    """ZWJ stripping changes 'র‌্যাব' (র+virama+ZWJ+ya) into 'র্য' rendering ('র্যাব')."""
+    # 'র‌্যাব' with ZWJ: \u09b0 + \u09cd + \u200d + \u09af + \u09be + \u09ac
+    ryab_with_zwj = "\u09b0\u09cd\u200d\u09af\u09be\u09ac"
+    expected = "\u09b0\u09cd\u09af\u09be\u09ac"
+    norm, stats = normalize_text(ryab_with_zwj)
+    assert "\u200d" not in norm
+    assert norm == expected  # reph-ya spelling after joiner removal
+    assert stats["zwj_stripped"] == 1
+
 
 
 def test_u09f0_mapped_to_bengali_ra() -> None:

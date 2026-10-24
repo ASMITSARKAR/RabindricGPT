@@ -23,7 +23,8 @@ cleaned/
 *.pth
 *.ckpt
 *.safetensors
-runs/
+/runs/
+!configs/runs/
 wandb/
 logs/
 checkpoints/

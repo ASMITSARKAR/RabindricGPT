@@ -67,9 +67,10 @@ def generate_run_matrix() -> List[Dict[str, Any]]:
             })
 
     # 3. 50M Main Ladder: aks/bpe16/uni16 (1 seed) = 3 runs (byte & char excluded per DR-6 & budget cap)
-    # Measured on FineWeb shards: aks=21.04, bpe16=8.07, uni16=7.93
+    # Measured on FineWeb shards: aks=21.03 (exact 21.0284), bpe16=8.07, uni16=7.93
+    # Note: 2.2e16 FLOPs/unit is an unmeasured planning assumption awaiting Action B empirical calibration.
     tok_50m = [
-        ("akshara", 21.04),
+        ("akshara", 21.03),
         ("bpe16", 8.07),
         ("uni16", 7.93),
     ]

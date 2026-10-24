@@ -26,11 +26,13 @@ from src.rgpt.train.throughput import calculate_mfu
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Colab Throughput & Kill-Resume Benchmark")
-    parser.add_argument("--mode", choices=["l4_10m", "a100_25m", "full"], default="l4_10m")
-    parser.add_argument("--device", default="auto")
-    parser.add_argument("--max-units", type=float, default=6.0, help="Hard stop unit cap")
-    parser.add_argument("--steps", type=int, default=200, help="Total steps per tokenizer run")
-    parser.add_argument("--kill-step", type=int, default=100, help="Step at which to kill and resume")
+    parser.add_argument("--mode", choices=["l4_10m", "a100_25m", "full"], default="full", help="Benchmark execution mode (default: full covering L4 10m & A100 25m)")
+    parser.add_argument("--steps", type=int, default=200, help="Total steps per tokenizer run (default: 200)")
+    parser.add_argument("--kill-step", type=int, default=100, help="Step at which to kill and resume (default: 100)")
+    parser.add_argument("--batch-size", type=int, default=2, help="Batch size per step (default: 2)")
+    parser.add_argument("--seq-len", type=int, default=3072, help="Sequence length (default: 3072, byte-capable window)")
+    parser.add_argument("--max-units", type=float, default=6.0, help="Hard stop unit cap (default: 6.0)")
+    parser.add_argument("--device", default="auto", help="Compute device ('auto', 'cuda', 'cpu')")
     return parser.parse_args()
 
 
@@ -204,9 +206,16 @@ def main() -> None:
         else:
             gpu_type = "L4"
 
+    if gpu_type == "T4":
+        raise RuntimeError(
+            "T4 GPU detected. T4 is excluded from pretraining by the matrix (L4 bf16 is default; A100 is for 25M/100M). "
+            "Action B empirical throughput benchmarking requires an L4 or A100 runtime."
+        )
+
     print(f"============================================================")
     print(f"RabindricGPT Throughput & Kill-Resume Benchmark")
     print(f"Device: {device_obj.type.upper()} ({gpu_type}) | Mode: {args.mode}")
+    print(f"Batch Size: {args.batch_size} | Seq Len: {args.seq_len} (byte-capable window)")
     print(f"============================================================")
 
     runs = []
@@ -229,6 +238,8 @@ def main() -> None:
             gpu_type=effective_gpu,
             total_steps=args.steps,
             kill_step=args.kill_step,
+            batch_size=args.batch_size,
+            seq_len=args.seq_len,
         )
         cumulative_units += res["units_burned"]
         results.append(res)

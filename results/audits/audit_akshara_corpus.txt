@@ -1,8 +1,8 @@
 ================================================================================
 CORPUS-WIDE AKSHARA SEGMENTATION AUDIT REPORT
 ================================================================================
-Git Commit SHA : 394fa4b81434666c880413dd1361d512ff9d301a
-Audit Timestamp: 2026-10-24 03:22:42 UTC
+Git Commit SHA : 6e93d78e0507046c1cede9bf7d7679e5f8355925
+Audit Timestamp: 2026-10-24 05:31:48 UTC
 Baseline Engine: regex module \X (version 2026.7.19)
 Tokenizer Vocab: tok/aks/vocab.json (vocab_size=8192)
 
@@ -12,13 +12,13 @@ Input File SHA-256 Checksums:
   - data/cleaned/tagore/test.txt: d9cc7d2b1c3fc09e9a6693e53da163f70343e376e0283f2dfd31c6b51f44de07
   - data/cleaned/tagore/train.txt: 935d4aa0386afe5a01e4b0e66205c94e118041c7f553a7ad5166e07df9e8b851
   - data/cleaned/tagore/val.txt: 3e8f7121ad334833154834db451c423e3e2bd40457f8811e3dc33272514691d3
-  - tok/aks/vocab.json: 81fc73150a07f5806deb3b2da1b8c13ed8c46cc3bd17f67bc01e4700635b0874
+  - tok/aks/vocab.json: 0843e3d10b46538a4efd6e07e7c80422c27d9b5d28922b91d0b3eb2d5bdc7892
 --------------------------------------------------------------------------------
 
 [TAGORE TRAIN] Scanning: data/cleaned/tagore/train.txt
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Character Count : 1,606,399 characters (loaded in 0.01s)
-Segmentation    : 1,050,429 units emitted in 0.81s
+Segmentation    : 1,050,429 units emitted in 1.17s
 
   1. Losslessness Invariant:
      Result: PASS ("".join(segment(text)) == text exactly)
@@ -35,7 +35,7 @@ Segmentation    : 1,050,429 units emitted in 0.81s
      (d) Contains space or newline (units must not cross whitespace): 0 violations
      (e) Contains consonant after vowel sign (second CV core): 0 violations
 
-  3. Baseline Comparison (regex module \X (v2026.7.19)) (evaluated in 0.81s):
+  3. Baseline Comparison (regex module \X (v2026.7.19)) (evaluated in 1.50s):
      Our boundaries     : 1,050,428
      Baseline boundaries: 1,050,433
      Agreed boundaries  : 1,050,424
@@ -57,19 +57,37 @@ Segmentation    : 1,050,429 units emitted in 0.81s
        05. [count=1] Ours: [ৱ · ি] vs Base: [ৱি] | Ex: 'িত গণক কোষ্ঠী হইতে আৱিষ্কার করিয়াছে; সহধর'
        06. [count=1] Ours: [ৱ · ো] vs Base: [ৱো] | Ex: 'বয়স আট; এখন আমি আঠোৱো। পিতার মতে আমার বিব'
 
-  4. Akshara Vocabulary Coverage (evaluated in 0.08s):
+  4. Akshara Vocabulary Coverage (evaluated in 0.13s):
      Total units      : 1,050,429
-     OOV units        : 2 (0.0002%)
-     Total tokens     : 1,050,436
-     Byte-fallback    : 0 (0.0000%)
+     OOV units        : 191 (0.0182%)
+     Total tokens     : 1,051,109
+     Byte-fallback    : 3 (0.0003%)
      Top 20 Frequent OOV Units:
-       01. 'ক্ষ্মি': 1
-       02. 'পাি': 1
+       01. 'স্ট্মা': 35
+       02. 'ণ্ট্': 8
+       03. 'র্ত্ত্য': 6
+       04. 'ণ্ড্': 5
+       05. 'দাঁঁ': 5
+       06. 'ন্লো': 5
+       07. 'ক্চে': 4
+       08. 'গ্ডু': 4
+       09. 'ঠাং': 4
+       10. 'হীঁ': 4
+       11. 'কাঁঁ': 3
+       12. 'ক্ঝ': 3
+       13. 'ক্মো': 3
+       14. 'ছিঁঁ': 3
+       15. 'ট্খ': 3
+       16. 'প্ল্': 3
+       17. 'ব্ল্': 3
+       18. 'উঁঁ': 2
+       19. 'ক্ট্': 2
+       20. 'ঘেঁঁ': 2
 
 [TAGORE VAL] Scanning: data/cleaned/tagore/val.txt
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Character Count : 164,746 characters (loaded in 0.00s)
-Segmentation    : 109,574 units emitted in 0.10s
+Segmentation    : 109,574 units emitted in 0.17s
 
   1. Losslessness Invariant:
      Result: PASS ("".join(segment(text)) == text exactly)
@@ -85,7 +103,7 @@ Segmentation    : 109,574 units emitted in 0.10s
      (d) Contains space or newline (units must not cross whitespace): 0 violations
      (e) Contains consonant after vowel sign (second CV core): 0 violations
 
-  3. Baseline Comparison (regex module \X (v2026.7.19)) (evaluated in 0.08s):
+  3. Baseline Comparison (regex module \X (v2026.7.19)) (evaluated in 0.17s):
      Our boundaries     : 109,573
      Baseline boundaries: 109,582
      Agreed boundaries  : 109,573
@@ -102,37 +120,37 @@ Segmentation    : 109,574 units emitted in 0.10s
      Top Disagreement Patterns (up to 50):
        01. [count=9] Ours: [অ্যা] vs Base: [অ্ · যা] | Ex: 'মিটেড ৪৭ গণেশচন্দ্র অ্যাভিনিউ। কলিকাত ১৩  ১৫'
 
-  4. Akshara Vocabulary Coverage (evaluated in 0.01s):
+  4. Akshara Vocabulary Coverage (evaluated in 0.02s):
      Total units      : 109,574
-     OOV units        : 99 (0.0903%)
-     Total tokens     : 109,908
-     Byte-fallback    : 9 (0.0082%)
+     OOV units        : 51 (0.0465%)
+     Total tokens     : 109,758
+     Byte-fallback    : 0 (0.0000%)
      Top 20 Frequent OOV Units:
        01. 'ক্স্ফো': 5
-       02. 'ণ্টি': 3
-       03. 'র্স্': 3
-       04. 'ল্যু': 3
-       05. '•': 3
-       06. 'ঙ্ক্চু': 2
-       07. 'ছ্যা': 2
-       08. 'নোে': 2
-       09. 'প্যাঁ': 2
-       10. 'ব্যূ': 2
-       11. 'ম্ফ্লে': 2
-       12. 'ম্ভু': 2
-       13. 'ল্ফ্': 2
-       14. 'সোঁ': 2
-       15. 'ক্খু': 1
-       16. 'ক্নি': 1
-       17. 'ক্শো': 1
-       18. 'ক্ষ্ণৌ': 1
-       19. 'ক্ষ্মা': 1
-       20. 'ক্স্ট্': 1
+       02. 'ঙ্ক্চু': 2
+       03. 'ট্কি': 2
+       04. 'ণ্ড্': 2
+       05. 'তাঁঁ': 2
+       06. 'ফাঁঁ': 2
+       07. 'ম্ফ্লে': 2
+       08. 'র্ট্': 2
+       09. 'ল্ফ্': 2
+       10. 'কাঁঁ': 1
+       11. 'ক্খু': 1
+       12. 'ক্ঝ': 1
+       13. 'ক্ট্': 1
+       14. 'ক্শো': 1
+       15. 'ক্স্ট্': 1
+       16. 'গুঁঁ': 1
+       17. 'গ্টা': 1
+       18. 'ঘাঁঁ': 1
+       19. 'ঝাঁঁ': 1
+       20. 'ঞ্চ্': 1
 
 [TAGORE TEST] Scanning: data/cleaned/tagore/test.txt
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Character Count : 461,467 characters (loaded in 0.00s)
-Segmentation    : 308,132 units emitted in 0.22s
+Segmentation    : 308,132 units emitted in 0.38s
 
   1. Losslessness Invariant:
      Result: PASS ("".join(segment(text)) == text exactly)
@@ -149,7 +167,7 @@ Segmentation    : 308,132 units emitted in 0.22s
      (d) Contains space or newline (units must not cross whitespace): 0 violations
      (e) Contains consonant after vowel sign (second CV core): 0 violations
 
-  3. Baseline Comparison (regex module \X (v2026.7.19)) (evaluated in 0.25s):
+  3. Baseline Comparison (regex module \X (v2026.7.19)) (evaluated in 0.39s):
      Our boundaries     : 308,131
      Baseline boundaries: 308,137
      Agreed boundaries  : 308,129
@@ -168,37 +186,37 @@ Segmentation    : 308,132 units emitted in 0.22s
        02. [count=1] Ours: [  · ঁ] vs Base: [ ঁ] | Ex: 'া গেলে তো চলবেই না।” ঁ  “আমার কী করবার আছে'
        03. [count=1] Ours: [ৱ · া] vs Base: [ৱা] | Ex: 'হারী সমাজের উৎপাতে এৱা দ্বিতীয়বার ছাড়ল ভ'
 
-  4. Akshara Vocabulary Coverage (evaluated in 0.02s):
+  4. Akshara Vocabulary Coverage (evaluated in 0.03s):
      Total units      : 308,132
-     OOV units        : 170 (0.0552%)
-     Total tokens     : 308,611
-     Byte-fallback    : 3 (0.0010%)
+     OOV units        : 39 (0.0127%)
+     Total tokens     : 308,260
+     Byte-fallback    : 0 (0.0000%)
      Top 20 Frequent OOV Units:
-       01. 'ড়াে': 41
-       02. 'পাে': 27
-       03. 'র্ছো': 5
-       04. 'ঝাে': 4
-       05. 'ণ্টিং': 4
-       06. 'ম্নি': 4
-       07. 'স্ত্রৈ': 4
-       08. 'ডাে': 3
-       09. 'ঢ়ু': 3
-       10. 'ল্বে': 3
-       11. 'খ্বে': 2
-       12. 'ট্চে': 2
-       13. 'ণ্যি': 2
-       14. 'নুঃ': 2
-       15. 'ন্য়': 2
-       16. 'ন্য়ে': 2
-       17. 'প্নি': 2
-       18. 'ফ্লু': 2
-       19. 'হ্য়': 2
-       20. 'ক্ট্রে': 1
+       01. 'র্ছো': 5
+       02. 'ণ্টিং': 4
+       03. 'ঢ়ু': 3
+       04. 'খ্বে': 2
+       05. 'ট্চে': 2
+       06. 'ক্চে': 1
+       07. 'ক্ঝ': 1
+       08. 'গ্চে': 1
+       09. 'গ্তে': 1
+       10. 'ঙ্ঘ্য': 1
+       11. 'ঙ্না': 1
+       12. 'চ্ত': 1
+       13. 'জ্কে': 1
+       14. 'জ্চে': 1
+       15. 'টিঁঁ': 1
+       16. 'ট্বে': 1
+       17. 'ঠ্চে': 1
+       18. 'ড়্গু': 1
+       19. 'দ্ব্রা': 1
+       20. 'ন্গ্র্যা': 1
 
 [FINEWEB-2 E-GEN] Scanning: data/cleaned/fineweb2/egen.txt
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Character Count : 206,966 characters (loaded in 0.00s)
-Segmentation    : 132,791 units emitted in 0.11s
+Segmentation    : 132,791 units emitted in 0.18s
 
   1. Losslessness Invariant:
      Result: PASS ("".join(segment(text)) == text exactly)
@@ -215,7 +233,7 @@ Segmentation    : 132,791 units emitted in 0.11s
      (d) Contains space or newline (units must not cross whitespace): 0 violations
      (e) Contains consonant after vowel sign (second CV core): 0 violations
 
-  3. Baseline Comparison (regex module \X (v2026.7.19)) (evaluated in 0.11s):
+  3. Baseline Comparison (regex module \X (v2026.7.19)) (evaluated in 0.18s):
      Our boundaries     : 132,790
      Baseline boundaries: 132,874
      Agreed boundaries  : 132,783
@@ -237,37 +255,24 @@ Segmentation    : 132,791 units emitted in 0.11s
        05. [count=1] Ours: [œ · া · ং] vs Base: [œাং] | Ex: 'অর্ধউলঙ্গ শরীরের নি¤œাংশে একজন পুরুষ বিভিন্'
        06. [count=1] Ours: [তু্ · য] vs Base: [তু্য] | Ex: 'র নিতে পারেন যদি, মৃতু্য, বা রক্ত এবং সাহস, '
 
-  4. Akshara Vocabulary Coverage (evaluated in 0.01s):
+  4. Akshara Vocabulary Coverage (evaluated in 0.02s):
      Total units      : 132,791
-     OOV units        : 283 (0.2131%)
-     Total tokens     : 133,509
-     Byte-fallback    : 515 (0.3857%)
+     OOV units        : 7 (0.0053%)
+     Total tokens     : 132,813
+     Byte-fallback    : 0 (0.0000%)
      Top 20 Frequent OOV Units:
-       01. '‚': 15
-       02. 'শ্রঃ': 13
-       03. 'أَ': 8
-       04. 'জৌ': 8
-       05. 'مَ': 7
-       06. 'كُ': 6
-       07. 'لَ': 6
-       08. 'هَ': 6
-       09. 'وَ': 6
-       10. 'لَّ': 5
-       11. 'نَّ': 5
-       12. 'يَ': 5
-       13. 'رُ': 4
-       14. 'عَ': 4
-       15. 'لِ': 4
-       16. 'চ্চু': 4
-       17. 'إِ': 3
-       18. 'رْ': 3
-       19. 'غَ': 3
-       20. 'فَ': 3
+       01. 'ইঁং': 1
+       02. 'ঋঁঃঁ': 1
+       03. 'জ্যোঃ': 1
+       04. 'ড়েঃ': 1
+       05. 'র্পৌ': 1
+       06. 'শ্ন্যা': 1
+       07. 'ষঁং': 1
 
 [FINEWEB-2 20M SAMPLE] Scanning: data/cleaned/fineweb2/fw2_tokenizer_sample_100m.txt (first 20,000,000 chars)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Character Count : 20,000,000 characters (loaded in 0.12s)
-Segmentation    : 12,859,552 units emitted in 10.41s
+Character Count : 20,000,000 characters (loaded in 0.20s)
+Segmentation    : 12,859,552 units emitted in 16.53s
 
   1. Losslessness Invariant:
      Result: PASS ("".join(segment(text)) == text exactly)
@@ -284,7 +289,7 @@ Segmentation    : 12,859,552 units emitted in 10.41s
      (d) Contains space or newline (units must not cross whitespace): 0 violations
      (e) Contains consonant after vowel sign (second CV core): 0 violations
 
-  3. Baseline Comparison (regex module \X (v2026.7.19)) (evaluated in 13.40s):
+  3. Baseline Comparison (regex module \X (v2026.7.19)) (evaluated in 17.32s):
      Our boundaries     : 12,859,551
      Baseline boundaries: 12,864,118
      Agreed boundaries  : 12,858,764
@@ -350,32 +355,13 @@ Segmentation    : 12,859,552 units emitted in 10.41s
        49. [count=3] Ours: [¯ · ি] vs Base: [¯ি] | Ex: ' রয়েছে অগণিত পদ্ম। ¯িœগ্ধতার রং আর আকাশে '
        50. [count=3] Ours: [μ · া] vs Base: [μা] | Ex: 'ষ্ট্রের নিরাপত্তা সংμান- কতিপয় সুনির্দিষ্'
 
-  4. Akshara Vocabulary Coverage (evaluated in 1.08s):
+  4. Akshara Vocabulary Coverage (evaluated in 1.48s):
      Total units      : 12,859,552
-     OOV units        : 14,606 (0.1136%)
-     Total tokens     : 12,899,401
-     Byte-fallback    : 17,758 (0.1377%)
+     OOV units        : 0 (0.0000%)
+     Total tokens     : 12,859,552
+     Byte-fallback    : 0 (0.0000%)
      Top 20 Frequent OOV Units:
-       01. 'لَ': 199
-       02. 'وَ': 173
-       03. 'نَ': 170
-       04. 'র্চু': 169
-       05. '~': 161
-       06. 'مَ': 159
-       07. 'স্কঃ': 155
-       08. 'স্ত্রো': 151
-       09. 'هُ': 147
-       10. '•': 142
-       11. 'مْ': 126
-       12. 'শ্লী': 124
-       13. 'نْ': 117
-       14. 'ধিঃ': 111
-       15. 'لْ': 106
-       16. 'كَ': 103
-       17. 'ত্পা': 102
-       18. 'ম্পো': 99
-       19. 'ফাং': 93
-       20. 'لَّ': 92
+       (None - 100% vocabulary coverage)
 
 ================================================================================
 REVIEW QUEUE GENERATION (OPTIONAL ARTIFACT): results\audits\akshara_review_queue.tsv
@@ -398,5 +384,5 @@ Honest Scope & Cost:
   results/audits/akshara_review_queue.tsv provides empirical ground truth validation.
 
 ================================================================================
-AUDIT COMPLETED IN 50.90 SECONDS (< 10 minutes CPU constraint PASS)
+AUDIT COMPLETED IN 83.48 SECONDS (< 10 minutes CPU constraint PASS)
 ================================================================================

@@ -175,7 +175,7 @@ def run_supervised_queue(
         raise RunnerError(f"Queue file not found: {q_file}")
 
     queue_data = yaml.safe_load(q_file.read_text(encoding="utf-8")) or {}
-    entries = queue_data.get("queue", [])
+    entries = queue_data.get("runs", queue_data.get("queue", []))
 
     completed_runs = []
     try:
@@ -203,3 +203,21 @@ def run_supervised_queue(
             disconnect_runtime()
 
     return completed_runs
+
+
+def main() -> None:
+    """CLI entry point for running supervised queue on Google Colab."""
+    import argparse
+    parser = argparse.ArgumentParser(description="RabindricGPT Colab Supervised Runner")
+    parser.add_argument("--queue", type=str, default="configs/runs/queue.yaml", help="Path to queue.yaml")
+    parser.add_argument("--no-disconnect", action="store_true", help="Do not disconnect runtime after completion")
+    args = parser.parse_args()
+
+    hook = (lambda: None) if args.no_disconnect else None
+    print(f"Starting supervised runner with queue: {args.queue}")
+    completed = run_supervised_queue(queue_path=args.queue, disconnect_hook=hook)
+    print(f"Completed {len(completed)} runs: {completed}")
+
+
+if __name__ == "__main__":
+    main()

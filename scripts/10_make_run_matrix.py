@@ -33,27 +33,26 @@ def main() -> None:
     matrix = generate_run_matrix()
     saved = save_run_matrix_csv(out_path)
 
-    # Verification counts per directive
+    # Verification counts per revised 200-unit matrix (43 runs total)
     count_10m = sum(1 for r in matrix if r["stage"] == "pretrain_10m")
     count_25m = sum(1 for r in matrix if r["stage"] == "pretrain_25m")
     count_50m = sum(1 for r in matrix if r["stage"] == "pretrain_50m")
-    count_100m = sum(1 for r in matrix if r["stage"] == "pretrain_100m")
-    count_ec = sum(1 for r in matrix if "equal_compute" in r["stage"])
-    count_bpeaks = sum(1 for r in matrix if "bpeaks" in r["stage"])
+    count_adapt = sum(1 for r in matrix if r["stage"].startswith("adapt_"))
+    count_sweep = sum(1 for r in matrix if r["stage"] == "lr_sweep_10m")
 
     total_units = sum(r["planned_units"] for r in matrix)
     approved_units = sum(r["planned_units"] for r in matrix if r["approved"])
 
     print(f"Generated run matrix with {len(matrix)} runs to {saved}")
-    print(f"Counts: 10M={count_10m}, 25M={count_25m}, 50M={count_50m}, 100M={count_100m}, EC={count_ec}, BPE-aks={count_bpeaks}")
+    print(f"Counts: 10M={count_10m}, 25M={count_25m}, 50M={count_50m}, Adapt={count_adapt}, Sweep={count_sweep}")
     print(f"Total planned units: {total_units:.2f} (Approved: {approved_units:.2f})")
 
-    assert count_10m == 15, f"Expected 15 runs at 10M, got {count_10m}"
-    assert count_25m == 6, f"Expected 6 runs at 25M, got {count_25m}"
-    assert count_50m == 4, f"Expected 4 runs at 50M, got {count_50m}"
-    assert count_100m == 2, f"Expected 2 gated runs at 100M, got {count_100m}"
-    assert count_ec == 6, f"Expected 6 equal-compute runs, got {count_ec}"
-    assert count_bpeaks == 5, f"Expected 5 bpeaks runs, got {count_bpeaks}"
+    assert count_10m == 14, f"Expected 14 runs at 10M, got {count_10m}"
+    assert count_25m == 9, f"Expected 9 runs at 25M, got {count_25m}"
+    assert count_50m == 3, f"Expected 3 runs at 50M, got {count_50m}"
+    assert count_adapt == 13, f"Expected 13 adapt runs, got {count_adapt}"
+    assert count_sweep == 4, f"Expected 4 sweep runs, got {count_sweep}"
+    assert len(matrix) == 43, f"Expected 43 total runs, got {len(matrix)}"
 
 
 if __name__ == "__main__":

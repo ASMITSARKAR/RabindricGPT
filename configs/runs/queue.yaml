@@ -1,0 +1,24 @@
+# configs/runs/queue.yaml
+# Execution queue for training runs. Only runs with approved: true are executed by runner_lib.
+# Ref: 15_BUILD_DIRECTIVE.md §3.3, Phase M, Phase N; DR-14
+
+runs:
+  # Example run entries (initial state: unapproved until preflight is green)
+  - run_id: "PILOT-bpe16-10m"
+    approved: false               # Ref: 15_BUILD_DIRECTIVE.md §3.3 (Only user sets approved: true)
+    stage: "pilot"
+    size: "10m"
+    tokenizer: "bpe16"
+    target_gpu: "T4"
+    planned_units: 0.5
+    smoke: false
+
+  - run_id: "PT-bpe16-10m-s0"
+    approved: false
+    stage: "pretrain"
+    size: "10m"
+    tokenizer: "bpe16"
+    seed: 0
+    target_gpu: "L4"
+    planned_units: 0.47           # Ref: 15_BUILD_DIRECTIVE.md §2 anchor
+    smoke: false
