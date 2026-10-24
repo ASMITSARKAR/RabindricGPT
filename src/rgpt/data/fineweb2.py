@@ -40,18 +40,37 @@ def _stream_hf_parquet(
         file_req = urllib.request.Request(
             file_url, headers={"User-Agent": f"RabindricGPT/1.0 ({contact})"}
         )
-        with urllib.request.urlopen(file_req) as file_resp:
-            pf = pq.ParquetFile(io.BytesIO(file_resp.read()))
-            for batch in pf.iter_batches(batch_size=256):
-                col_names = batch.schema.names
-                texts = batch["text"].to_pylist()
-                ids = (
-                    batch["id"].to_pylist()
-                    if "id" in col_names
-                    else [str(i) for i in range(len(texts))]
-                )
-                for doc_id, text in zip(ids, texts):
-                    yield {"id": doc_id, "text": text}
+        try:
+            import fsspec
+            with urllib.request.urlopen(file_req) as file_resp:
+                real_url = file_resp.geturl()
+            fs, path = fsspec.core.url_to_fs(real_url)
+            with fs.open(path, "rb") as f:
+                pf = pq.ParquetFile(f)
+                for rg_idx in range(pf.num_row_groups):
+                    rg = pf.read_row_group(rg_idx, columns=["id", "text"])
+                    col_names = rg.schema.names
+                    texts = rg["text"].to_pylist()
+                    ids = (
+                        rg["id"].to_pylist()
+                        if "id" in col_names
+                        else [str(i) for i in range(len(texts))]
+                    )
+                    for doc_id, text in zip(ids, texts):
+                        yield {"id": str(doc_id), "text": text}
+        except Exception:
+            with urllib.request.urlopen(file_req) as file_resp:
+                pf = pq.ParquetFile(io.BytesIO(file_resp.read()))
+                for batch in pf.iter_batches(batch_size=256):
+                    col_names = batch.schema.names
+                    texts = batch["text"].to_pylist()
+                    ids = (
+                        batch["id"].to_pylist()
+                        if "id" in col_names
+                        else [str(i) for i in range(len(texts))]
+                    )
+                    for doc_id, text in zip(ids, texts):
+                        yield {"id": str(doc_id), "text": text}
 
 
 def stream_fineweb2_bengali(

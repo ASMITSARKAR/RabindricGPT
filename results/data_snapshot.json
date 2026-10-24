@@ -1,6 +1,6 @@
 {
-  "git_commit_sha": "7231bf3b84bc6c50b4563e2f61217e0247ecb12f",
-  "frozen_timestamp": "2026-10-24 13:13:17 UTC",
+  "git_commit_sha": "2c2d90dc3c2bfb0a33bef97624c1eb66b9781a8c",
+  "frozen_timestamp": "2026-10-24 14:29:01 UTC",
   "num_cleaned_files": 6,
   "num_shard_files": 90,
   "num_tok_files": 15,
@@ -17,8 +17,8 @@
     },
     {
       "path": "data/cleaned/fineweb2/train.txt",
-      "size_bytes": 2023293,
-      "sha256": "9f5b46f01c0d489bb4eb66c30c113cfb68cd0752a8957146adcefc9dd3bffea2"
+      "size_bytes": 7025878,
+      "sha256": "403fcbbd4f9279f532dfce825197013b21b288c8558f10730d0878d64671430c"
     },
     {
       "path": "data/cleaned/tagore/test.txt",
@@ -49,13 +49,13 @@
     },
     {
       "path": "shards/fineweb2/aks/train/index.json",
-      "size_bytes": 130507,
-      "sha256": "581ca2bde70979e3b0abfcb65118bbffab6487232ecb9ae7348bda397a988e1b"
+      "size_bytes": 451924,
+      "sha256": "bb1e825ec7652cef62f60b719a4edae9104dc7a75f0e5d29647bbe562e29db1e"
     },
     {
       "path": "shards/fineweb2/aks/train/shard_00000.bin",
-      "size_bytes": 994072,
-      "sha256": "2c68ce6c909404b69e50863fdf753e9f547d2a17a382d0cfff0d848650643842"
+      "size_bytes": 3419708,
+      "sha256": "bc7998f7b83d1407e0ec2dad677ecdfa80fd937e928d1b0714a24ef2ffde2887"
     },
     {
       "path": "shards/fineweb2/bpe16/egen/index.json",
@@ -69,13 +69,13 @@
     },
     {
       "path": "shards/fineweb2/bpe16/train/index.json",
-      "size_bytes": 130229,
-      "sha256": "ebb434a31b1a51ac675457601fb50984cdff2aace59a22e98e0722f0a63d9cd8"
+      "size_bytes": 450563,
+      "sha256": "11808a1bd2582398746bb93ab885f5911d768317042ed8515236f80ab3e51703"
     },
     {
       "path": "shards/fineweb2/bpe16/train/shard_00000.bin",
-      "size_bytes": 381282,
-      "sha256": "02ad18686729683d1984b45d715f3fac66f228074af65fd2da1fb2c06723b4c8"
+      "size_bytes": 1275876,
+      "sha256": "5a5cedeab59a944043dfa0c12dc041eb538df3d33665efedeac6f9075885ecde"
     },
     {
       "path": "shards/fineweb2/bpe8/egen/index.json",
@@ -89,13 +89,13 @@
     },
     {
       "path": "shards/fineweb2/bpe8/train/index.json",
-      "size_bytes": 130281,
-      "sha256": "7f49c78401158812bbe8b225763740913da653cd416d812bec6a9ba13bdad4da"
+      "size_bytes": 450615,
+      "sha256": "a14e4ce780f568dd136c517ab6d3d74e52438d237a92994f39bc5c56c802d254"
     },
     {
       "path": "shards/fineweb2/bpe8/train/shard_00000.bin",
-      "size_bytes": 435292,
-      "sha256": "bb16aaa8a69a9ddb5330b737926666ae7ca0f7cdcfe451e34aaa839c896813a8"
+      "size_bytes": 1458858,
+      "sha256": "2ab2fa7befc579b48d36b959971d334b43bb1b3e779e3eea51af7dbf144432ea"
     },
     {
       "path": "shards/fineweb2/byte/egen/index.json",
@@ -109,13 +109,13 @@
     },
     {
       "path": "shards/fineweb2/byte/train/index.json",
-      "size_bytes": 131756,
-      "sha256": "3885fd0d8e004f7fda452d957fd3c74b01ae23481a16ae18e30e78268f23fe5b"
+      "size_bytes": 455772,
+      "sha256": "a6545292b29e2c279b2d246f9ef612e66778a8a183e089d898e817a9bc9931a1"
     },
     {
       "path": "shards/fineweb2/byte/train/shard_00000.bin",
-      "size_bytes": 4046586,
-      "sha256": "4360c7aad704d02835553a224bd4a23a6dfbeb7fe12b5674446fe598f3bd5b9e"
+      "size_bytes": 14051756,
+      "sha256": "0d9f2297aea3a7234f0cad998649c7972d1fe0a64bd52a12557fa4b692a46ace"
     },
     {
       "path": "shards/fineweb2/char/egen/index.json",
@@ -129,13 +129,13 @@
     },
     {
       "path": "shards/fineweb2/char/train/index.json",
-      "size_bytes": 131308,
-      "sha256": "b19485a4217f4289c63224029a991e50abd73aab01625124b98b03a29b86d3f5"
+      "size_bytes": 455099,
+      "sha256": "ce486c3e00c7a958b782cbbc0c27b6e4f10c25c8e92175e14017e9cffe6eca9e"
     },
     {
       "path": "shards/fineweb2/char/train/shard_00000.bin",
-      "size_bytes": 1535488,
-      "sha256": "d375f74af1a6f446be630838907ce3141e324b400b7f405f55853ab86be10b1a"
+      "size_bytes": 5306008,
+      "sha256": "24073dd25f8ee371254429e543b02b81f9389973de854ec1f4d6c4c2e6a988e8"
     },
     {
       "path": "shards/fineweb2/uni16/egen/index.json",
@@ -149,73 +149,73 @@
     },
     {
       "path": "shards/fineweb2/uni16/train/index.json",
-      "size_bytes": 130224,
-      "sha256": "b372e52a3d9f55093630141f0e2cf6731c20662373854e36429ddd6501675e85"
+      "size_bytes": 450558,
+      "sha256": "11fa8f215e3a9e236f8257ef9c707ba33a8b0c1a6b331c9df72fa52cc20b60cf"
     },
     {
       "path": "shards/fineweb2/uni16/train/shard_00000.bin",
-      "size_bytes": 375196,
-      "sha256": "d7d7b5076da5fd8d461e5c21053aa4511872dfe23b42d9b6de2dd86dba16501f"
+      "size_bytes": 1253464,
+      "sha256": "edfa3dfd9ed5d2c30bba4ce6b475f44ba4569170c7d5deb50500d6882befd8e2"
     },
     {
       "path": "shards/fineweb2_aks_egen.tar",
       "size_bytes": 307200,
-      "sha256": "4c339894ea25e547448f333868868ab8eb81473953ceb2cf4c85fe22f17ac5d6"
+      "sha256": "c24bd7942f2a127ff89d5b7dd1ddc044259807bfd99ff65462f0d6593bc86ebc"
     },
     {
       "path": "shards/fineweb2_aks_train.tar",
-      "size_bytes": 1136640,
-      "sha256": "572d04070c5b05097a1f36bbebcf68cc3d629af588aad47b7ca2147d76d2e1e7"
+      "size_bytes": 3880960,
+      "sha256": "7382b2e99b91d5989d77e3e6c24f7bde527faa3ca19f35b1c4c6167cbdc8b981"
     },
     {
       "path": "shards/fineweb2_bpe16_egen.tar",
       "size_bytes": 143360,
-      "sha256": "6acda0114302ea350c435cf420e12eb1f161bbb368f0db9ccf4c0193dd3f7428"
+      "sha256": "535ce2efcb0eafb20bfce32e928c9eb84981cd422025f7766cf04b482c845db0"
     },
     {
       "path": "shards/fineweb2_bpe16_train.tar",
-      "size_bytes": 522240,
-      "sha256": "64cb8c088b7bb103f542122fb27bf5f1cf4cbc694a5a4ff882ad80b68398a70c"
+      "size_bytes": 1740800,
+      "sha256": "5fd14ae750c9db8eecaabf6d2c4ea7702bd3964f26be0f4187987b34b0dc7d1c"
     },
     {
       "path": "shards/fineweb2_bpe8_egen.tar",
       "size_bytes": 153600,
-      "sha256": "5d9d7bce670f99fd85b231a2f2fe18934270ba292ac2aa74de7c7204354b5da4"
+      "sha256": "e262840e91a9145e59e9c876e5bde61e833ebbec81d0fe4b6db337a418f36e06"
     },
     {
       "path": "shards/fineweb2_bpe8_train.tar",
-      "size_bytes": 573440,
-      "sha256": "f8d64e0bb888de21441d14a4e53abaa19e27db97f9d510020f7bac8855978809"
+      "size_bytes": 1925120,
+      "sha256": "c3ae278829bae6e92b2c5a880466f8e317bebbb164f69eed30714d9c2ad48c35"
     },
     {
       "path": "shards/fineweb2_byte_egen.tar",
       "size_bytes": 1146880,
-      "sha256": "5171350f082caa5e6b8b2c8d67aceb7fb088230498b5b3e3fb9d64eeef7ea276"
+      "sha256": "0f72d50ff032b765e16808a0d9d21e276454ae8c82aee11234e988b113003892"
     },
     {
       "path": "shards/fineweb2_byte_train.tar",
-      "size_bytes": 4188160,
-      "sha256": "63a67602c18a8d4b81e73c5b13c8b90383aa92b0861b656615e6f00acd304e84"
+      "size_bytes": 14520320,
+      "sha256": "a9e8527bf103742b03d4f5c941729aefbfbc10e66c14a5a04f7ef601f2f536ef"
     },
     {
       "path": "shards/fineweb2_char_egen.tar",
       "size_bytes": 460800,
-      "sha256": "2bcec64e0e3a5ac066e731cf39bb5889f6622ad115dd3d4cdd0a9429a0787ace"
+      "sha256": "7556a712c5532ec4d02f01528389bc44aee538868f7538bd0bd8efed3f75d0ab"
     },
     {
       "path": "shards/fineweb2_char_train.tar",
-      "size_bytes": 1679360,
-      "sha256": "582e8ade11841bd38e2304c37559b4da96ed68acb56f962f11d724cf4eb5d28b"
+      "size_bytes": 5775360,
+      "sha256": "6b7c64f60378450b835b19ad80030dd0f7f3c779d28f109e8cc8919f3a708bf9"
     },
     {
       "path": "shards/fineweb2_uni16_egen.tar",
       "size_bytes": 143360,
-      "sha256": "ed6178d189925280c7ed8f866d89b243da9cf051a75dfe1dd0ff1090b53ac88e"
+      "sha256": "f66d25c11a7863c6cb8c04b0a2fbbbf9f457c429d7ebf4beec6253a5d9fb28ed"
     },
     {
       "path": "shards/fineweb2_uni16_train.tar",
-      "size_bytes": 512000,
-      "sha256": "dfd65a93da13498a0a3987cda6f203da29e902e485906883ebd6574f9f1e21c4"
+      "size_bytes": 1710080,
+      "sha256": "d36fd78fccd2e9d31e84b84605c4622964393117a31806f64fd9f412c17024e3"
     },
     {
       "path": "shards/wikisource/aks/test/index.json",

@@ -1,8 +1,8 @@
 ================================================================================
 RABINDRICGPT FROZEN DATA & SHARD SNAPSHOT MANIFEST
 ================================================================================
-Git Commit SHA   : 7231bf3b84bc6c50b4563e2f61217e0247ecb12f
-Frozen Timestamp : 2026-10-24 13:13:17 UTC
+Git Commit SHA   : 2c2d90dc3c2bfb0a33bef97624c1eb66b9781a8c
+Frozen Timestamp : 2026-10-24 14:29:01 UTC
 Cleaned Files    : 6
 Shard Files      : 90
 Tokenizer Files  : 15
@@ -11,7 +11,7 @@ Tokenizer Files  : 15
 1. Cleaned Data Files (data/cleaned/**):
   80c8d403aa200ce66600846e6430c302682d80c47100054e11b774414ccaa22a       551,430 bytes  data/cleaned/fineweb2/egen.txt
   7a1163f6c16390a23fb66e9561f291e2a6123e819b546f6608246060b2059910   265,991,444 bytes  data/cleaned/fineweb2/fw2_tokenizer_sample_100m.txt
-  9f5b46f01c0d489bb4eb66c30c113cfb68cd0752a8957146adcefc9dd3bffea2     2,023,293 bytes  data/cleaned/fineweb2/train.txt
+  403fcbbd4f9279f532dfce825197013b21b288c8558f10730d0878d64671430c     7,025,878 bytes  data/cleaned/fineweb2/train.txt
   177b1f4cd40198c9199cf9c7fad09a01562b8d3808e22e88187c5502c74423a2     1,202,374 bytes  data/cleaned/tagore/test.txt
   935d4aa0386afe5a01e4b0e66205c94e118041c7f553a7ad5166e07df9e8b851     4,232,396 bytes  data/cleaned/tagore/train.txt
   3e8f7121ad334833154834db451c423e3e2bd40457f8811e3dc33272514691d3       430,320 bytes  data/cleaned/tagore/val.txt
@@ -19,40 +19,40 @@ Tokenizer Files  : 15
 2. Shard Files & Indices (shards/**):
   7bb9e8361bb6b427264349d1555f6a146f4925766538cc1831e40dd1c4997b77        35,288 bytes  shards/fineweb2/aks/egen/index.json
   a15483a9f9251dc212de3a7b1a0658f6265af3402a9f2ab3585d18cc6478923e       265,800 bytes  shards/fineweb2/aks/egen/shard_00000.bin
-  581ca2bde70979e3b0abfcb65118bbffab6487232ecb9ae7348bda397a988e1b       130,507 bytes  shards/fineweb2/aks/train/index.json
-  2c68ce6c909404b69e50863fdf753e9f547d2a17a382d0cfff0d848650643842       994,072 bytes  shards/fineweb2/aks/train/shard_00000.bin
+  bb1e825ec7652cef62f60b719a4edae9104dc7a75f0e5d29647bbe562e29db1e       451,924 bytes  shards/fineweb2/aks/train/index.json
+  bc7998f7b83d1407e0ec2dad677ecdfa80fd937e928d1b0714a24ef2ffde2887     3,419,708 bytes  shards/fineweb2/aks/train/shard_00000.bin
   d9033740a41cbdd24047fce56e4da4c952da44b683a8a38786af1e19752c10ad        35,208 bytes  shards/fineweb2/bpe16/egen/index.json
   dc9133d2411208b6fe91552d27d2ee9312e645c4008714dbca261e8f9e56f658        96,042 bytes  shards/fineweb2/bpe16/egen/shard_00000.bin
-  ebb434a31b1a51ac675457601fb50984cdff2aace59a22e98e0722f0a63d9cd8       130,229 bytes  shards/fineweb2/bpe16/train/index.json
-  02ad18686729683d1984b45d715f3fac66f228074af65fd2da1fb2c06723b4c8       381,282 bytes  shards/fineweb2/bpe16/train/shard_00000.bin
+  11808a1bd2582398746bb93ab885f5911d768317042ed8515236f80ab3e51703       450,563 bytes  shards/fineweb2/bpe16/train/index.json
+  5a5cedeab59a944043dfa0c12dc041eb538df3d33665efedeac6f9075885ecde     1,275,876 bytes  shards/fineweb2/bpe16/train/shard_00000.bin
   ed3370f0d81bcab57645aefd35a1181864ed3dd34499c03525a339d82fe3efe1        35,211 bytes  shards/fineweb2/bpe8/egen/index.json
   29869c03fa974e3e878327598b15d82985c28c2cc2ff71d21f2531a02338df89       109,404 bytes  shards/fineweb2/bpe8/egen/shard_00000.bin
-  7f49c78401158812bbe8b225763740913da653cd416d812bec6a9ba13bdad4da       130,281 bytes  shards/fineweb2/bpe8/train/index.json
-  bb16aaa8a69a9ddb5330b737926666ae7ca0f7cdcfe451e34aaa839c896813a8       435,292 bytes  shards/fineweb2/bpe8/train/shard_00000.bin
+  a14e4ce780f568dd136c517ab6d3d74e52438d237a92994f39bc5c56c802d254       450,615 bytes  shards/fineweb2/bpe8/train/index.json
+  2ab2fa7befc579b48d36b959971d334b43bb1b3e779e3eea51af7dbf144432ea     1,458,858 bytes  shards/fineweb2/bpe8/train/shard_00000.bin
   e75c2cd46b2f102a9ab93d6d835d18a8b33e63d1a7ff236057a0c6b908207891        35,619 bytes  shards/fineweb2/byte/egen/index.json
   ec26f75d8b70f57f9bef55ba1f0d0e69c5f06193508b726c8b963117c6c15f94     1,102,860 bytes  shards/fineweb2/byte/egen/shard_00000.bin
-  3885fd0d8e004f7fda452d957fd3c74b01ae23481a16ae18e30e78268f23fe5b       131,756 bytes  shards/fineweb2/byte/train/index.json
-  4360c7aad704d02835553a224bd4a23a6dfbeb7fe12b5674446fe598f3bd5b9e     4,046,586 bytes  shards/fineweb2/byte/train/shard_00000.bin
+  a6545292b29e2c279b2d246f9ef612e66778a8a183e089d898e817a9bc9931a1       455,772 bytes  shards/fineweb2/byte/train/index.json
+  0d9f2297aea3a7234f0cad998649c7972d1fe0a64bd52a12557fa4b692a46ace    14,051,756 bytes  shards/fineweb2/byte/train/shard_00000.bin
   92e8b849dc9ce1312154b89641d269cbe28952d33d359f59887869657623ec78        35,552 bytes  shards/fineweb2/char/egen/index.json
   dacc5dd369e351850f51c245776a5e369ba3c93a275271fc24a56734b09d217c       413,974 bytes  shards/fineweb2/char/egen/shard_00000.bin
-  b19485a4217f4289c63224029a991e50abd73aab01625124b98b03a29b86d3f5       131,308 bytes  shards/fineweb2/char/train/index.json
-  d375f74af1a6f446be630838907ce3141e324b400b7f405f55853ab86be10b1a     1,535,488 bytes  shards/fineweb2/char/train/shard_00000.bin
+  ce486c3e00c7a958b782cbbc0c27b6e4f10c25c8e92175e14017e9cffe6eca9e       455,099 bytes  shards/fineweb2/char/train/index.json
+  24073dd25f8ee371254429e543b02b81f9389973de854ec1f4d6c4c2e6a988e8     5,306,008 bytes  shards/fineweb2/char/train/shard_00000.bin
   a7813383cfde5fc3fc88f37adefb2aa142426247a68f8c22d45e16468d15c248        35,207 bytes  shards/fineweb2/uni16/egen/index.json
   37255d9f5b6bda31425c0456f4ac2d287c072e501fd71c74e395dbcbb512528b        94,154 bytes  shards/fineweb2/uni16/egen/shard_00000.bin
-  b372e52a3d9f55093630141f0e2cf6731c20662373854e36429ddd6501675e85       130,224 bytes  shards/fineweb2/uni16/train/index.json
-  d7d7b5076da5fd8d461e5c21053aa4511872dfe23b42d9b6de2dd86dba16501f       375,196 bytes  shards/fineweb2/uni16/train/shard_00000.bin
-  4c339894ea25e547448f333868868ab8eb81473953ceb2cf4c85fe22f17ac5d6       307,200 bytes  shards/fineweb2_aks_egen.tar
-  572d04070c5b05097a1f36bbebcf68cc3d629af588aad47b7ca2147d76d2e1e7     1,136,640 bytes  shards/fineweb2_aks_train.tar
-  6acda0114302ea350c435cf420e12eb1f161bbb368f0db9ccf4c0193dd3f7428       143,360 bytes  shards/fineweb2_bpe16_egen.tar
-  64cb8c088b7bb103f542122fb27bf5f1cf4cbc694a5a4ff882ad80b68398a70c       522,240 bytes  shards/fineweb2_bpe16_train.tar
-  5d9d7bce670f99fd85b231a2f2fe18934270ba292ac2aa74de7c7204354b5da4       153,600 bytes  shards/fineweb2_bpe8_egen.tar
-  f8d64e0bb888de21441d14a4e53abaa19e27db97f9d510020f7bac8855978809       573,440 bytes  shards/fineweb2_bpe8_train.tar
-  5171350f082caa5e6b8b2c8d67aceb7fb088230498b5b3e3fb9d64eeef7ea276     1,146,880 bytes  shards/fineweb2_byte_egen.tar
-  63a67602c18a8d4b81e73c5b13c8b90383aa92b0861b656615e6f00acd304e84     4,188,160 bytes  shards/fineweb2_byte_train.tar
-  2bcec64e0e3a5ac066e731cf39bb5889f6622ad115dd3d4cdd0a9429a0787ace       460,800 bytes  shards/fineweb2_char_egen.tar
-  582e8ade11841bd38e2304c37559b4da96ed68acb56f962f11d724cf4eb5d28b     1,679,360 bytes  shards/fineweb2_char_train.tar
-  ed6178d189925280c7ed8f866d89b243da9cf051a75dfe1dd0ff1090b53ac88e       143,360 bytes  shards/fineweb2_uni16_egen.tar
-  dfd65a93da13498a0a3987cda6f203da29e902e485906883ebd6574f9f1e21c4       512,000 bytes  shards/fineweb2_uni16_train.tar
+  11fa8f215e3a9e236f8257ef9c707ba33a8b0c1a6b331c9df72fa52cc20b60cf       450,558 bytes  shards/fineweb2/uni16/train/index.json
+  edfa3dfd9ed5d2c30bba4ce6b475f44ba4569170c7d5deb50500d6882befd8e2     1,253,464 bytes  shards/fineweb2/uni16/train/shard_00000.bin
+  c24bd7942f2a127ff89d5b7dd1ddc044259807bfd99ff65462f0d6593bc86ebc       307,200 bytes  shards/fineweb2_aks_egen.tar
+  7382b2e99b91d5989d77e3e6c24f7bde527faa3ca19f35b1c4c6167cbdc8b981     3,880,960 bytes  shards/fineweb2_aks_train.tar
+  535ce2efcb0eafb20bfce32e928c9eb84981cd422025f7766cf04b482c845db0       143,360 bytes  shards/fineweb2_bpe16_egen.tar
+  5fd14ae750c9db8eecaabf6d2c4ea7702bd3964f26be0f4187987b34b0dc7d1c     1,740,800 bytes  shards/fineweb2_bpe16_train.tar
+  e262840e91a9145e59e9c876e5bde61e833ebbec81d0fe4b6db337a418f36e06       153,600 bytes  shards/fineweb2_bpe8_egen.tar
+  c3ae278829bae6e92b2c5a880466f8e317bebbb164f69eed30714d9c2ad48c35     1,925,120 bytes  shards/fineweb2_bpe8_train.tar
+  0f72d50ff032b765e16808a0d9d21e276454ae8c82aee11234e988b113003892     1,146,880 bytes  shards/fineweb2_byte_egen.tar
+  a9e8527bf103742b03d4f5c941729aefbfbc10e66c14a5a04f7ef601f2f536ef    14,520,320 bytes  shards/fineweb2_byte_train.tar
+  7556a712c5532ec4d02f01528389bc44aee538868f7538bd0bd8efed3f75d0ab       460,800 bytes  shards/fineweb2_char_egen.tar
+  6b7c64f60378450b835b19ad80030dd0f7f3c779d28f109e8cc8919f3a708bf9     5,775,360 bytes  shards/fineweb2_char_train.tar
+  f66d25c11a7863c6cb8c04b0a2fbbbf9f457c429d7ebf4beec6253a5d9fb28ed       143,360 bytes  shards/fineweb2_uni16_egen.tar
+  d36fd78fccd2e9d31e84b84605c4622964393117a31806f64fd9f412c17024e3     1,710,080 bytes  shards/fineweb2_uni16_train.tar
   51282f5703a1d6cae7a48c02609b6b21944c7d8819ef23bd0b1381d2b4e3300b        79,556 bytes  shards/wikisource/aks/test/index.json
   f55052f35dc2270f3f9c996ee96c97709470e6886651108dbec28a4f80f0e107       616,894 bytes  shards/wikisource/aks/test/shard_00000.bin
   da046df32b943b409a08e6324fbaacc448349d9b17c70a7bacf67070b3cc8068       277,970 bytes  shards/wikisource/aks/train/index.json

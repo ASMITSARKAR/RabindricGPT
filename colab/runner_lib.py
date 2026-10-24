@@ -109,7 +109,14 @@ def execute_run(
 ) -> bool:
     """Execute run with supervisor loop, crash logging, and automatic retry on preemption."""
     root = get_project_root()
-    run_dir = root / "runs" / run_id
+    drive_runs = Path("/content/drive/MyDrive/RabindricGPT/runs")
+    if drive_runs.parent.exists():
+        drive_runs.mkdir(parents=True, exist_ok=True)
+        runs_base = drive_runs
+    else:
+        runs_base = root / "runs"
+
+    run_dir = runs_base / run_id
     run_dir.mkdir(parents=True, exist_ok=True)
     done_file = run_dir / "done.json"
 
@@ -122,7 +129,7 @@ def execute_run(
                 runner_fn(run_id)
                 return True
             else:
-                cmd = [sys.executable, "scripts/11_run.py", "--run-id", run_id]
+                cmd = [sys.executable, "scripts/11_run.py", "--run-id", run_id, "--runs-dir", str(runs_base)]
                 res = subprocess.run(cmd, cwd=str(root), capture_output=True, text=True)
                 if res.returncode != 0:
                     if "ConfigHashMismatchError" in res.stderr or "config hash mismatch" in res.stderr.lower():

@@ -28,10 +28,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--run-id", type=str, required=True, help="Canonical Run ID from matrix")
     parser.add_argument("--allow-unapproved", action="store_true", help="Allow running unapproved/gated runs")
     parser.add_argument("--override-steps", type=int, default=0, help="Override steps for smoke testing")
+    parser.add_argument("--runs-dir", type=str, default="", help="Base directory for run outputs")
     return parser.parse_args()
 
 
 def main() -> None:
+    import os
     args = parse_args()
     repo_root = get_repo_root()
     matrix = generate_run_matrix()
@@ -45,7 +47,16 @@ def main() -> None:
         print(f"Error: Run ID {args.run_id} is currently GATED/unapproved.", file=sys.stderr)
         sys.exit(1)
 
-    run_dir = repo_root / "runs" / args.run_id
+    if args.runs_dir:
+        runs_base = Path(args.runs_dir)
+    elif os.environ.get("RGPT_RUNS_DIR"):
+        runs_base = Path(os.environ["RGPT_RUNS_DIR"])
+    elif Path("/content/drive/MyDrive/RabindricGPT/runs").exists():
+        runs_base = Path("/content/drive/MyDrive/RabindricGPT/runs")
+    else:
+        runs_base = repo_root / "runs"
+
+    run_dir = runs_base / args.run_id
     run_dir.mkdir(parents=True, exist_ok=True)
 
     # 1. Idempotency check: if done.json exists, exit 0 immediately

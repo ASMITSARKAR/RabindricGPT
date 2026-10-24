@@ -14,7 +14,7 @@ runs:
     smoke: false
 
   - run_id: "PT-bpe16-10m-s0"
-    approved: false
+    approved: true
     stage: "pretrain"
     size: "10m"
     tokenizer: "bpe16"

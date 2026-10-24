@@ -9,7 +9,7 @@ Status        : TESTED
 
 import json
 from pathlib import Path
-from typing import Any, Dict, Union
+from typing import Any, Dict, List, Optional, Union
 
 import torch
 import torch.nn.functional as F
@@ -31,6 +31,7 @@ def train(
     config_path: Union[str, Path],
     mode: str = "pretrain",
     override_steps: int = 0,
+    kill_at_step: Optional[int] = None,
 ) -> Dict[str, Any]:
     """Execute training or adaptation loop to completion.
 
@@ -39,6 +40,7 @@ def train(
         config_path: Path to run configuration YAML.
         mode: "pretrain" or "adapt".
         override_steps: Optional step count override for quick test executions.
+        kill_at_step: Optional step at which to simulate a kill/preemption.
 
     Returns:
         Summary metrics dictionary.
@@ -185,6 +187,13 @@ def train(
 
     # 5. Optimization loop
     for step in range(start_step, total_steps):
+        if kill_at_step is not None and step >= kill_at_step:
+            print(f"--- Process killed/preempted at step {step} ---")
+            reader.close()
+            if val_reader:
+                val_reader.close()
+            return {"status": "KILLED", "step": step}
+
         lr = get_learning_rate(step, total_steps, base_lr)
         for pg in optimizer.param_groups:
             pg["lr"] = lr
