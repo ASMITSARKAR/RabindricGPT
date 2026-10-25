@@ -131,6 +131,7 @@ class ShardReader:
     """Reads chunk tokens and metadata from memory-mapped binary shards."""
 
     def __init__(self, index_path: Union[str, Path]) -> None:
+        self.shards: List[np.memmap] = []
         self.index_path = Path(index_path)
         if self.index_path.is_dir():
             self.index_path = self.index_path / "index.json"
@@ -143,7 +144,6 @@ class ShardReader:
 
         # Map shard file(s) via np.memmap
         shard_files = self.index_data.get("shard_files", [])
-        self.shards: List[np.memmap] = []
         for sf in shard_files:
             bin_file = self.base_dir / sf
             mmap = np.memmap(bin_file, dtype=np.uint16, mode="r")
