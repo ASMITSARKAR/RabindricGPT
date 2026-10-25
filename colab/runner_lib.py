@@ -324,6 +324,15 @@ def execute_run(
             raise
 
         except Exception as e:
+            err_str = str(e).lower()
+            is_oom = "out of memory" in err_str or "cuda out of memory" in err_str or "outofmemoryerror" in err_str
+            is_gate = isinstance(e, QueueGateError) or "queue gate" in err_str
+            if is_oom or is_gate:
+                crash_log = run_dir / f"crash_attempt_{attempt}.txt"
+                atomic_write_text(crash_log, f"HARD STOP (NO RETRY ON OOM/GATE): {str(e)}\n")
+                update_runner_status(runs_base, "FAILED", active_run=run_id, error=str(e))
+                raise RunnerError(f"Run {run_id} failed with fatal non-retriable error: {e}") from e
+
             crash_log = run_dir / f"crash_attempt_{attempt}.txt"
             atomic_write_text(crash_log, f"Attempt {attempt} failed:\n{str(e)}\n")
             if attempt >= max_attempts:

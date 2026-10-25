@@ -24,7 +24,7 @@ def update_ledger_report(
 
     row_files: List[Path] = []
     if p_runs.exists():
-        row_files = list(p_runs.glob("*/ledger_row.json")) + list(p_runs.glob("ledger_row_*.json"))
+        row_files = sorted(set(list(p_runs.glob("*/ledger_row.json")) + list(p_runs.glob("ledger_row_*.json"))))
 
     rows: List[Dict[str, Any]] = []
     total_spent = 0.0
