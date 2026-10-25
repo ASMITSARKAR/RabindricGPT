@@ -190,85 +190,112 @@ def main() -> None:
     flagged_counts["narrow_keywords"] = 0
     disjoint_skipped = 0
 
-    print(f"\n[Ingest Start] Commencing streaming towards {args.target_bytes:,} bytes...")
-    stream = stream_fineweb2_bengali(
-        dataset_name="HuggingFaceFW/fineweb-2",
-        subset="ben_Beng",
-        split="train",
-        max_bytes=float(args.target_bytes * 2),
-    )
+    chunk_size = args.chunk_bytes if args.chunk_bytes > 0 else 5_000_000  # Default 5 MB chunks
+    max_retries = 20
+    chunk_idx = 0
 
-    chunk_limit = args.chunk_bytes if args.chunk_bytes > 0 else (args.target_bytes - train_bytes_total)
-    session_bytes = 0
-    session_docs = 0
+    while train_bytes_total < args.target_bytes:
+        chunk_idx += 1
+        chunk_target = min(train_bytes_total + chunk_size, args.target_bytes)
+        chunk_bytes = 0
+        chunk_docs = 0
+        attempt = 0
+        chunk_success = False
 
-    with open(train_file, "a", encoding="utf-8") as out_f:
-        for doc in stream:
-            doc_id = str(doc.get("id", ""))
-            raw_t = doc.get("text", "")
-
-            # A. Disjointness check (doc ID and content hash)
-            if doc_id in reserved_ids or doc_id in existing_ids:
-                disjoint_skipped += 1
-                continue
-            doc_hash = hashlib.sha256(raw_t.strip().encode("utf-8")).hexdigest()
-            if doc_hash in reserved_hashes:
-                disjoint_skipped += 1
-                continue
-
-            # B. Normalization with normalize_text
-            norm_t, _ = normalize_text(raw_t)
-
-            # C. Narrow Tagore keyword filter
-            has_keyword = False
-            for kw in NARROW_TAGORE_KEYWORDS:
-                if kw in norm_t:
-                    has_keyword = True
-                    break
-            if has_keyword:
-                flagged_counts["narrow_keywords"] += 1
-                continue
-
-            # D. Four-work 5-gram leakage scan
-            leak_found = False
-            for w_key, det in detectors.items():
-                if det.contains_leakage(norm_t):
-                    flagged_counts[w_key] += 1
-                    leak_found = True
-                    break
-            if leak_found:
-                continue
-
-            # E. Script share filter (80% Bengali)
-            clean_t, passes, _ = clean_pipeline(norm_t, threshold=0.80)
-            if not passes or not clean_t:
-                continue
-
-            doc_bytes = len(clean_t.encode("utf-8"))
-            row = {
-                "id": doc_id,
-                "text": clean_t,
-                "bytes": doc_bytes,
-                "chars": len(clean_t),
-            }
-            out_f.write(json.dumps(row, ensure_ascii=False) + "\n")
-            out_f.flush()
-
-            existing_ids.add(doc_id)
-            train_bytes_total += doc_bytes
-            session_bytes += doc_bytes
-            session_docs += 1
-
-            if session_docs % 50 == 0 or train_bytes_total >= args.target_bytes or session_bytes >= chunk_limit:
-                pct = (train_bytes_total / args.target_bytes) * 100.0 if args.target_bytes > 0 else 100.0
-                print(
-                    f"Progress: +{session_docs:,} docs (+{session_bytes / (1024**2):.2f} MB) | "
-                    f"Total: {len(existing_ids):,} docs ({train_bytes_total / (1024**2):.2f} MB / {args.target_bytes / (1024**2):.1f} MB, {pct:.2f}%)",
-                    flush=True,
+        while attempt < max_retries and not chunk_success:
+            try:
+                attempt += 1
+                stream = stream_fineweb2_bengali(
+                    dataset_name="HuggingFaceFW/fineweb-2",
+                    subset="ben_Beng",
+                    split="train",
+                    max_bytes=float(args.target_bytes * 2),
                 )
 
-            if train_bytes_total >= args.target_bytes or session_bytes >= chunk_limit:
-                break
+                with open(train_file, "a", encoding="utf-8") as out_f:
+                    for doc in stream:
+                        doc_id = str(doc.get("id", ""))
+                        raw_t = doc.get("text", "")
+
+                        # A. Disjointness check (doc ID and content hash)
+                        if doc_id in reserved_ids or doc_id in existing_ids:
+                            disjoint_skipped += 1
+                            continue
+                        doc_hash = hashlib.sha256(raw_t.strip().encode("utf-8")).hexdigest()
+                        if doc_hash in reserved_hashes:
+                            disjoint_skipped += 1
+                            continue
+
+                        # B. Normalization with normalize_text
+                        norm_t, _ = normalize_text(raw_t)
+
+                        # C. Narrow Tagore keyword filter
+                        has_keyword = any(kw in norm_t for kw in NARROW_TAGORE_KEYWORDS)
+                        if has_keyword:
+                            flagged_counts["narrow_keywords"] += 1
+                            continue
+
+                        # D. Four-work 5-gram leakage scan
+                        leak_found = any(det.contains_leakage(norm_t) for det in detectors.values())
+                        if leak_found:
+                            for w_key, det in detectors.items():
+                                if det.contains_leakage(norm_t):
+                                    flagged_counts[w_key] += 1
+                            continue
+
+                        # E. Script share filter (80% Bengali)
+                        clean_t, passes, _ = clean_pipeline(norm_t, threshold=0.80)
+                        if not passes or not clean_t:
+                            continue
+
+                        doc_bytes = len(clean_t.encode("utf-8"))
+                        row = {
+                            "id": doc_id,
+                            "text": clean_t,
+                            "bytes": doc_bytes,
+                            "chars": len(clean_t),
+                        }
+                        out_f.write(json.dumps(row, ensure_ascii=False) + "\n")
+                        out_f.flush()
+
+                        existing_ids.add(doc_id)
+                        train_bytes_total += doc_bytes
+                        chunk_bytes += doc_bytes
+                        chunk_docs += 1
+
+                        if train_bytes_total >= chunk_target or train_bytes_total >= args.target_bytes:
+                            chunk_success = True
+                            break
+
+                # If stream exited naturally without reaching chunk target
+                if not chunk_success and chunk_bytes == 0:
+                    print(f"[Warning] Stream ended or yielded 0 new documents on attempt {attempt}.")
+                    break
+
+            except Exception as e:
+                backoff_delay = min(60.0, 1.0 * (1.5 ** attempt))
+                print(
+                    f"[Retry Warning] Error during chunk {chunk_idx} attempt {attempt}/{max_retries}: {e}. "
+                    f"Backing off for {backoff_delay:.1f}s before resuming..."
+                )
+                import time
+                time.sleep(backoff_delay)
+
+        total_purged = flagged_counts["narrow_keywords"] + sum(flagged_counts[k] for k in HELD_OUT_WORKS)
+        pct = (train_bytes_total / args.target_bytes) * 100.0 if args.target_bytes > 0 else 100.0
+        print(
+            f"[Chunk {chunk_idx} Summary] Cleaned Bytes: {train_bytes_total:,} | Docs: {len(existing_ids):,} | "
+            f"Percent of Target: {pct:.2f}% | Purged Counts: {total_purged:,} "
+            f"(Keywords: {flagged_counts['narrow_keywords']:,}, 5-gram: {sum(flagged_counts[k] for k in HELD_OUT_WORKS):,})",
+            flush=True,
+        )
+
+        if not chunk_success and attempt >= max_retries:
+            print(f"[Blocker] Chunk {chunk_idx} exceeded max retries ({max_retries}). Stream interrupted.")
+            break
+        if not chunk_success and chunk_bytes == 0:
+            print(f"[Stream Exhausted] Stream exhausted before target: reached {train_bytes_total:,} cleaned bytes (true maximum).")
+            break
 
     pct_final = (train_bytes_total / args.target_bytes) * 100.0 if args.target_bytes > 0 else 100.0
     print("\n" + "=" * 80)

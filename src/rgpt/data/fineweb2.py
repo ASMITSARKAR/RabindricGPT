@@ -58,19 +58,9 @@ def _stream_hf_parquet(
                     )
                     for doc_id, text in zip(ids, texts):
                         yield {"id": str(doc_id), "text": text}
-        except Exception:
-            with urllib.request.urlopen(file_req) as file_resp:
-                pf = pq.ParquetFile(io.BytesIO(file_resp.read()))
-                for batch in pf.iter_batches(batch_size=256):
-                    col_names = batch.schema.names
-                    texts = batch["text"].to_pylist()
-                    ids = (
-                        batch["id"].to_pylist()
-                        if "id" in col_names
-                        else [str(i) for i in range(len(texts))]
-                    )
-                    for doc_id, text in zip(ids, texts):
-                        yield {"id": str(doc_id), "text": text}
+        except Exception as e:
+            # Propagate error so caller's exponential backoff loop can retry cleanly without OOM
+            raise RuntimeError(f"Error streaming row groups from {file_url}: {e}") from e
 
 
 def stream_fineweb2_bengali(

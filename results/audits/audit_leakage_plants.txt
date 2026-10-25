@@ -1,5 +1,5 @@
 # Audit: Adversarial Plant Sweep & Cross-Corpus Leakage Calibration
-Git Commit SHA: 27674019d6b932cd97171ba8ccb6b1d39a2782b3
+Git Commit SHA: 87fb98c12318436dc14e5732956d4b062db4e84c
 
 Detector Configuration: Built from all 4 held-out works (106,144 unique 5-grams).
 Rule: >= 3 distinct 5-grams in a 30-word window.
