@@ -39,6 +39,7 @@ class QueueGateError(RunnerError):
 
 GATE_RUN_ID = "PT-bpe16-10m-s0"
 SMOOTHED_LOSS_CEILING = 7.5
+BUDGET_CEILING_UNITS = 165.0
 
 
 def verify_queue_gate(
@@ -223,6 +224,57 @@ def persist_unit_ledger(runs_base: Path) -> Dict[str, Any]:
     return rep
 
 
+def write_final_summary(
+    runs_base: Path,
+    completed_runs: List[str],
+    failed_runs: List[str],
+    total_spent: float,
+    ceiling: float = BUDGET_CEILING_UNITS,
+    stopped_by_ceiling: bool = False,
+) -> Path:
+    """Write comprehensive final_summary.json on persistent storage."""
+    summary_file = runs_base / "final_summary.json"
+    now_iso = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+
+    run_records = []
+    for rid in completed_runs:
+        rf = runs_base / rid / "ledger_row.json"
+        df = runs_base / rid / "done.json"
+        rec = {"run_id": rid}
+        if rf.exists():
+            try:
+                rec.update(json.loads(rf.read_text(encoding="utf-8")))
+            except Exception:
+                pass
+        elif df.exists():
+            try:
+                rec.update(json.loads(df.read_text(encoding="utf-8")))
+            except Exception:
+                pass
+        run_records.append(rec)
+
+    data = {
+        "status": "STOPPED_AT_CEILING" if stopped_by_ceiling else ("COMPLETED" if not failed_runs else "PARTIALLY_COMPLETED"),
+        "ceiling_units": ceiling,
+        "total_spent_units": round(total_spent, 4),
+        "reserve_remaining_units": round(max(0.0, 200.0 - total_spent), 4),
+        "stopped_by_ceiling": stopped_by_ceiling,
+        "completed_count": len(completed_runs),
+        "failed_count": len(failed_runs),
+        "completed_runs": completed_runs,
+        "failed_runs": failed_runs,
+        "runs": run_records,
+        "timestamp": now_iso,
+    }
+    atomic_write_text(summary_file, json.dumps(data, indent=2))
+    print(
+        f"[FINAL SUMMARY] Saved to {summary_file} | Status: {data['status']} | "
+        f"Total Spent: {total_spent:.4f} u / {ceiling:.1f} u ceiling",
+        flush=True,
+    )
+    return summary_file
+
+
 def execute_run(
     run_id: str,
     max_attempts: int = 5,
@@ -302,6 +354,7 @@ def run_supervised_queue(
     disconnect_hook: Optional[Callable[[], None]] = None,
     runner_fn: Optional[Callable[[str], None]] = None,
     runs_base: Optional[Path] = None,
+    budget_ceiling: float = BUDGET_CEILING_UNITS,
 ) -> List[str]:
     """Execute all approved entries in queue.yaml under session budget cap."""
     root = get_project_root()
@@ -320,6 +373,7 @@ def run_supervised_queue(
 
     completed_runs: List[str] = []
     failed_runs: List[str] = []
+    stopped_by_ceiling = False
 
     update_runner_status(runs_base, "STARTING", completed_runs=completed_runs, failed_runs=failed_runs)
 
@@ -332,6 +386,17 @@ def run_supervised_queue(
             # Invariant: Never touch runs that are not approved
             if not approved:
                 continue
+
+            # Invariant: Stop at budget ceiling from the persisted ledger
+            ledger_rep = persist_unit_ledger(runs_base)
+            current_spent = float(ledger_rep.get("total_spent_units", 0.0))
+            if current_spent >= budget_ceiling:
+                print(
+                    f"[BUDGET STOP] Cumulative spend ({current_spent:.4f} u) has reached or exceeded "
+                    f"the {budget_ceiling:.1f} u ceiling. Halting queue execution."
+                )
+                stopped_by_ceiling = True
+                break
 
             # Invariant: skip already completed runs
             if (runs_base / rid / "done.json").exists():
@@ -358,6 +423,44 @@ def run_supervised_queue(
                 )
                 if success:
                     completed_runs.append(rid)
+
+                    # Update ledger and read telemetry from real data
+                    ledger_rep = persist_unit_ledger(runs_base)
+                    current_spent = float(ledger_rep.get("total_spent_units", 0.0))
+
+                    tok_s = 0.0
+                    units_spent = 0.0
+                    row_file = runs_base / rid / "ledger_row.json"
+                    done_file = runs_base / rid / "done.json"
+                    if row_file.exists():
+                        try:
+                            ld = json.loads(row_file.read_text(encoding="utf-8"))
+                            tok_s = float(ld.get("tokens_per_sec", 0.0))
+                            units_spent = float(ld.get("spent_units", 0.0))
+                        except Exception:
+                            pass
+                    elif done_file.exists():
+                        try:
+                            dd = json.loads(done_file.read_text(encoding="utf-8"))
+                            tok_s = float(dd.get("tokens_per_sec", 0.0))
+                            units_spent = float(dd.get("spent_units", 0.0))
+                        except Exception:
+                            pass
+
+                    print(
+                        f"[TELEMETRY] Run {rid} completed: {tok_s:.1f} tok/s | "
+                        f"Units Spent: {units_spent:.4f} u | "
+                        f"Cumulative Spend: {current_spent:.4f} u / {budget_ceiling:.1f} u ceiling",
+                        flush=True,
+                    )
+
+                    if current_spent >= budget_ceiling:
+                        print(
+                            f"[BUDGET STOP] Cumulative spend ({current_spent:.4f} u) reached/exceeded "
+                            f"{budget_ceiling:.1f} u ceiling after {rid}. Halting queue."
+                        )
+                        stopped_by_ceiling = True
+                        break
                 else:
                     failed_runs.append(rid)
             except Exception as e:
@@ -372,14 +475,23 @@ def run_supervised_queue(
                 )
                 raise
 
-        status = "COMPLETED" if not failed_runs else "PARTIALLY_COMPLETED"
+        status = "STOPPED_AT_CEILING" if stopped_by_ceiling else ("COMPLETED" if not failed_runs else "PARTIALLY_COMPLETED")
         update_runner_status(
             runs_base,
             status,
             completed_runs=completed_runs,
             failed_runs=failed_runs,
         )
-        persist_unit_ledger(runs_base)
+        ledger_rep = persist_unit_ledger(runs_base)
+        current_spent = float(ledger_rep.get("total_spent_units", 0.0))
+        write_final_summary(
+            runs_base=runs_base,
+            completed_runs=completed_runs,
+            failed_runs=failed_runs,
+            total_spent=current_spent,
+            ceiling=budget_ceiling,
+            stopped_by_ceiling=stopped_by_ceiling,
+        )
 
     finally:
         if disconnect_hook is not None:

@@ -187,3 +187,67 @@ def test_queue_gate_allows_subsequent_runs_when_bpe16_passes() -> None:
         # Must not raise
         verify_queue_gate("PT-akshara-10m-s0", runs_base=runs_base)
 
+
+def test_runner_stops_at_budget_ceiling_and_writes_final_summary() -> None:
+    """Runner must stop when cumulative spend reaches ceiling (165 u) and write final_summary.json."""
+    import json
+    import tempfile
+    with tempfile.TemporaryDirectory() as tmp:
+        runs_base = Path(tmp) / "runs"
+        runs_base.mkdir(parents=True, exist_ok=True)
+
+        q_path = Path(tmp) / "queue.yaml"
+        queue_content = {
+            "runs": [
+                {"run_id": "RUN_A", "approved": True, "smoke": True, "enforce_gate": False},
+                {"run_id": "RUN_B", "approved": True, "smoke": True, "enforce_gate": False},
+                {"run_id": "RUN_C", "approved": True, "smoke": True, "enforce_gate": False},
+            ]
+        }
+        with open(q_path, "w", encoding="utf-8") as f:
+            yaml.dump(queue_content, f)
+
+        executed = []
+        def mock_runner(rid: str) -> None:
+            executed.append(rid)
+            rdir = runs_base / rid
+            rdir.mkdir(parents=True, exist_ok=True)
+            (rdir / "done.json").write_text(json.dumps({
+                "status": "COMPLETED",
+                "tokens_per_sec": 51200.0,
+                "final_loss": 5.42,
+            }), encoding="utf-8")
+            # Spend 100u on RUN_A, 70u on RUN_B -> sum = 170u > 165u ceiling
+            spent = 100.0 if rid == "RUN_A" else 70.0
+            (rdir / "ledger_row.json").write_text(json.dumps({
+                "run_id": rid,
+                "spent_units": spent,
+                "tokens_per_sec": 51200.0,
+                "time_seconds": 120.0,
+            }), encoding="utf-8")
+
+        completed = run_supervised_queue(
+            queue_path=str(q_path),
+            disconnect_hook=lambda: None,
+            runner_fn=mock_runner,
+            runs_base=runs_base,
+            budget_ceiling=165.0,
+        )
+
+        # RUN_A and RUN_B completed, RUN_C must NOT be executed because ceiling (165u) was exceeded
+        assert executed == ["RUN_A", "RUN_B"]
+        assert completed == ["RUN_A", "RUN_B"]
+        assert "RUN_C" not in completed
+
+        # Verify final_summary.json exists and has expected fields
+        final_summary_file = runs_base / "final_summary.json"
+        assert final_summary_file.exists(), "final_summary.json was not written"
+        summary_data = json.loads(final_summary_file.read_text(encoding="utf-8"))
+        assert summary_data["status"] == "STOPPED_AT_CEILING"
+        assert summary_data["stopped_by_ceiling"] is True
+        assert summary_data["total_spent_units"] == 170.0
+        assert summary_data["ceiling_units"] == 165.0
+        assert summary_data["completed_count"] == 2
+        assert len(summary_data["runs"]) == 2
+
+

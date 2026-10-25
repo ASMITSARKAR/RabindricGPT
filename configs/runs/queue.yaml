@@ -1,18 +1,21 @@
 # configs/runs/queue.yaml
-# Execution queue for training runs. Only runs with approved: true are executed by runner_lib.
-# Ref: 15_BUILD_DIRECTIVE.md §3.3, Phase M, Phase N; DR-14
+# Execution queue for training runs.
+# Priority Run Order:
+#   1. PT-bpe16-10m-s0   (Gate run: smoothed loss < 7.5 required)
+#   2. PT-bpe16-25m-s0
+#   3. PT-akshara-10m-s0
+#   4. PT-akshara-25m-s0
+#   5. PT-uni16-10m-s0
+#   6. PT-uni16-25m-s0
+#   7. PT-char-10m-s0
+#   8. PT-char-25m-s0
+#   9. PT-byte-10m-s0
+#   10. ADAPT runs for each finished model
+# All other runs remain approved: false.
+# The runner stops at the 165 u ceiling from the persisted ledger and writes final_summary.json.
 
 runs:
-  # Example run entries (initial state: unapproved until preflight is green)
-  - run_id: "PILOT-bpe16-10m"
-    approved: false               # Ref: 15_BUILD_DIRECTIVE.md §3.3 (Only user sets approved: true)
-    stage: "pilot"
-    size: "10m"
-    tokenizer: "bpe16"
-    target_gpu: "T4"
-    planned_units: 0.5
-    smoke: false
-
+  # === 1. Pretraining Core Queue (Approved Order) ===
   - run_id: "PT-bpe16-10m-s0"
     approved: true
     stage: "pretrain"
@@ -20,5 +23,266 @@ runs:
     tokenizer: "bpe16"
     seed: 0
     target_gpu: "L4"
-    planned_units: 0.47           # Ref: 15_BUILD_DIRECTIVE.md §2 anchor
+    planned_units: 1.06
+    smoke: false
+
+  - run_id: "PT-bpe16-25m-s0"
+    approved: true
+    stage: "pretrain"
+    size: "25m"
+    tokenizer: "bpe16"
+    seed: 0
+    target_gpu: "L4"
+    planned_units: 2.56
+    smoke: false
+
+  - run_id: "PT-akshara-10m-s0"
+    approved: true
+    stage: "pretrain"
+    size: "10m"
+    tokenizer: "akshara"
+    seed: 0
+    target_gpu: "L4"
+    planned_units: 2.63
+    smoke: false
+
+  - run_id: "PT-akshara-25m-s0"
+    approved: true
+    stage: "pretrain"
+    size: "25m"
+    tokenizer: "akshara"
+    seed: 0
+    target_gpu: "L4"
+    planned_units: 6.36
+    smoke: false
+
+  - run_id: "PT-uni16-10m-s0"
+    approved: true
+    stage: "pretrain"
+    size: "10m"
+    tokenizer: "uni16"
+    seed: 0
+    target_gpu: "L4"
+    planned_units: 1.04
+    smoke: false
+
+  - run_id: "PT-uni16-25m-s0"
+    approved: true
+    stage: "pretrain"
+    size: "25m"
+    tokenizer: "uni16"
+    seed: 0
+    target_gpu: "L4"
+    planned_units: 2.51
+    smoke: false
+
+  - run_id: "PT-char-10m-s0"
+    approved: true
+    stage: "pretrain"
+    size: "10m"
+    tokenizer: "char"
+    seed: 0
+    target_gpu: "L4"
+    planned_units: 3.70
+    smoke: false
+
+  - run_id: "PT-char-25m-s0"
+    approved: true
+    stage: "pretrain"
+    size: "25m"
+    tokenizer: "char"
+    seed: 0
+    target_gpu: "L4"
+    planned_units: 8.94
+    smoke: false
+
+  - run_id: "PT-byte-10m-s0"
+    approved: true
+    stage: "pretrain"
+    size: "10m"
+    tokenizer: "byte"
+    seed: 0
+    target_gpu: "L4"
+    planned_units: 11.99
+    smoke: false
+
+  # === 2. Adaptation Queue for Finished Models ===
+  - run_id: "ADAPT-bpe16-10m"
+    approved: true
+    stage: "adapt"
+    size: "10m"
+    tokenizer: "bpe16"
+    seed: 0
+    target_gpu: "L4"
+    planned_units: 0.02
+    smoke: false
+
+  - run_id: "ADAPT-bpe16-25m"
+    approved: true
+    stage: "adapt"
+    size: "25m"
+    tokenizer: "bpe16"
+    seed: 0
+    target_gpu: "L4"
+    planned_units: 0.04
+    smoke: false
+
+  - run_id: "ADAPT-akshara-10m"
+    approved: true
+    stage: "adapt"
+    size: "10m"
+    tokenizer: "akshara"
+    seed: 0
+    target_gpu: "L4"
+    planned_units: 0.04
+    smoke: false
+
+  - run_id: "ADAPT-akshara-25m"
+    approved: true
+    stage: "adapt"
+    size: "25m"
+    tokenizer: "akshara"
+    seed: 0
+    target_gpu: "L4"
+    planned_units: 0.09
+    smoke: false
+
+  - run_id: "ADAPT-uni16-10m"
+    approved: true
+    stage: "adapt"
+    size: "10m"
+    tokenizer: "uni16"
+    seed: 0
+    target_gpu: "L4"
+    planned_units: 0.02
+    smoke: false
+
+  - run_id: "ADAPT-uni16-25m"
+    approved: true
+    stage: "adapt"
+    size: "25m"
+    tokenizer: "uni16"
+    seed: 0
+    target_gpu: "L4"
+    planned_units: 0.04
+    smoke: false
+
+  - run_id: "ADAPT-char-10m"
+    approved: true
+    stage: "adapt"
+    size: "10m"
+    tokenizer: "char"
+    seed: 0
+    target_gpu: "L4"
+    planned_units: 0.06
+    smoke: false
+
+  - run_id: "ADAPT-char-25m"
+    approved: true
+    stage: "adapt"
+    size: "25m"
+    tokenizer: "char"
+    seed: 0
+    target_gpu: "L4"
+    planned_units: 0.13
+    smoke: false
+
+  - run_id: "ADAPT-byte-10m"
+    approved: true
+    stage: "adapt"
+    size: "10m"
+    tokenizer: "byte"
+    seed: 0
+    target_gpu: "L4"
+    planned_units: 0.19
+    smoke: false
+
+  # === 3. Gated / Unapproved Runs (approved: false) ===
+  - run_id: "PT-byte-25m-s0"
+    approved: false
+    stage: "pretrain"
+    size: "25m"
+    tokenizer: "byte"
+    seed: 0
+    target_gpu: "L4"
+    planned_units: 29.00
+    smoke: false
+
+  - run_id: "ADAPT-byte-25m"
+    approved: false
+    stage: "adapt"
+    size: "25m"
+    tokenizer: "byte"
+    seed: 0
+    target_gpu: "L4"
+    planned_units: 0.40
+    smoke: false
+
+  - run_id: "PT-akshara-50m-s0"
+    approved: false
+    stage: "pretrain"
+    size: "50m"
+    tokenizer: "akshara"
+    seed: 0
+    target_gpu: "L4"
+    planned_units: 12.26
+    smoke: false
+
+  - run_id: "PT-bpe16-50m-s0"
+    approved: false
+    stage: "pretrain"
+    size: "50m"
+    tokenizer: "bpe16"
+    seed: 0
+    target_gpu: "L4"
+    planned_units: 4.93
+    smoke: false
+
+  - run_id: "PT-uni16-50m-s0"
+    approved: false
+    stage: "pretrain"
+    size: "50m"
+    tokenizer: "uni16"
+    seed: 0
+    target_gpu: "L4"
+    planned_units: 4.85
+    smoke: false
+
+  - run_id: "ADAPT-akshara-50m"
+    approved: false
+    stage: "adapt"
+    size: "50m"
+    tokenizer: "akshara"
+    seed: 0
+    target_gpu: "L4"
+    planned_units: 0.16
+    smoke: false
+
+  - run_id: "ADAPT-bpe16-50m"
+    approved: false
+    stage: "adapt"
+    size: "50m"
+    tokenizer: "bpe16"
+    seed: 0
+    target_gpu: "L4"
+    planned_units: 0.07
+    smoke: false
+
+  - run_id: "ADAPT-uni16-50m"
+    approved: false
+    stage: "adapt"
+    size: "50m"
+    tokenizer: "uni16"
+    seed: 0
+    target_gpu: "L4"
+    planned_units: 0.07
+    smoke: false
+
+  - run_id: "PILOT-bpe16-10m"
+    approved: false
+    stage: "pilot"
+    size: "10m"
+    tokenizer: "bpe16"
+    target_gpu: "L4"
+    planned_units: 0.5
     smoke: false
