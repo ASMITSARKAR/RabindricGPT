@@ -64,27 +64,27 @@ class CrossCorpusLeakageDetector:
         if len(words) < self.ngram_size:
             return False
 
-        # If total words < window_size, check all 5-grams directly
-        if len(words) <= self.window_size:
-            matched = set()
-            for i in range(len(words) - self.ngram_size + 1):
-                gram = tuple(words[i : i + self.ngram_size])
-                if gram in self.target_5grams:
-                    matched.add(gram)
-                    if len(matched) >= self.threshold:
-                        return True
+        # Extract all matching 5-grams and their start positions in a single pass
+        max_span_offset = self.window_size - self.ngram_size  # e.g., 30 - 5 = 25
+        matched: List[Tuple[int, Tuple[str, ...]]] = []
+        for i in range(len(words) - self.ngram_size + 1):
+            gram = tuple(words[i : i + self.ngram_size])
+            if gram in self.target_5grams:
+                matched.append((i, gram))
+
+        # Fast short-circuit: if entire document contains fewer matches than threshold
+        if len(matched) < self.threshold:
             return False
 
-        # Sliding window of window_size words
-        for w_start in range(len(words) - self.window_size + 1):
-            span_words = words[w_start : w_start + self.window_size]
-            matched = set()
-            for i in range(len(span_words) - self.ngram_size + 1):
-                gram = tuple(span_words[i : i + self.ngram_size])
-                if gram in self.target_5grams:
-                    matched.add(gram)
-                    if len(matched) >= self.threshold:
-                        return True
+        # Two-pointer sliding window over matched positions
+        left = 0
+        for right in range(len(matched)):
+            while matched[right][0] - matched[left][0] > max_span_offset:
+                left += 1
+            # Distinct matching ngrams within the window
+            distinct_in_window = {g for _, g in matched[left : right + 1]}
+            if len(distinct_in_window) >= self.threshold:
+                return True
 
         return False
 

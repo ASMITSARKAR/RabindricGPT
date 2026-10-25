@@ -1,6 +1,6 @@
 {
-  "git_commit_sha": "2c2d90dc3c2bfb0a33bef97624c1eb66b9781a8c",
-  "frozen_timestamp": "2026-10-24 14:29:01 UTC",
+  "git_commit_sha": "5a287ad760038fc77a748d1d987ab15b965174ef",
+  "frozen_timestamp": "2026-10-25 07:18:03 UTC",
   "num_cleaned_files": 6,
   "num_shard_files": 90,
   "num_tok_files": 15,
@@ -17,8 +17,8 @@
     },
     {
       "path": "data/cleaned/fineweb2/train.txt",
-      "size_bytes": 7025878,
-      "sha256": "403fcbbd4f9279f532dfce825197013b21b288c8558f10730d0878d64671430c"
+      "size_bytes": 23318629,
+      "sha256": "0ca805666836f6587baaff4f878a5425ef5f831e561f1f96ef79fb97604acdfc"
     },
     {
       "path": "data/cleaned/tagore/test.txt",
@@ -49,13 +49,13 @@
     },
     {
       "path": "shards/fineweb2/aks/train/index.json",
-      "size_bytes": 451924,
-      "sha256": "bb1e825ec7652cef62f60b719a4edae9104dc7a75f0e5d29647bbe562e29db1e"
+      "size_bytes": 1502629,
+      "sha256": "57af63a868f7b8260b1d60d88a14eae5ea1eca03322c9edc38e4c64f3be4c1f6"
     },
     {
       "path": "shards/fineweb2/aks/train/shard_00000.bin",
-      "size_bytes": 3419708,
-      "sha256": "bc7998f7b83d1407e0ec2dad677ecdfa80fd937e928d1b0714a24ef2ffde2887"
+      "size_bytes": 11368138,
+      "sha256": "755dfab0423ee088c3403a597ca9cc039649e2c6496cc69bdd9181e79046061f"
     },
     {
       "path": "shards/fineweb2/bpe16/egen/index.json",
@@ -69,13 +69,13 @@
     },
     {
       "path": "shards/fineweb2/bpe16/train/index.json",
-      "size_bytes": 450563,
-      "sha256": "11808a1bd2582398746bb93ab885f5911d768317042ed8515236f80ab3e51703"
+      "size_bytes": 1499775,
+      "sha256": "40a21fefbd86191b34ecd399bfc5756d8afdd7246548cdd100c017a240c8b64b"
     },
     {
       "path": "shards/fineweb2/bpe16/train/shard_00000.bin",
-      "size_bytes": 1275876,
-      "sha256": "5a5cedeab59a944043dfa0c12dc041eb538df3d33665efedeac6f9075885ecde"
+      "size_bytes": 4220950,
+      "sha256": "f098ef700bcddc0fe85cc5196c664f157a8995c2b56a655ebb12ee45d7d509bd"
     },
     {
       "path": "shards/fineweb2/bpe8/egen/index.json",
@@ -89,13 +89,13 @@
     },
     {
       "path": "shards/fineweb2/bpe8/train/index.json",
-      "size_bytes": 450615,
-      "sha256": "a14e4ce780f568dd136c517ab6d3d74e52438d237a92994f39bc5c56c802d254"
+      "size_bytes": 1500338,
+      "sha256": "ac6eb393009935bc4e2c6e5e3024a13077febcc5e23109a0fd3e6733fa04dbad"
     },
     {
       "path": "shards/fineweb2/bpe8/train/shard_00000.bin",
-      "size_bytes": 1458858,
-      "sha256": "2ab2fa7befc579b48d36b959971d334b43bb1b3e779e3eea51af7dbf144432ea"
+      "size_bytes": 4824652,
+      "sha256": "16b7e22d4030ab0d17cc62634f5be68f94ed246876800751a9396092a339d9b8"
     },
     {
       "path": "shards/fineweb2/byte/egen/index.json",
@@ -109,13 +109,13 @@
     },
     {
       "path": "shards/fineweb2/byte/train/index.json",
-      "size_bytes": 455772,
-      "sha256": "a6545292b29e2c279b2d246f9ef612e66778a8a183e089d898e817a9bc9931a1"
+      "size_bytes": 1517389,
+      "sha256": "c181e14048fe0282521fa62e79bd59bed7bc0d8625bce832add87d67986fe481"
     },
     {
       "path": "shards/fineweb2/byte/train/shard_00000.bin",
-      "size_bytes": 14051756,
-      "sha256": "0d9f2297aea3a7234f0cad998649c7972d1fe0a64bd52a12557fa4b692a46ace"
+      "size_bytes": 46637258,
+      "sha256": "d031260baf6f2350a8a97f977408f44c993245558d5fa507a4b391b127b9facf"
     },
     {
       "path": "shards/fineweb2/char/egen/index.json",
@@ -129,13 +129,13 @@
     },
     {
       "path": "shards/fineweb2/char/train/index.json",
-      "size_bytes": 455099,
-      "sha256": "ce486c3e00c7a958b782cbbc0c27b6e4f10c25c8e92175e14017e9cffe6eca9e"
+      "size_bytes": 1511804,
+      "sha256": "9a26d3584bf75f958ee7ed2704fba014628778749ef2dbd752195789c7acdc6f"
     },
     {
       "path": "shards/fineweb2/char/train/shard_00000.bin",
-      "size_bytes": 5306008,
-      "sha256": "24073dd25f8ee371254429e543b02b81f9389973de854ec1f4d6c4c2e6a988e8"
+      "size_bytes": 17603424,
+      "sha256": "f51bd099ffab1a872bd405c5af15108c0103b8814b06e862628bbd940e78f518"
     },
     {
       "path": "shards/fineweb2/uni16/egen/index.json",
@@ -149,73 +149,73 @@
     },
     {
       "path": "shards/fineweb2/uni16/train/index.json",
-      "size_bytes": 450558,
-      "sha256": "11fa8f215e3a9e236f8257ef9c707ba33a8b0c1a6b331c9df72fa52cc20b60cf"
+      "size_bytes": 1499699,
+      "sha256": "99eb4f9aecac80c30db851b4bd37155bb0db41b5017694b9254b89057822a695"
     },
     {
       "path": "shards/fineweb2/uni16/train/shard_00000.bin",
-      "size_bytes": 1253464,
-      "sha256": "edfa3dfd9ed5d2c30bba4ce6b475f44ba4569170c7d5deb50500d6882befd8e2"
+      "size_bytes": 4149484,
+      "sha256": "524023e911127ae7fc60d673eb853d7d511b5af64587bd038e54980c0e1813ad"
     },
     {
       "path": "shards/fineweb2_aks_egen.tar",
       "size_bytes": 307200,
-      "sha256": "c24bd7942f2a127ff89d5b7dd1ddc044259807bfd99ff65462f0d6593bc86ebc"
+      "sha256": "72057ea60ee39d5a3af8099a6298e5f2cb5c672d090584da4ec623e9c0835aa6"
     },
     {
       "path": "shards/fineweb2_aks_train.tar",
-      "size_bytes": 3880960,
-      "sha256": "7382b2e99b91d5989d77e3e6c24f7bde527faa3ca19f35b1c4c6167cbdc8b981"
+      "size_bytes": 12881920,
+      "sha256": "2460e35892c2a2ff783b81b440344b613bc2cd717f96ec6e4163a3afc38c3e1a"
     },
     {
       "path": "shards/fineweb2_bpe16_egen.tar",
       "size_bytes": 143360,
-      "sha256": "535ce2efcb0eafb20bfce32e928c9eb84981cd422025f7766cf04b482c845db0"
+      "sha256": "2720869bae8b64f0058cbc5445d0b582183c0a7b1da760153571c45b2572cd05"
     },
     {
       "path": "shards/fineweb2_bpe16_train.tar",
-      "size_bytes": 1740800,
-      "sha256": "5fd14ae750c9db8eecaabf6d2c4ea7702bd3964f26be0f4187987b34b0dc7d1c"
+      "size_bytes": 5734400,
+      "sha256": "e035e0e96c620f1ea2f1a4ea52abb7e36077bdfcee38283967219a2d910bb1e9"
     },
     {
       "path": "shards/fineweb2_bpe8_egen.tar",
       "size_bytes": 153600,
-      "sha256": "e262840e91a9145e59e9c876e5bde61e833ebbec81d0fe4b6db337a418f36e06"
+      "sha256": "9e4ddc1ab18160b45e54851740db20ef73993ffe559d308183ecc8af9450196a"
     },
     {
       "path": "shards/fineweb2_bpe8_train.tar",
-      "size_bytes": 1925120,
-      "sha256": "c3ae278829bae6e92b2c5a880466f8e317bebbb164f69eed30714d9c2ad48c35"
+      "size_bytes": 6338560,
+      "sha256": "d9a4f652876b411e3a5487949e3d1ff7fa6b26d7acd5974a6e0e30877b9f87f4"
     },
     {
       "path": "shards/fineweb2_byte_egen.tar",
       "size_bytes": 1146880,
-      "sha256": "0f72d50ff032b765e16808a0d9d21e276454ae8c82aee11234e988b113003892"
+      "sha256": "bc4755aa2a81ed092aeec1351b15eb5f909fad5cc3723c751a8b868501efa628"
     },
     {
       "path": "shards/fineweb2_byte_train.tar",
-      "size_bytes": 14520320,
-      "sha256": "a9e8527bf103742b03d4f5c941729aefbfbc10e66c14a5a04f7ef601f2f536ef"
+      "size_bytes": 48168960,
+      "sha256": "167b2c5c2cc61a69f3658b772bce8180a5197271aeb8cd5851e42013d663ead7"
     },
     {
       "path": "shards/fineweb2_char_egen.tar",
       "size_bytes": 460800,
-      "sha256": "7556a712c5532ec4d02f01528389bc44aee538868f7538bd0bd8efed3f75d0ab"
+      "sha256": "95791dd6b6b97c6b950dc38424867bebb02dcff8870aef1bf6a8ae7d85eb6cac"
     },
     {
       "path": "shards/fineweb2_char_train.tar",
-      "size_bytes": 5775360,
-      "sha256": "6b7c64f60378450b835b19ad80030dd0f7f3c779d28f109e8cc8919f3a708bf9"
+      "size_bytes": 19128320,
+      "sha256": "e8e8701c7c14fc20f4b1cdb9e7ed9b0854564f0b2670ab4ac2688288d1690eb0"
     },
     {
       "path": "shards/fineweb2_uni16_egen.tar",
       "size_bytes": 143360,
-      "sha256": "f66d25c11a7863c6cb8c04b0a2fbbbf9f457c429d7ebf4beec6253a5d9fb28ed"
+      "sha256": "4cc24f3afb65e6dc3340c6c2912a966808fc4febb4a2cbaf74cf5e2eb9cd43a2"
     },
     {
       "path": "shards/fineweb2_uni16_train.tar",
-      "size_bytes": 1710080,
-      "sha256": "d36fd78fccd2e9d31e84b84605c4622964393117a31806f64fd9f412c17024e3"
+      "size_bytes": 5662720,
+      "sha256": "e91b10a5cc47fd022dde364d9176070533c4e38c4697542648adc0fd9ac4a358"
     },
     {
       "path": "shards/wikisource/aks/test/index.json",
@@ -400,92 +400,92 @@
     {
       "path": "shards/wikisource_aks_test.tar",
       "size_bytes": 706560,
-      "sha256": "7eb3705b678219e1b698e49af30aebda33ccb7557f974dd259c38a627f1a7010"
+      "sha256": "42255de36fe2a932cda1b0cf41f1a26e4a59bd78563cf03b605ca011732b8392"
     },
     {
       "path": "shards/wikisource_aks_train.tar",
       "size_bytes": 2396160,
-      "sha256": "c455998f74ffac0bd2c1ff3cf7834711941244239dd5de2c4573a818a94dda90"
+      "sha256": "926ff6d0aef977f6d59c9515b140ef8b1cc326c429f3826c31942d8ad6563b56"
     },
     {
       "path": "shards/wikisource_aks_val.tar",
       "size_bytes": 256000,
-      "sha256": "39c5e103a1fb9dc871b15cf488c33fbfcad565526a5d565f463ecb6b8a07491d"
+      "sha256": "a009d10726edec0b6b3175f131f9828c09a4aeffed035295793ae38c64df3806"
     },
     {
       "path": "shards/wikisource_bpe16_test.tar",
       "size_bytes": 378880,
-      "sha256": "15323e9a3977924a20a287c6f13c684f8dec0eed94d4020bc62ec975ea2a41e4"
+      "sha256": "106f591e89c04e373136cb10b6382388a02252d93d8a6c756f75e8e2e20eab40"
     },
     {
       "path": "shards/wikisource_bpe16_train.tar",
       "size_bytes": 1208320,
-      "sha256": "691c560c2160623c02b7f19b603f809f5c978bfbee937e6ffecc1821fc67c79e"
+      "sha256": "23aa5ef2297453f6f295ee757dbed74cb1f0714abbbcb756f9e7a146680b2874"
     },
     {
       "path": "shards/wikisource_bpe16_val.tar",
       "size_bytes": 133120,
-      "sha256": "d8d294e4f0ffbcea4fc71df9858a64188294b068c503604fb3a14eee5d704e95"
+      "sha256": "430ef650e36f4a159b73e4164080469461dfd6b4f45a1c8df4ae41cc3521f664"
     },
     {
       "path": "shards/wikisource_bpe8_test.tar",
       "size_bytes": 409600,
-      "sha256": "1261be59e9464ba76c25648bae660fa33ad797bd17fedfcb8d622b4222b5346e"
+      "sha256": "59a8298f6e326ff886695af3ee3ce71934a65897d33afb42d7fdb0b23b52b582"
     },
     {
       "path": "shards/wikisource_bpe8_train.tar",
       "size_bytes": 1320960,
-      "sha256": "f9aa1184f3b3bba8c6ff4e49724695d9944d57a39369fd90e82ad16dc4d7f57e"
+      "sha256": "06ea7f40d9ea1fd6338fb7bd446a6dcaa6fb039672b776e8e42bd2bfbe1aa73b"
     },
     {
       "path": "shards/wikisource_bpe8_val.tar",
       "size_bytes": 143360,
-      "sha256": "2fc7cd076247d020d01cbe175a920826e75c93a29014d983a40b26c189d8c777"
+      "sha256": "3918fac7b25699548436e0bf955a279880248ac773cd9e71ae85c8a0670b9ded"
     },
     {
       "path": "shards/wikisource_byte_test.tar",
       "size_bytes": 2498560,
-      "sha256": "87b13b6285bb78e34975e48529142e0c868ea8c5c30cb4ba005b5852e8e86ec3"
+      "sha256": "6bddb577f5221c6fac328b0da2e1e33bfb0ce40306456d7d3d47316af97cdf96"
     },
     {
       "path": "shards/wikisource_byte_train.tar",
       "size_bytes": 8755200,
-      "sha256": "9f92dc68e79f2efdf265d8a5c25e6413956b52224184a0b0b08568ddcc7a1792"
+      "sha256": "cc43338f92c726f5ada5c125f90e495ebd4d11a3d3889c5f3315674dbc4b7d5c"
     },
     {
       "path": "shards/wikisource_byte_val.tar",
       "size_bytes": 901120,
-      "sha256": "0e32837c4173aaef27181ad6c2386882d16807b71eff854b363a638817bda521"
+      "sha256": "a004980437d9d459e12100355bfa74f5c52fb53974da148899628f1bd89beac0"
     },
     {
       "path": "shards/wikisource_char_test.tar",
       "size_bytes": 1013760,
-      "sha256": "a5839b5eac1a5574bc17ae4d6d0845af93a02b375eb62fc534f7691ff69219f9"
+      "sha256": "7844c9a08fd8f4f7878866089f966d7b9c910e831f9ea724dfa5423ae9046b6b"
     },
     {
       "path": "shards/wikisource_char_train.tar",
       "size_bytes": 3502080,
-      "sha256": "210021b1481d38f5e69321b008949d55cac531c556fe051f2569d05362a9977c"
+      "sha256": "3b047cc18b30d22da0bb682e1f74a370e9bbde3c5a83478d13d782ab7e9e4559"
     },
     {
       "path": "shards/wikisource_char_val.tar",
       "size_bytes": 368640,
-      "sha256": "e19c46474f09c7e7aedf46417e14035c104668780b84102aa2ad85e2aee72dd2"
+      "sha256": "20e50badccc280c9a165ef59f55d126098e84b3f0f499602bab3ed3e793e87f7"
     },
     {
       "path": "shards/wikisource_uni16_test.tar",
       "size_bytes": 378880,
-      "sha256": "2f9d3e7bddc60e7a5314c5dbc747f3c7b45875ff10fe93e516a101c34af3ead4"
+      "sha256": "b926fae86813966cc725c211ed16bb7f0ae3a143ab26c4821c308c1ea18f2c83"
     },
     {
       "path": "shards/wikisource_uni16_train.tar",
       "size_bytes": 1208320,
-      "sha256": "26ef3a64234cc01b602d1166777501e6d8bb0f9b097e925e36affd10d06bcdc7"
+      "sha256": "38560a72babf457cce2fbc5b68e62859ca18824c7874ae17251aa716ff70505f"
     },
     {
       "path": "shards/wikisource_uni16_val.tar",
       "size_bytes": 133120,
-      "sha256": "297eaa840ed5cc9cab09fadecafcaabe40b8e7bd59f0171c318e36295cbfa19e"
+      "sha256": "37f3e56af9617ed3e9775206c71058251e3fd51751bac5f76334914228eefa84"
     }
   ],
   "tok": [
