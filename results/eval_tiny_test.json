@@ -1,0 +1,12 @@
+{
+  "run_id": "tiny_functional_test",
+  "hierarchical_mean_bpc": 1.3365574840408205,
+  "hierarchical_ci_lower": 1.3080275577229172,
+  "hierarchical_ci_upper": 1.3660252048013308,
+  "paired_tokenizer_mean_delta": -0.3460795559601937,
+  "paired_tokenizer_ci_lower": -0.372065782952961,
+  "paired_tokenizer_ci_upper": -0.321585655337843,
+  "loss_300": 5.647076606750488,
+  "loss_reduction_pct": 41.688526698519055,
+  "bootstrap_resamples": 1000
+}
