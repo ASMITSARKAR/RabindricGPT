@@ -1,147 +1,147 @@
 [
   {
-    "scale": "10m",
+    "scale": "25m",
     "tokenizer": "byte",
     "total_steps": 2,
     "kill_step": 1,
     "resumed_step": 1,
     "delta_loss": 0.0,
-    "tokens_per_sec": 359.38,
-    "mfu": 0.0499,
+    "tokens_per_sec": 161.46,
+    "mfu": 0.0464,
     "peak_gb": 0.0,
-    "elapsed_sec": 0.7,
+    "elapsed_sec": 1.56,
     "units_burned": 0.0,
     "gpu_peak_flops_assumed": 1000000000000.0,
     "burn_rate_used": 0.0,
     "dynamic_memory_estimate": {
-      "static_gb": 0.16,
-      "activations_gb": 0.37,
-      "logits_gb": 0.003,
-      "ce_autograd_gb": 0.005,
-      "total_est_gb": 0.54
+      "static_gb": 4.035,
+      "activations_gb": 11.51,
+      "logits_gb": 0.042,
+      "ce_autograd_gb": 0.085,
+      "total_est_gb": 15.67
     },
     "fixed_ceiling_estimate": {
-      "static_gb": 0.16,
-      "activations_gb": 0.009,
-      "logits_gb": 0.0,
-      "ce_autograd_gb": 0.0,
-      "total_est_gb": 0.17
+      "static_gb": 4.035,
+      "activations_gb": 0.273,
+      "logits_gb": 0.001,
+      "ce_autograd_gb": 0.002,
+      "total_est_gb": 4.31
     }
   },
   {
-    "scale": "10m",
+    "scale": "25m",
     "tokenizer": "char",
     "total_steps": 2,
     "kill_step": 1,
     "resumed_step": 1,
     "delta_loss": 0.0,
-    "tokens_per_sec": 319.55,
-    "mfu": 0.0298,
+    "tokens_per_sec": 148.3,
+    "mfu": 0.0306,
     "peak_gb": 0.0,
-    "elapsed_sec": 0.79,
+    "elapsed_sec": 1.7,
     "units_burned": 0.0,
     "gpu_peak_flops_assumed": 1000000000000.0,
     "burn_rate_used": 0.0,
     "dynamic_memory_estimate": {
-      "static_gb": 0.161,
-      "activations_gb": 0.141,
-      "logits_gb": 0.002,
-      "ce_autograd_gb": 0.004,
-      "total_est_gb": 0.31
+      "static_gb": 4.037,
+      "activations_gb": 4.375,
+      "logits_gb": 0.031,
+      "ce_autograd_gb": 0.062,
+      "total_est_gb": 8.51
     },
     "fixed_ceiling_estimate": {
-      "static_gb": 0.161,
-      "activations_gb": 0.009,
-      "logits_gb": 0.0,
-      "ce_autograd_gb": 0.0,
-      "total_est_gb": 0.17
+      "static_gb": 4.037,
+      "activations_gb": 0.273,
+      "logits_gb": 0.002,
+      "ce_autograd_gb": 0.004,
+      "total_est_gb": 4.32
     }
   },
   {
-    "scale": "10m",
+    "scale": "25m",
     "tokenizer": "aks",
     "total_steps": 2,
     "kill_step": 1,
     "resumed_step": 1,
     "delta_loss": 0.0,
-    "tokens_per_sec": 280.89,
-    "mfu": 0.0284,
+    "tokens_per_sec": 143.21,
+    "mfu": 0.0304,
     "peak_gb": 0.0,
-    "elapsed_sec": 0.9,
+    "elapsed_sec": 1.76,
     "units_burned": 0.0,
     "gpu_peak_flops_assumed": 1000000000000.0,
     "burn_rate_used": 0.0,
     "dynamic_memory_estimate": {
-      "static_gb": 0.205,
-      "activations_gb": 0.091,
-      "logits_gb": 0.02,
-      "ce_autograd_gb": 0.041,
-      "total_est_gb": 0.36
+      "static_gb": 4.095,
+      "activations_gb": 2.837,
+      "logits_gb": 0.324,
+      "ce_autograd_gb": 0.648,
+      "total_est_gb": 7.91
     },
     "fixed_ceiling_estimate": {
-      "static_gb": 0.205,
-      "activations_gb": 0.009,
-      "logits_gb": 0.002,
-      "ce_autograd_gb": 0.004,
-      "total_est_gb": 0.22
+      "static_gb": 4.095,
+      "activations_gb": 0.273,
+      "logits_gb": 0.031,
+      "ce_autograd_gb": 0.062,
+      "total_est_gb": 4.46
     }
   },
   {
-    "scale": "10m",
+    "scale": "25m",
     "tokenizer": "bpe16",
     "total_steps": 2,
     "kill_step": 1,
     "resumed_step": 1,
     "delta_loss": 0.0,
-    "tokens_per_sec": 246.58,
-    "mfu": 0.027,
+    "tokens_per_sec": 102.44,
+    "mfu": 0.0224,
     "peak_gb": 0.0,
-    "elapsed_sec": 1.02,
+    "elapsed_sec": 2.46,
     "units_burned": 0.0,
     "gpu_peak_flops_assumed": 1000000000000.0,
     "burn_rate_used": 0.0,
     "dynamic_memory_estimate": {
-      "static_gb": 0.252,
-      "activations_gb": 0.041,
-      "logits_gb": 0.018,
-      "ce_autograd_gb": 0.036,
-      "total_est_gb": 0.35
+      "static_gb": 4.158,
+      "activations_gb": 1.26,
+      "logits_gb": 0.288,
+      "ce_autograd_gb": 0.576,
+      "total_est_gb": 6.28
     },
     "fixed_ceiling_estimate": {
-      "static_gb": 0.252,
-      "activations_gb": 0.009,
-      "logits_gb": 0.004,
-      "ce_autograd_gb": 0.008,
-      "total_est_gb": 0.27
+      "static_gb": 4.158,
+      "activations_gb": 0.273,
+      "logits_gb": 0.062,
+      "ce_autograd_gb": 0.125,
+      "total_est_gb": 4.62
     }
   },
   {
-    "scale": "10m",
+    "scale": "25m",
     "tokenizer": "uni16",
     "total_steps": 2,
     "kill_step": 1,
     "resumed_step": 1,
     "delta_loss": 0.0,
-    "tokens_per_sec": 256.92,
-    "mfu": 0.0282,
+    "tokens_per_sec": 101.17,
+    "mfu": 0.0222,
     "peak_gb": 0.0,
-    "elapsed_sec": 0.98,
+    "elapsed_sec": 2.49,
     "units_burned": 0.0,
     "gpu_peak_flops_assumed": 1000000000000.0,
     "burn_rate_used": 0.0,
     "dynamic_memory_estimate": {
-      "static_gb": 0.252,
-      "activations_gb": 0.041,
-      "logits_gb": 0.018,
-      "ce_autograd_gb": 0.036,
-      "total_est_gb": 0.35
+      "static_gb": 4.158,
+      "activations_gb": 1.26,
+      "logits_gb": 0.288,
+      "ce_autograd_gb": 0.576,
+      "total_est_gb": 6.28
     },
     "fixed_ceiling_estimate": {
-      "static_gb": 0.252,
-      "activations_gb": 0.009,
-      "logits_gb": 0.004,
-      "ce_autograd_gb": 0.008,
-      "total_est_gb": 0.27
+      "static_gb": 4.158,
+      "activations_gb": 0.273,
+      "logits_gb": 0.062,
+      "ce_autograd_gb": 0.125,
+      "total_est_gb": 4.62
     }
   }
 ]

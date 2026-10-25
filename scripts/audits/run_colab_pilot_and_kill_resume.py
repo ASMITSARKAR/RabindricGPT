@@ -36,9 +36,9 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--mode",
-        choices=["l4_10m", "a100_25m"],
+        choices=["l4_10m", "l4_25m", "a100_25m"],
         default="l4_10m",
-        help="Benchmark execution mode (default: l4_10m covering all 5 tokenizers on L4 for funded plan; a100_25m is an optional single 200-step run costing ~0.42u)",
+        help="Benchmark execution mode (l4_10m for 10M on L4; l4_25m for 25M on L4 across all tokenizers; a100_25m for 25M on A100)",
     )
     parser.add_argument("--steps", type=int, default=100, help="Total steps per tokenizer run (default: 100)")
     parser.add_argument("--kill-step", type=int, default=50, help="Step at which to kill and resume (default: 50)")
@@ -454,16 +454,16 @@ def main() -> None:
     print(f"Peak FLOP/s Assumed: L4 = {GPU_PEAK_FLOPS['L4']:.2e} (121 TFLOPS) | A100 = {GPU_PEAK_FLOPS['A100']:.2e} (312 TFLOPS)")
     print("=" * 80)
 
-    # Print VRAM Memory Analysis Table for L4 (24GB)
+    scale_to_est = "25m" if "25m" in args.mode else "10m"
     print("\n" + "-" * 80)
-    print("VRAM MEMORY ESTIMATION TABLE FOR 10M ON L4 (24 GB CEILING)")
+    print(f"VRAM MEMORY ESTIMATION TABLE FOR {scale_to_est.upper()} ON L4 (24 GB CEILING)")
     print("-" * 80)
     print(f"{'Tokenizer':<8} | {'Vocab':>5} | {'Seq(dyn)':>8} | {'Static':>7} | {'Acts':>6} | {'Logits':>6} | {'Peak(dyn)':>9} | {'Fits 24G L4?':<12}")
     print("-" * 80)
     for tok in ["byte", "char", "aks", "bpe16", "uni16"]:
         v = TOKENIZER_VOCABS[tok]
         s_dyn = TYPICAL_TOKENS_PER_WINDOW[tok]
-        m = estimate_memory_breakdown("10m", v, args.batch_size, s_dyn, args.micro_batch_size)
+        m = estimate_memory_breakdown(scale_to_est, v, args.batch_size, s_dyn, args.micro_batch_size)
         fits = "YES" if m["total_est_gb"] < 22.0 else "NO (OOM RISK)"
         print(f"{tok:<8} | {v:>5} | {s_dyn:>8} | {m['static_gb']:>6.2f}G | {m['activations_gb']:>5.2f}G | {m['logits_gb']:>5.2f}G | {m['total_est_gb']:>8.2f}G | {fits:<12}")
     print("-" * 80)
@@ -474,6 +474,9 @@ def main() -> None:
     if args.mode == "l4_10m":
         for tok in ["byte", "char", "aks", "bpe16", "uni16"]:
             runs.append(("10m", tok, "L4"))
+    elif args.mode == "l4_25m":
+        for tok in ["byte", "char", "aks", "bpe16", "uni16"]:
+            runs.append(("25m", tok, "L4"))
     elif args.mode == "a100_25m":
         runs.append(("25m", "bpe16", "A100"))
 

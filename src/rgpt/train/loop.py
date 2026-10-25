@@ -232,6 +232,7 @@ def train(
 
         if 450 <= step <= 500:
             recent_losses.append(loss.item())
+            print(f"[Gate Window Step {step:04d}] Loss: {loss.item():.4f}", flush=True)
 
         if step == 500:
             rel_thresh = float(raw_cfg.get("kill_relative_ratio", 0.85))
@@ -318,6 +319,8 @@ def train(
         "final_loss": round(last_loss, 4),
         "run_dir": str(rdir),
     }
+    if recent_losses:
+        summary["smoothed_loss_500"] = round(sum(recent_losses) / len(recent_losses), 4)
     if step_bpc_pairs:
         summary["final_val_bpc"] = round(step_bpc_pairs[-1][1], 4)
         summary["target_crossing_step"] = target_crossing_step

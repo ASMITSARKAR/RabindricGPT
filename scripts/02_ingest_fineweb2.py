@@ -260,24 +260,31 @@ def main() -> None:
             session_docs += 1
 
             if session_docs % 50 == 0 or train_bytes_total >= args.target_bytes or session_bytes >= chunk_limit:
+                pct = (train_bytes_total / args.target_bytes) * 100.0 if args.target_bytes > 0 else 100.0
                 print(
                     f"Progress: +{session_docs:,} docs (+{session_bytes / (1024**2):.2f} MB) | "
-                    f"Total: {len(existing_ids):,} docs ({train_bytes_total / (1024**2):.2f} MB / {args.target_bytes / (1024**2):.1f} MB)",
+                    f"Total: {len(existing_ids):,} docs ({train_bytes_total / (1024**2):.2f} MB / {args.target_bytes / (1024**2):.1f} MB, {pct:.2f}%)",
                     flush=True,
                 )
 
             if train_bytes_total >= args.target_bytes or session_bytes >= chunk_limit:
                 break
 
+    pct_final = (train_bytes_total / args.target_bytes) * 100.0 if args.target_bytes > 0 else 100.0
     print("\n" + "=" * 80)
     print("STAGE 1 INGESTION AUDIT REPORT")
     print("=" * 80)
-    print(f"Final Volume on Disk     : {train_bytes_total:,} bytes ({len(existing_ids):,} docs)")
+    print(f"Current Volume on Disk   : {train_bytes_total:,} / {args.target_bytes:,} bytes ({pct_final:.2f}%) [{len(existing_ids):,} docs]")
+    if train_bytes_total >= args.target_bytes:
+        print(f"Target Status            : TARGET REACHED ({train_bytes_total:,} >= {args.target_bytes:,} bytes)")
+    else:
+        rem = args.target_bytes - train_bytes_total
+        print(f"Target Status            : INCOMPLETE / CHUNK FINISHED ({rem:,} bytes remaining towards {args.target_bytes:,} bytes target)")
     print(f"Disjointness Filtered    : {disjoint_skipped:,} documents skipped")
-    print("Tagore Leakage Purge Summary:")
-    print(f"  - Narrow Tagore Keywords: {flagged_counts['narrow_keywords']:,} purged")
+    print("Tagore Held-Out Works Leakage Scan (5-gram window):")
     for w_key, title in HELD_OUT_WORKS.items():
         print(f"  - {title:<18}: {flagged_counts[w_key]:,} purged")
+    print(f"  - Narrow Tagore Keywords: {flagged_counts['narrow_keywords']:,} purged")
     total_purged = flagged_counts["narrow_keywords"] + sum(flagged_counts[k] for k in HELD_OUT_WORKS)
     print(f"Total Purged Documents   : {total_purged:,}")
     print("Disjointness Assertion   : PASS (disjoint from E-gen and 100M sample by ID & content hash)")
