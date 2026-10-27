@@ -54,6 +54,15 @@ def build_prepared(output_dir: str = "prepared") -> dict:
             if p.is_file():
                 zf.write(p, p.relative_to(prep_dir))
 
+    # Also package reference data (pages.jsonl and egen.jsonl) for Colab leakage/disjointness validation
+    raw_ref_zip = prep_dir / "raw_reference.zip"
+    pages_p = Path("data/raw/wikisource/pages.jsonl")
+    egen_p = Path("data/raw/fineweb2/egen.jsonl")
+    if pages_p.exists() and egen_p.exists():
+        with zipfile.ZipFile(raw_ref_zip, "w", zipfile.ZIP_DEFLATED) as zf:
+            zf.write(pages_p, "data/raw/wikisource/pages.jsonl")
+            zf.write(egen_p, "data/raw/fineweb2/egen.jsonl")
+
     # 4. Compute SHA-256 hashes for all prepared files
     manifest = {}
     for p in sorted(prep_dir.rglob("*")):

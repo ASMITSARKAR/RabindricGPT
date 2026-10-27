@@ -1,4 +1,8 @@
 {
+  "raw_reference.zip": {
+    "sha256": "076c8daa6b9f1174db622ee2c77ce17a3b20e5538bb1debba769543329cfa4d9",
+    "bytes": 1702500
+  },
   "shards/fineweb2/aks/egen/index.json": {
     "sha256": "7bb9e8361bb6b427264349d1555f6a146f4925766538cc1831e40dd1c4997b77",
     "bytes": 35288
@@ -8,12 +12,12 @@
     "bytes": 265800
   },
   "shards/fineweb2/aks/train/index.json": {
-    "sha256": "bb1e825ec7652cef62f60b719a4edae9104dc7a75f0e5d29647bbe562e29db1e",
-    "bytes": 451924
+    "sha256": "57af63a868f7b8260b1d60d88a14eae5ea1eca03322c9edc38e4c64f3be4c1f6",
+    "bytes": 1502629
   },
   "shards/fineweb2/aks/train/shard_00000.bin": {
-    "sha256": "bc7998f7b83d1407e0ec2dad677ecdfa80fd937e928d1b0714a24ef2ffde2887",
-    "bytes": 3419708
+    "sha256": "755dfab0423ee088c3403a597ca9cc039649e2c6496cc69bdd9181e79046061f",
+    "bytes": 11368138
   },
   "shards/fineweb2/bpe16/egen/index.json": {
     "sha256": "d9033740a41cbdd24047fce56e4da4c952da44b683a8a38786af1e19752c10ad",
@@ -24,12 +28,12 @@
     "bytes": 96042
   },
   "shards/fineweb2/bpe16/train/index.json": {
-    "sha256": "11808a1bd2582398746bb93ab885f5911d768317042ed8515236f80ab3e51703",
-    "bytes": 450563
+    "sha256": "40a21fefbd86191b34ecd399bfc5756d8afdd7246548cdd100c017a240c8b64b",
+    "bytes": 1499775
   },
   "shards/fineweb2/bpe16/train/shard_00000.bin": {
-    "sha256": "5a5cedeab59a944043dfa0c12dc041eb538df3d33665efedeac6f9075885ecde",
-    "bytes": 1275876
+    "sha256": "f098ef700bcddc0fe85cc5196c664f157a8995c2b56a655ebb12ee45d7d509bd",
+    "bytes": 4220950
   },
   "shards/fineweb2/byte/egen/index.json": {
     "sha256": "e75c2cd46b2f102a9ab93d6d835d18a8b33e63d1a7ff236057a0c6b908207891",
@@ -40,12 +44,12 @@
     "bytes": 1102860
   },
   "shards/fineweb2/byte/train/index.json": {
-    "sha256": "a6545292b29e2c279b2d246f9ef612e66778a8a183e089d898e817a9bc9931a1",
-    "bytes": 455772
+    "sha256": "c181e14048fe0282521fa62e79bd59bed7bc0d8625bce832add87d67986fe481",
+    "bytes": 1517389
   },
   "shards/fineweb2/byte/train/shard_00000.bin": {
-    "sha256": "0d9f2297aea3a7234f0cad998649c7972d1fe0a64bd52a12557fa4b692a46ace",
-    "bytes": 14051756
+    "sha256": "d031260baf6f2350a8a97f977408f44c993245558d5fa507a4b391b127b9facf",
+    "bytes": 46637258
   },
   "shards/fineweb2/char/egen/index.json": {
     "sha256": "92e8b849dc9ce1312154b89641d269cbe28952d33d359f59887869657623ec78",
@@ -56,12 +60,12 @@
     "bytes": 413974
   },
   "shards/fineweb2/char/train/index.json": {
-    "sha256": "ce486c3e00c7a958b782cbbc0c27b6e4f10c25c8e92175e14017e9cffe6eca9e",
-    "bytes": 455099
+    "sha256": "9a26d3584bf75f958ee7ed2704fba014628778749ef2dbd752195789c7acdc6f",
+    "bytes": 1511804
   },
   "shards/fineweb2/char/train/shard_00000.bin": {
-    "sha256": "24073dd25f8ee371254429e543b02b81f9389973de854ec1f4d6c4c2e6a988e8",
-    "bytes": 5306008
+    "sha256": "f51bd099ffab1a872bd405c5af15108c0103b8814b06e862628bbd940e78f518",
+    "bytes": 17603424
   },
   "shards/fineweb2/uni16/egen/index.json": {
     "sha256": "a7813383cfde5fc3fc88f37adefb2aa142426247a68f8c22d45e16468d15c248",
@@ -72,12 +76,12 @@
     "bytes": 94154
   },
   "shards/fineweb2/uni16/train/index.json": {
-    "sha256": "11fa8f215e3a9e236f8257ef9c707ba33a8b0c1a6b331c9df72fa52cc20b60cf",
-    "bytes": 450558
+    "sha256": "99eb4f9aecac80c30db851b4bd37155bb0db41b5017694b9254b89057822a695",
+    "bytes": 1499699
   },
   "shards/fineweb2/uni16/train/shard_00000.bin": {
-    "sha256": "edfa3dfd9ed5d2c30bba4ce6b475f44ba4569170c7d5deb50500d6882befd8e2",
-    "bytes": 1253464
+    "sha256": "524023e911127ae7fc60d673eb853d7d511b5af64587bd038e54980c0e1813ad",
+    "bytes": 4149484
   },
   "shards/wikisource/aks/test/index.json": {
     "sha256": "51282f5703a1d6cae7a48c02609b6b21944c7d8819ef23bd0b1381d2b4e3300b",
@@ -200,8 +204,8 @@
     "bytes": 94708
   },
   "shards.zip": {
-    "sha256": "77434ea88941bbaaf214a0c6418a0c61de0dc0219e4cfad1b80bdaa2f0a527a2",
-    "bytes": 12088330
+    "sha256": "68bbda5d74b97239dda6b181a02c40d76b58d4a5e0a925f5db3c27ad3ebe75bf",
+    "bytes": 26690273
   },
   "tok/aks/config.json": {
     "sha256": "c36b3881206a242b52e7b172c7a0c1f5d1d8db47c3ea0316fa8f4a8db6470cb4",

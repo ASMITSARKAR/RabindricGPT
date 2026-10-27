@@ -14,6 +14,7 @@ Verifies:
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import random
 import sys
@@ -24,6 +25,7 @@ from typing import Dict, List, Tuple
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 from src.rgpt.data.leakage import CrossCorpusLeakageDetector, tokenize_bengali_words
+from src.rgpt.text.normalize import normalize_text
 
 HELD_OUT_WORKS: Dict[str, str] = {
     "shesher_kobita": "শেষের কবিতা",
@@ -51,57 +53,113 @@ SYNTHETIC_BACKGROUND_DOCS = [
 ]
 
 
-def load_heldout_work_texts() -> Dict[str, List[str]]:
-    """Load text for each of the 4 held-out works from raw/cleaned wikisource."""
-    pages_path = Path("data/raw/wikisource/pages.jsonl")
+def load_heldout_work_texts(
+    pages_path: Path = Path("data/raw/wikisource/pages.jsonl"),
+) -> Dict[str, List[str]]:
+    """Load text for each of the 4 held-out works from raw wikisource pages.jsonl.
+    
+    Fails loudly if pages.jsonl is missing or if any of the 4 held-out works has no text.
+    """
+    pages_p = Path(pages_path)
+    if not pages_p.exists():
+        raise FileNotFoundError(
+            f"Missing required file: {pages_p}. Cannot load held-out works."
+        )
+
     work_pages: Dict[str, List[str]] = defaultdict(list)
+    with open(pages_p, "r", encoding="utf-8") as f:
+        for line in f:
+            line_str = line.strip()
+            if not line_str:
+                continue
+            row = json.loads(line_str)
+            pfx = row.get("prefix", "")
+            text = row.get("clean_text", "")
+            if not text:
+                continue
+            for work_key, title in HELD_OUT_WORKS.items():
+                if title in pfx:
+                    work_pages[work_key].append(text)
+                    break
 
-    if pages_path.exists():
-        with open(pages_path, "r", encoding="utf-8") as f:
-            for line in f:
-                if not line.strip():
-                    continue
-                row = json.loads(line)
-                pfx = row.get("prefix", "")
-                text = row.get("clean_text", "")
-                if not text:
-                    continue
-                for work_key, title in HELD_OUT_WORKS.items():
-                    if title in pfx:
-                        work_pages[work_key].append(text)
-                        break
-
-    # Fallback to cleaned files if pages.jsonl missing or partial
     for work_key, title in HELD_OUT_WORKS.items():
         if not work_pages[work_key]:
-            # Use representative cleaned text
-            if work_key == "shesher_kobita":
-                p = Path("data/cleaned/tagore/val.txt")
-                if p.exists():
-                    work_pages[work_key].append(p.read_text(encoding="utf-8"))
-            else:
-                p = Path("data/cleaned/tagore/test.txt")
-                if p.exists():
-                    work_pages[work_key].append(p.read_text(encoding="utf-8"))
+            raise ValueError(
+                f"No text found for held-out work '{title}' ({work_key}) in {pages_p}!"
+            )
 
     return work_pages
 
 
 def audit_stage1_leakage(
     train_path: Path = Path("data/raw/fineweb2/train.jsonl"),
+    pages_path: Path = Path("data/raw/wikisource/pages.jsonl"),
+    egen_path: Path = Path("data/raw/fineweb2/egen.jsonl"),
+    tok_sample_path: Path = Path("data/cleaned/fineweb2/fw2_tokenizer_sample_100m.txt"),
     n_plants_per_work: int = 20,
     seed: int = 42,
 ) -> dict:
-    work_texts = load_heldout_work_texts()
+    pages_p = Path(pages_path)
+    egen_p = Path(egen_path)
+
+    if not pages_p.exists():
+        raise FileNotFoundError(
+            f"Missing required file: {pages_p}. Leakage audit aborted."
+        )
+    if not egen_p.exists():
+        raise FileNotFoundError(
+            f"Missing required file: {egen_p}. Leakage audit aborted."
+        )
+
+    # Check reserved identifiers from egen and tok_sample
+    reserved_ids: set[str] = set()
+    reserved_hashes: set[str] = set()
+    with open(egen_p, "r", encoding="utf-8") as f:
+        for line in f:
+            line_str = line.strip()
+            if not line_str:
+                continue
+            row = json.loads(line_str)
+            if "id" in row:
+                reserved_ids.add(str(row["id"]))
+            if "text" in row:
+                reserved_hashes.add(hashlib.sha256(row["text"].strip().encode("utf-8")).hexdigest())
+
+    tok_sample_p = Path(tok_sample_path)
+    if tok_sample_p.exists():
+        with open(tok_sample_p, "r", encoding="utf-8") as f:
+            for idx, line in enumerate(f):
+                if idx >= 5000:
+                    break
+                line_str = line.strip()
+                if line_str:
+                    reserved_hashes.add(hashlib.sha256(line_str.encode("utf-8")).hexdigest())
+
+    if len(reserved_ids) == 0:
+        raise ValueError(
+            f"Reserved-ID set from {egen_p} is empty! Cannot guarantee disjointness."
+        )
+    if len(reserved_hashes) == 0:
+        raise ValueError(
+            f"Reserved content hash set from {egen_p} is empty! Cannot guarantee disjointness."
+        )
+
+    work_texts = load_heldout_work_texts(pages_path=pages_p)
     detectors: Dict[str, CrossCorpusLeakageDetector] = {}
     for work_key, texts in work_texts.items():
-        combined = "\n\n".join(texts) if texts else "নমুনা টেক্সট"
-        detectors[work_key] = CrossCorpusLeakageDetector(
-            target_texts=[combined],
+        norm_texts = [normalize_text(t)[0] for t in texts]
+        det = CrossCorpusLeakageDetector(
+            target_texts=norm_texts,
             ngram_size=5,
             window_size=30,
             threshold_distinct_ngrams=3,
         )
+        if len(det.target_5grams) == 0:
+            raise ValueError(
+                f"Leakage detector for held-out work '{HELD_OUT_WORKS[work_key]}' ({work_key}) has 0 5-grams indexed! "
+                f"Failing loudly to prevent leakage."
+            )
+        detectors[work_key] = det
 
     # 1. Scan train.jsonl
     flagged_counts = {k: 0 for k in HELD_OUT_WORKS}
@@ -115,11 +173,12 @@ def audit_stage1_leakage(
                     continue
                 scanned_docs += 1
                 row = json.loads(line)
-                t = row.get("text", "")
-                if any(kw in t for kw in NARROW_TAGORE_KEYWORDS):
+                raw_t = row.get("text", "")
+                norm_t, _ = normalize_text(raw_t)
+                if any(kw in norm_t for kw in NARROW_TAGORE_KEYWORDS):
                     keyword_flagged += 1
                 for w_key, det in detectors.items():
-                    if det.contains_leakage(t):
+                    if det.contains_leakage(norm_t):
                         flagged_counts[w_key] += 1
 
     # 2. Plant 20 verbatim 13-grams per work into synthetic docs
@@ -197,8 +256,16 @@ def main() -> None:
         sys.stdout.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser(description="Audit Stage 1 leakage and plant recall")
     parser.add_argument("--train-path", type=Path, default=Path("data/raw/fineweb2/train.jsonl"))
+    parser.add_argument("--pages-path", type=Path, default=Path("data/raw/wikisource/pages.jsonl"))
+    parser.add_argument("--egen-path", type=Path, default=Path("data/raw/fineweb2/egen.jsonl"))
+    parser.add_argument("--tok-sample-path", type=Path, default=Path("data/cleaned/fineweb2/fw2_tokenizer_sample_100m.txt"))
     args = parser.parse_args()
-    res = audit_stage1_leakage(train_path=args.train_path)
+    res = audit_stage1_leakage(
+        train_path=args.train_path,
+        pages_path=args.pages_path,
+        egen_path=args.egen_path,
+        tok_sample_path=args.tok_sample_path,
+    )
     if not res["all_passed"]:
         sys.exit(1)
 
