@@ -24,37 +24,23 @@ from scripts.audits.audit_stage1_leakage import audit_stage1_leakage
 
 
 def _make_dummy_pages_jsonl(pages_path: Path) -> None:
-    """Create a synthetic pages.jsonl with distinct long Bengali text for all 4 held-out works."""
-    work_vocab = {
-        "shesher_kobita": [
-            "প্রথম", "অধ্যায়", "শিলং", "পাহাড়ে", "দুইটি", "গাড়ির", "সংঘর্ষ", "ঘটিল",
-            "এবং", "পথের", "মাঝে", "তাহাদের", "পরিচয়", "হইল", "অমিত", "ও", "লাবণ্য",
-            "পরস্পরকে", "দেখিল", "মুগ্ধ", "হইয়া", "তাহারা", "নীরবে", "দাঁড়াইয়া", "রহিল",
-            "তাহাদের", "মনে", "হইল", "এই", "জীবন", "এক", "নতুন", "অর্থ", "খুঁজিয়া", "পাইল",
-        ],
-        "gitanjali": [
-            "আমার", "মাথা", "নত", "করে", "দাও", "তোমার", "চরণ", "ধুলার", "তলে", "সকল",
-            "অহংকার", "হে", "প্রভু", "চোখের", "জলে", "ভাসাও", "শান্তি", "দাও", "হৃদয়ে",
-            "আলো", "জ্বালাও", "অন্ধকার", "দূর", "করো", "সকল", "সংশয়", "মুছিয়া", "দাও",
-            "তোমার", "প্রেমের", "অমৃত", "ধারায়", "ধন্য", "করো", "আমার", "সকল", "কর্ম",
-        ],
-        "jogajog": [
-            "মধুসূদন", "ঘোষাল", "অনেক", "টাকার", "মালিক", "হইয়া", "অহংকারী", "হইয়া", "উঠিল",
-            "কুমুদিনী", "সেই", "সংসারে", "আসিয়া", "কষ্ট", "পাইল", "বিপ্রদাস", "তাহাকে",
-            "স্নেহ", "করিত", "সদা", "কিন্তু", "ভাগ্যের", "নির্দয়", "খেলা", "কেহ", "বদল",
-            "করিতে", "পারে", "না", "তাহাই", "সবাইকে", "নীরবে", "সহ্য", "করিতে", "হইল",
-        ],
-        "chitrangada": [
-            "মণিপুর", "রাজকন্যা", "বীরবেশে", "যুদ্ধ", "শিক্ষা", "করিত", "বনের", "মধ্যে",
-            "অর্জুনকে", "দেখিয়া", "তাহার", "মন", "পরিবর্তিত", "হইল", "মদন", "দেবের",
-            "নিকট", "বর", "চাহিল", "এক", "বৎসরের", "জন্য", "অনুপম", "নারী", "রূপ",
-            "ধারণ", "করিয়া", "প্রিয়তমের", "হৃদয়", "জয়", "করিবার", "বাসনা", "জাগিল",
-        ],
+    """Create a synthetic pages.jsonl with 200 distinct Bengali words per held-out work."""
+    bengali_digits = "০১২৩৪৫৬৭৮৯"
+
+    def to_bengali_num(n: int) -> str:
+        return "".join(bengali_digits[int(d)] for d in str(n))
+
+    work_roots = {
+        "shesher_kobita": "লাবণ্যকথা",
+        "gitanjali": "অঞ্জলিবাক্য",
+        "jogajog": "কুমুদিনীবিবরণ",
+        "chitrangada": "মণিপুরবিবরণ",
     }
     lines = []
     for w_key, title in HELD_OUT_WORKS.items():
-        words = work_vocab[w_key]
-        text = " ".join(words) + " বিশেষ বিবরণ ও কাহিনী সমাপ্ত।"
+        root = work_roots[w_key]
+        words = [f"{root}{to_bengali_num(i)}" for i in range(200)]
+        text = " ".join(words) + " সমাপ্ত।"
         row = {
             "title": f"{w_key} প্রথম সর্গ",
             "prefix": f"{title}/অধ্যায় ১",
@@ -91,11 +77,20 @@ def test_load_reserved_identifiers_empty_file_raises(tmp_path: Path) -> None:
         load_reserved_identifiers(egen_path=empty_egen)
 
 
+def test_load_reserved_identifiers_missing_tok_sample_raises(tmp_path: Path) -> None:
+    egen_p = tmp_path / "egen.jsonl"
+    _make_dummy_egen_jsonl(egen_p)
+    with pytest.raises(FileNotFoundError, match="Missing required file"):
+        load_reserved_identifiers(egen_path=egen_p, tok_sample_path=tmp_path / "missing_sample.txt")
+
+
 def test_load_reserved_identifiers_empty_hashes_raises(tmp_path: Path) -> None:
     no_text_egen = tmp_path / "no_text_egen.jsonl"
     no_text_egen.write_text(json.dumps({"id": "only_id_no_text"}) + "\n", encoding="utf-8")
+    empty_sample = tmp_path / "empty_sample.txt"
+    empty_sample.write_text("", encoding="utf-8")
     with pytest.raises(ValueError, match="Reserved content hash set.*empty"):
-        load_reserved_identifiers(egen_path=no_text_egen, tok_sample_path=tmp_path / "nonexistent_sample.txt")
+        load_reserved_identifiers(egen_path=no_text_egen, tok_sample_path=empty_sample)
 
 
 # ---------------------------------------------------------------------------
@@ -163,6 +158,19 @@ def test_audit_stage1_leakage_missing_egen_raises(tmp_path: Path) -> None:
         )
 
 
+def test_audit_stage1_leakage_missing_tok_sample_raises(tmp_path: Path) -> None:
+    pages_p = tmp_path / "pages.jsonl"
+    egen_p = tmp_path / "egen.jsonl"
+    _make_dummy_pages_jsonl(pages_p)
+    _make_dummy_egen_jsonl(egen_p)
+    with pytest.raises(FileNotFoundError, match="Missing required file"):
+        audit_stage1_leakage(
+            pages_path=pages_p,
+            egen_path=egen_p,
+            tok_sample_path=tmp_path / "missing_sample.txt",
+        )
+
+
 # ---------------------------------------------------------------------------
 # 4. Post-Hoc Cleaning Mode Tests
 # ---------------------------------------------------------------------------
@@ -210,12 +218,15 @@ def test_run_post_hoc_clean_filters_all_invalids(tmp_path: Path) -> None:
         for r in train_rows:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
 
+    dummy_tok = tmp_path / "dummy_tok.txt"
+    dummy_tok.write_text("নমুনা টোকেনাইজার বাক্য।\n\n", encoding="utf-8")
+
     report = run_post_hoc_clean(
         input_file=input_train,
         output_file=output_train,
         pages_path=pages_p,
         egen_path=egen_p,
-        tok_sample_path=tmp_path / "dummy_tok.txt",
+        tok_sample_path=dummy_tok,
     )
 
     assert report["scanned_docs"] == 9
@@ -256,6 +267,9 @@ def test_cli_post_hoc_clean_subprocess(tmp_path: Path) -> None:
         for r in rows:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
 
+    dummy_tok = tmp_path / "dummy_tok.txt"
+    dummy_tok.write_text("নমুনা টোকেনাইজার বাক্য।\n\n", encoding="utf-8")
+
     cmd = [
         sys.executable,
         "scripts/02_ingest_fineweb2.py",
@@ -264,6 +278,7 @@ def test_cli_post_hoc_clean_subprocess(tmp_path: Path) -> None:
         "--output-file", str(output_train),
         "--pages-path", str(pages_p),
         "--egen-path", str(egen_p),
+        "--tok-sample-path", str(dummy_tok),
     ]
     proc = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", check=True)
     assert "POST-HOC DATA CLEANING AND PURGING MODE" in proc.stdout
@@ -284,3 +299,44 @@ def test_cli_fails_loudly_on_missing_pages_subprocess(tmp_path: Path) -> None:
     proc = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8")
     assert proc.returncode != 0
     assert "FileNotFoundError" in proc.stderr or "FileNotFoundError" in proc.stdout
+
+
+def test_clean_stage1_posthoc_script_runs_cleanly(tmp_path: Path) -> None:
+    from scripts.clean_stage1_posthoc import clean_train_file
+
+    pages_p = tmp_path / "pages.jsonl"
+    egen_p = tmp_path / "egen.jsonl"
+    tok_sample_p = tmp_path / "tok_sample.txt"
+    _make_dummy_pages_jsonl(pages_p)
+    _make_dummy_egen_jsonl(egen_p)
+    tok_sample_p.write_text("নমুনা টোকেনাইজার পাঠ্য বাক্য।\n\n", encoding="utf-8")
+
+    input_train = tmp_path / "raw_train.jsonl"
+    output_train = tmp_path / "cleaned_train.jsonl"
+
+    clean_text = "বাংলাদেশের ঐতিহাসিক ঐতিহ্য অত্যন্ত সমৃদ্ধ ও ঐতিহ্যমণ্ডিত। নদীমাতৃক এই ভূখণ্ডে বহু প্রাচীন সভ্যতার নিদর্শন বিদ্যমান।"
+    rows = [
+        {"id": "doc1", "text": clean_text},
+        {"id": "doc1", "text": clean_text},  # duplicate ID
+        {"id": "doc2", "text": "This is entirely english text rejected by quality."},  # reject
+    ]
+    with open(input_train, "w", encoding="utf-8") as f:
+        for r in rows:
+            f.write(json.dumps(r, ensure_ascii=False) + "\n")
+
+    report = clean_train_file(
+        input_file=input_train,
+        output_file=output_train,
+        pages_path=pages_p,
+        egen_path=egen_p,
+        tok_sample_path=tok_sample_p,
+    )
+
+    assert report["docs_in"] == 3
+    assert report["docs_out"] == 1
+    assert report["total_purged_docs"] == 2
+    assert report["purged_counts"]["duplicate_ids"] == 1
+    assert report["purged_counts"]["quality_rejected"] == 1
+    assert report["plant_audit"]["all_passed"] is True
+    assert output_train.exists()
+

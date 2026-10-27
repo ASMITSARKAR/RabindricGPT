@@ -126,8 +126,11 @@ def audit_stage1_leakage(
                 reserved_hashes.add(hashlib.sha256(row["text"].strip().encode("utf-8")).hexdigest())
 
     tok_sample_p = Path(tok_sample_path)
-    if tok_sample_p.exists():
-        with open(tok_sample_p, "r", encoding="utf-8") as f:
+    if not tok_sample_p.exists():
+        raise FileNotFoundError(
+            f"Missing required file: {tok_sample_p}. Cannot guarantee disjointness against tokenizer sample."
+        )
+    with open(tok_sample_p, "r", encoding="utf-8") as f:
             for idx, line in enumerate(f):
                 if idx >= 5000:
                     break

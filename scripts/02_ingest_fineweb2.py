@@ -146,11 +146,13 @@ def load_reserved_identifiers(
                 h = hashlib.sha256(row["text"].strip().encode("utf-8")).hexdigest()
                 reserved_hashes.add(h)
 
-    # 2. Tokenizer sample (100M sample) if available
+    # 2. Tokenizer sample (100M sample) - mandatory for disjointness
     tok_sample_p = Path(tok_sample_path)
-    if tok_sample_p.exists():
-        # Hash first 5000 lines as fingerprint anchors
-        with open(tok_sample_p, "r", encoding="utf-8") as f:
+    if not tok_sample_p.exists():
+        raise FileNotFoundError(
+            f"Missing required file: {tok_sample_p}. Cannot guarantee disjointness against tokenizer sample."
+        )
+    with open(tok_sample_p, "r", encoding="utf-8") as f:
             for idx, line in enumerate(f):
                 if idx >= 5000:
                     break
